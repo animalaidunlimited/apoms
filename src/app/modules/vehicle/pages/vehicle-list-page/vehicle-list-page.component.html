@@ -1,4 +1,4 @@
-<form [formGroup]='vehicleListForm'  autocomplete="off">
+<form [formGroup]="vehicleListForm"  autocomplete="off">
 
   <mat-spinner [diameter]="100" class="uploading-spinner" *ngIf="uploading"></mat-spinner>
 
@@ -7,23 +7,23 @@
             <mat-icon></mat-icon>
         </legend>
 
-        <div fxLayout="row wrap" class="vehicle-form">
+        <div class="flex-row flex-wrap vehicle-form">
 
-          <div *ngIf="imgURL" fxFlex.gt-sm="20" fxFlex.lt-md="100"  fxLayoutAlign="center center" class="vehicle-image">
+          <div *ngIf="imgURL" fxFlex.gt-sm="20" fxFlex.lt-md="100"  class="flex-center-center vehicle-image">
             <img  [src]="imgURL"  />
           </div>
 
           <div fxFlex="fill">
-              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-                  <mat-form-field appearance='fill'>
+              <div class="flex-row flex-wrap gap-10 flex-start-end">
+                  <mat-form-field appearance="fill">
                       <mat-label>Registration number</mat-label>
-                      <input type= 'text' formControlName="registrationNumber" matInput>
+                      <input type= "text" formControlName="registrationNumber" matInput>
                   </mat-form-field>
 
-                  <mat-form-field appearance='fill'>
+                  <mat-form-field appearance="fill">
                       <mat-label>Vehicle number</mat-label>
 
-                      <input type= 'text'formControlName="vehicleNumber" matInput>
+                      <input type= "text" formControlName="vehicleNumber" matInput>
                   </mat-form-field>
 
                   <mat-form-field appearance="fill">
@@ -37,13 +37,13 @@
 
               </div>
 
-              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-                  <mat-form-field appearance='fill'>
+              <div class="flex-row flex-wrap gap-10 flex-start-end">
+                  <mat-form-field appearance="fill">
                       <mat-label>Small Animal Capacity</mat-label>
                       <input type= 'number' formControlName="smallAnimalCapacity" matInput>
                   </mat-form-field>
 
-                  <mat-form-field appearance='fill'>
+                  <mat-form-field appearance="fill">
                       <mat-label>Large Animal Capacity</mat-label>
 
                       <input type= 'number' formControlName="largeAnimalCapacity" matInput>
@@ -60,13 +60,13 @@
 
               </div>
 
-              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-                  <mat-form-field appearance='fill'>
+              <div class="flex-row flex-wrap gap-10 flex-start-end">
+                  <mat-form-field appearance="fill">
                       <mat-label>Min. Rescuer Capacity</mat-label>
                       <input type= 'number' formControlName="minRescuerCapacity" matInput>
                   </mat-form-field>
 
-                  <mat-form-field appearance='fill'>
+                  <mat-form-field appearance="fill">
                       <mat-label>Max. Rescuer Capacity</mat-label>
 
                       <input type= 'number' formControlName="maxRescuerCapacity" matInput>
@@ -93,9 +93,9 @@
 
               </div>
 
-              <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+              <div class="flex-row flex-wrap gap-10 flex-start-end">
 
-                <mat-form-field appearance='fill'>
+                <mat-form-field appearance="fill">
                   <mat-label>Pick color</mat-label>
                   <input type="color" formControlName="vehicleColour" matInput>
                 </mat-form-field>
@@ -115,12 +115,12 @@
 
         </div>
 
-        <div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
-            <button type='submit' mat-raised-button color='primary' [disabled]="uploading" (click)="submit(vehicleListForm)">Save</button>
+        <div class="flex-row flex-wrap gap-10 flex-start-end">
+            <button type="submit" mat-raised-button color="primary" [disabled]="uploading" (click)="submit(vehicleListForm)">Save</button>
 
-            <button type='button' (click)="deleteVehicle(vehicleListForm.get('vehicleId')?.value)" mat-raised-button color='primary'>Delete</button>
+            <button type="button" (click)="deleteVehicle(vehicleListForm.get('vehicleId')?.value || -1)" mat-raised-button color="primary">Delete</button>
 
-            <button type='button'(click)="vehicleListForm.reset()" mat-raised-button color='white'>Reset</button>
+            <button type="button"(click)="vehicleListForm.reset()" mat-raised-button color="white">Reset</button>
         </div>
 
 

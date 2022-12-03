@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -56,7 +56,7 @@ const dialogData = {};
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(TreatmentRecordComponent);
     component = fixture.componentInstance;
 

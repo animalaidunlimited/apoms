@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { PatientRecordComponent } from './patient-record.component';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { SearchRecordTab } from 'src/app/core/models/search-record-tab';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -37,7 +37,7 @@ describe('PatientRecordComponent', () => {
 
     const fakeActivatedRoute = { data: permissions$ };
 
-    const formBuilder: FormBuilder = new FormBuilder();
+    const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
@@ -54,13 +54,13 @@ describe('PatientRecordComponent', () => {
             providers: [
                 DatePipe,
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
-                { provide: FormBuilder, useValue: formBuilder }
+                { provide: UntypedFormBuilder, useValue: formBuilder }
             ],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     });
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(PatientRecordComponent);
         component = fixture.componentInstance;
 

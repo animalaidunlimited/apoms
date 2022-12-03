@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="mat-elevation-z6" fxLayout fxLayoutGap="16px">
+<mat-toolbar color="primary" class="mat-elevation-z6 gap-16">
     <button mat-icon-button (click)="onToggleSideNav()">
         <mat-icon>menu</mat-icon>
     </button>
@@ -7,7 +7,7 @@
         <mat-icon>arrow_back</mat-icon>
     </a>
 
-    <div fxFlex="100%">{{activePage?.title}}</div>
+    <div fxFlex="100%">{{activePage.title}}</div>
 
     <app-user-preferences class="user-preferences-wrapper"></app-user-preferences>
 

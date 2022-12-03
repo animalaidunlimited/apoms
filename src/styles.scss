@@ -106,8 +106,57 @@ mat-radio-button{
 
 
 
-.mat-dialog-container {
+.single-hour{
+  text-align: center;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 2px;
+  border: 1px solid darkgray;
+  background-color: lightgray;
+}
+
+.single-hour:not(:first-child) {
+  border-left: none !important;
+}
+
+.non-form-field-input{
+  border: none;
+  border-radius: 4px;
+  background-color: whitesmoke;
+  font-family: Roboto, Arial, sans-serif;
+  height: 30px;
+  padding: 0 5px;
+}
+
+
+.mdc-menu-surface.mat-mdc-select-panel {
+  &::-webkit-scrollbar {
+    background-color: #fff;
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  /* background of the scrollbar except button or resizer */
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
+
+  /* scrollbar itself */
+  &::-webkit-scrollbar-thumb {
+    background-color: #babac0;
+    border-radius: 1rem;
+    border: 0.2rem solid #fff;
+  }
+
+  /* set button(top and bottom of the scrollbar) */
+  &::-webkit-scrollbar-button {
+    display:none;
+  }
+}
+
+.mat-mdc-dialog-surface {
   max-width: none !important;
+  background-color: #fff;
+  padding: 10px;
   overflow-x:scroll;
   scroll-behavior: smooth;
   &::-webkit-scrollbar {
@@ -132,6 +181,8 @@ mat-radio-button{
       display:none;
   }
 }
+
+
 
 
 .legend {

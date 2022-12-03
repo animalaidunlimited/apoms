@@ -13,8 +13,8 @@ import { PatientVisitDetailsModule } from '../../core/components/patient-visit-d
 import { CallerDetailsModule } from 'src/app/core/components/caller-details/caller-details.module';
 import { LocationDetailsModule } from 'src/app/core/components/location-details/location-details.module';
 import { AnimalHeaderModule } from '../hospital-manager/components/animal-header/animal-header.module';
-import { VehicleVisitAssingerModule } from './components/vehicle-visit-assinger/vehicle-visit-assinger.module';
-import { StreetTreatSeachModule } from './components/streettreat-search/streettreat-search.module';
+import { VehicleVisitAssignerModule } from './components/vehicle-visit-assigner/vehicle-visit-assigner.module';
+import { StreetTreatSearchModule } from './components/streettreat-search/streettreat-search.module';
 
 
 
@@ -35,8 +35,8 @@ import { StreetTreatSeachModule } from './components/streettreat-search/streettr
     CallerDetailsModule,
     LocationDetailsModule,
     AnimalHeaderModule,
-    VehicleVisitAssingerModule,
-    StreetTreatSeachModule
+    VehicleVisitAssignerModule,
+    StreetTreatSearchModule
   ]
 })
 export class StreetTreatPageModule { }

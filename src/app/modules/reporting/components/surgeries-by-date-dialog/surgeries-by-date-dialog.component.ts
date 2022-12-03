@@ -26,7 +26,7 @@ export class SurgeriesByDateDialogComponent implements OnInit, AfterViewInit  {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<PatientCallDialogComponent>
+    public MatDialogRef: MatDialogRef<PatientCallDialogComponent>
   ) {
     this.dataSource = new MatTableDataSource(this.data.surgeries);
     this.surgeryDate = this.data.surgeries[0]?.date;
@@ -40,7 +40,7 @@ export class SurgeriesByDateDialogComponent implements OnInit, AfterViewInit  {
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }

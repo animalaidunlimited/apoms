@@ -1,10 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
+import { FormArray, UntypedFormBuilder, Validators, FormControl, FormGroup} from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatChipList } from '@angular/material/chips';
+import { MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { AnimalType } from 'src/app/core/models/animal-type';
@@ -95,7 +95,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   constructor(
     private dropdown: DropdownService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private dialog: MatDialog,
     private treatmentListService: TreatmentListService,
     private printService: PrintTemplateService,
@@ -110,7 +110,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     this.patientForm = this.patientFormInput as FormGroup;
 
-    this.patientForm.updateValueAndValidity({ emitEvent: false});
+    this.patientForm.updateValueAndValidity({ emitEvent: false });
     
     this.exclusions = this.dropdown.getExclusions();
 

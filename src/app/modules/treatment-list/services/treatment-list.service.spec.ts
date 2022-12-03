@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -15,7 +15,7 @@ import { TreatmentListService } from './treatment-list.service';
 describe('TreatmentListService', () => {
   let service: TreatmentListService;
 
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,13 +33,13 @@ describe('TreatmentListService', () => {
         Overlay,
         SnackbarService,
         TreatmentListService,
-        { provide: FormBuilder, useValue: formBuilder }
+        { provide: UntypedFormBuilder, useValue: formBuilder }
     ]
     });
 
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     service = TestBed.inject(TreatmentListService);
 
   }));

@@ -1,0 +1,35 @@
+
+<div [formGroup]="areaShift" class="flex-row flex-space-between-center">
+
+  <div style="width:125px">
+    <mat-select (selectionChange)="groupSelected($event, areaShift)"
+        style="text-align: center;"
+        formControlName="rotationRoleId"
+        [errorStateMatcher]="errorMatcher">
+        <mat-option>N/A</mat-option>
+            <mat-option *ngFor="let role of rotationRoles$ | async" [value]="role.rotationRoleId">
+            {{role.rotationRole}}
+        </mat-option>
+    </mat-select>
+  </div>
+
+  <div class="area-shift-edit-buttons flex-row flex-center-center">
+
+    <div class="colour-input">
+      <input type="color" formControlName="colour" (blur)="updateColour()">
+    </div>
+
+
+    <button mat-icon-button class="close-button" (click)="deleteAreaShift(areaShift)">
+    <mat-icon matTooltip="delete" class="close-icon" color="primary">delete</mat-icon>
+    </button>
+    
+  </div>
+
+
+
+
+  
+
+
+</div>

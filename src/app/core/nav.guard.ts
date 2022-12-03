@@ -26,12 +26,13 @@ export class NavGuard implements CanActivateChild {
     ) {}
 
     async canActivateChild(
-        childRoute: ActivatedRouteSnapshot,
+        childRoute: ActivatedRouteSnapshot,        
         state: RouterStateSnapshot,
     ) : Promise<boolean | UrlTree>
  {
 
         return await this.permissionService.permissionTrueOrFalse(childRoute.data.permissionId).then(val=> {
+
             this.userHasPermission.next(val);
 
             if (childRoute.data && childRoute.data.title && !!this.userHasPermission.value) {
@@ -70,7 +71,6 @@ export class NavGuard implements CanActivateChild {
 
             }
              // If we're on mobile close the sidenav after navigation
-
             if(window.innerWidth < 840){
                 this.navigationService.closeIsOpen();
             }

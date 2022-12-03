@@ -13,7 +13,12 @@ export interface OrganisationDetail{
     name: string;
     address: OrganisationAddress[],
     driverViewDeskNumber: string,
-    vehicleDefaults: OrganisationVehicleDefaults
+    vehicleDefaults: OrganisationVehicleDefaults,
+    rotaDefaults: OrganisationRotaDefaults
+}
+
+export interface OrganisationRotaDefaults {
+    periodsToShow: number;
 }
 
 export interface OrganisationAddress{

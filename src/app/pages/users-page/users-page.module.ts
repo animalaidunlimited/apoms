@@ -7,7 +7,11 @@ import { UsersPageComponent } from './components/users-page.component';
 
 @NgModule({
     declarations: [UsersPageComponent],
-    imports: [CommonModule, UsersPageRoutingModule, MaterialModule],
+    imports: [
+        CommonModule,
+        UsersPageRoutingModule,
+        MaterialModule
+    ],
     exports: [UsersPageComponent]
 })
 export class UsersPageModule {}

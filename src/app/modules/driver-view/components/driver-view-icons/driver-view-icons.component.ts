@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { CallerDetailsDialogComponent } from '../../dialogs/caller-details-dialog/caller-details-dialog.component';
 import { LocationDialogComponent } from '../../dialogs/location-dialog/location-dialog.component';
-import { PatientSelectFormediaDialogComponent } from '../../dialogs/patient-select-formedia-dialog/patient-select-formedia-dialog.component';
+import { PatientSelectForMediaDialogComponent } from '../../dialogs/patient-select-for-media-dialog/patient-select-for-media-dialog.component';
 
 @Component({
   selector: 'app-driver-view-icons',
@@ -40,7 +40,7 @@ export class DriverViewIconsComponent implements OnInit {
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignment) {
-    const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
+    const dialogRef = this.dialog.open(PatientSelectForMediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',
       data: {assignmentDetails: assignment}

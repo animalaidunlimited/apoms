@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output,EventEmitter, HostListener, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-matcher';
-import { FormGroup, Validators, FormBuilder, AbstractControl, FormArray, FormControl} from '@angular/forms';
+import { FormGroup, Validators, UntypedFormBuilder, AbstractControl, FormArray, FormControl} from '@angular/forms';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { RescueDetailsParent } from 'src/app/core/models/responses';
 import { RescueDetailsService } from 'src/app/modules/emergency-register/services/rescue-details.service';
@@ -87,7 +87,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         private dropdowns: DropdownService,
         private rescueDetailsService: RescueDetailsService,
         private zone: NgZone,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {}
 
     ngOnInit() {
@@ -237,6 +237,7 @@ export class RescueDetailsComponent implements OnInit, OnDestroy {
         if (this.assignedVehicleId?.value > 0) {
 
             this.recordForm.get('emergencyDetails.code')?.setValidators([Validators.required]);
+            this.recordForm.get('emergencyDetails.code')?.updateValueAndValidity();
 
             this.code?.setValidators([Validators.required]);
 

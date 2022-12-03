@@ -1,0 +1,48 @@
+<form [formGroup]="searchForm">
+
+  <mat-form-field *ngIf="formField" appearance="fill">
+    <mat-label *ngIf="showLabel">Staff name</mat-label>
+    <input matInput
+    [errorStateMatcher]="errorMatcher"
+    type="text"
+    (focus)="setSelectedUsers()"
+    formControlName="userId"
+    [matAutocomplete]="auto">
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+    (optionSelected)="userSelected($event)"
+    (closed)="checkUserSelectedAndClearIfRequired()">
+      <mat-option>N/A</mat-option>
+      <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user.userId">
+        {{ user.employeeNumber + ' - ' + user.firstName }}
+      </mat-option>
+    </mat-autocomplete>
+
+    <ng-content></ng-content>
+
+  </mat-form-field>
+
+  <div *ngIf="!formField" appearance="fill">
+    <mat-label *ngIf="showLabel">Staff name</mat-label>
+    <input matInput
+    class="non-form-field-input"
+    [errorStateMatcher]="errorMatcher"
+    type="text"
+    (focus)="setSelectedUsers()"
+    formControlName="userId"
+    [matAutocomplete]="auto">
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+    (optionSelected)="userSelected($event)"
+    (closed)="checkUserSelectedAndClearIfRequired()">
+      <mat-option>N/A</mat-option>
+      <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user.userId">
+        {{ user.employeeNumber + ' - ' + user.firstName }}
+      </mat-option>
+    </mat-autocomplete>
+
+    <ng-content></ng-content>
+
+  </div>
+
+</form>

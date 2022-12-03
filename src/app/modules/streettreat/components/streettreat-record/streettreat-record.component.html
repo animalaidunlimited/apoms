@@ -4,11 +4,11 @@
     gdGap.gt-md="8px"
     [style.padding]="'10px'">
     <div>
-        <fieldset [formGroup]="recordForm" class="form-sub-group" autocomplete="off" class="streettreat_record_form">
+        <fieldset [formGroup]="recordForm" autocomplete="off" class="form-sub-group streettreat_record_form">
 
               <legend class="legend">StreetTreat details</legend>
 
-              <div fxLayout="row wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" class="st_form">
+              <div class="st_form flex-row flex-wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" >
                     <mat-form-field appearance="fill" >
                         <mat-label>Emergency number</mat-label>
                         <input tabindex="1" formControlName="EmergencyNumber" type="text" placeholder="Name"  matInput>
@@ -52,7 +52,7 @@
                         <input matInput type="date"  placeholder="End Date" formControlName="EndDate">
                      </mat-form-field>
 
-                     <div fxLayout="column" fxLayout.lt-md="row" fxLayoutGap.lt-md="30px" class="st_form">
+                     <div class="st_form flex-column" fxLayout.lt-md="row" fxLayoutGap.lt-md="30px" >
 
                         <mat-checkbox formControlName="EarlyReleaseFlag">Early release flag</mat-checkbox>
                         <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
@@ -64,7 +64,7 @@
 
 
         </fieldset>
-        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" class="form-sub-group">
+        <div class="flex-row flex-wrap gap-20 flex-center-center form-sub-group">
 
             <button mat-raised-button color="primary"  [disabled]="recordForm.invalid" (click)="saveForm()">Save</button>
             <button mat-raised-button color="primary" >Reset</button>
@@ -72,7 +72,7 @@
     </div>
     <div>
     <animal-header [recordForm]="recordForm" [profileUrl]="profileUrl"></animal-header>
-    <caller-details [recordForm]="recordForm" [incomingCallerDetails]='[]'></caller-details>
+    <caller-details [recordForm]="recordForm" [incomingCallerDetails]="[]"></caller-details>
     <location-details [recordForm]="recordForm"></location-details>
     </div>
 </div>

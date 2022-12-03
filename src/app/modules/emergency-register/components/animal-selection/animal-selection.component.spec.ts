@@ -10,7 +10,7 @@ import {
 import { TagNumberDialog } from '../tag-number-dialog/tag-number-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -65,7 +65,7 @@ describe('AnimalSelectionComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(AnimalSelectionComponent);
         component = fixture.componentInstance;
 

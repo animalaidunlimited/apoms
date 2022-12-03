@@ -17,7 +17,7 @@ export class ReleaseAssignDialogComponent implements OnInit {
   formData!: ReleaseDetails;
   formInvalid = false;
 
-  constructor(public dialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<ReleaseAssignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingCaseDetails) { }
 
 
@@ -44,12 +44,12 @@ export class ReleaseAssignDialogComponent implements OnInit {
 
   onSaveResponse(result:any){
     if(result > 0){
-      this.dialogRef.close();
+      this.MatDialogRef.close();
     }
   }
 
   closeDialog(){
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }

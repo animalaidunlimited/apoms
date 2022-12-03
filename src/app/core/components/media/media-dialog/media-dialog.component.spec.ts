@@ -45,7 +45,7 @@ let dialog: MatDialogRef<MediaDialogComponent>;
         {
             provide: MatDialogRef,
             useValue: mockDialogRef,
-        },
+        }
     ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })

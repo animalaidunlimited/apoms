@@ -7,11 +7,11 @@ import { MatDialogRef } from '@angular/material/dialog';
     styleUrls: ['./image-upload.component.scss'],
 })
 export class ImageUploadDialog implements OnInit {
-    constructor(public dialogRef: MatDialogRef<ImageUploadDialog>) {}
+    constructor(public MatDialogRef: MatDialogRef<ImageUploadDialog>) {}
 
     ngOnInit() {}
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.MatDialogRef.close();
     }
 }

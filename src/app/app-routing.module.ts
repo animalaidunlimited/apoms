@@ -59,6 +59,13 @@ export const routes: Routes = [
             ),
     },
     {
+        path: 'staff-rotation',
+        loadChildren: () =>
+            import('./modules/staff-rota/staff-rota.module').then(
+                m => m.StaffRotaModule,
+            ),
+    },
+    {
         path: 'print',
         outlet: 'print',
         component: PrintWrapperComponent,

@@ -3,13 +3,13 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DriverActionDialogComponent } from './driver-action-dialog.component';
 import { MaterialModule } from './../../../../material-module';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 
 
 describe('DriverActionDialogComponent', () => {
   let component: DriverActionDialogComponent;
   let fixture: ComponentFixture<DriverActionDialogComponent>;
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -24,7 +24,7 @@ describe('DriverActionDialogComponent', () => {
           useValue: {}
         },
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: FormBuilder, useValue: formBuilder } 
+        { provide: UntypedFormBuilder, useValue: formBuilder } 
      ],
       declarations: [ DriverActionDialogComponent ]
     })

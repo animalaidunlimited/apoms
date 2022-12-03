@@ -5,6 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LogsComponent } from './logs.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AbstractControl } from '@angular/forms';
 
 describe('LogsComponent', () => {
   let component: LogsComponent;
@@ -28,8 +29,8 @@ describe('LogsComponent', () => {
     component = fixture.componentInstance;
 
     component.logsData = {
-      emergencyCaseId: '70092',
-      emergencyNumber: '70062'
+      emergencyCaseId: 70092,
+      patientFormArray: [] as AbstractControl[]
     };
 
 

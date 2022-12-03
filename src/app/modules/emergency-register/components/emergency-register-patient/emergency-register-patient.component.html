@@ -1,14 +1,14 @@
-<div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields" fxLayout="column"
+<div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields flex-column" 
   fxLayout.gt-xs="row" >
 
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
   <!-- patient details-->
-  <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" fxLayout="row" fxLayoutGap="20px" fxLayoutAlign.gt-sm="end end">
+  <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" class="flex-row gap-20" fxLayoutAlign.gt-sm="end end">
 
     <!-- Animal Dropdown-->
     <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;"
-    fxLayout.gt-sm="row" fxLayoutAlign="end end" ngStyle.gt-sm="min-height:5.8em;">
+    fxLayout.gt-sm="row" class="flex-end-end" ngStyle.gt-sm="min-height:5.8em;">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
@@ -51,7 +51,7 @@
     </mat-form-field>
 
     <div class="patients_icons">
-      <media-gallery-wrapper [patientData]="patientForm" [displayImagesAndButtons]='false'></media-gallery-wrapper>
+      <media-gallery-wrapper [patientData]="patientForm" [displayImagesAndButtons]="false"></media-gallery-wrapper>
     </div>
 
   </div>
@@ -68,7 +68,7 @@
 
 
   <!-- Call Outcome details-->
-  <div *ngIf="outcome && !isDisplayOnly" fxLayout.lt-sm="row wrap" fxLayout="row" fxFlex.gt-sm="1 1 100%" fxLayoutAlign="space-between end" fxLayoutGap="20px">
+  <div *ngIf="outcome && !isDisplayOnly" fxLayout.lt-sm="row wrap" fxFlex.gt-sm="1 1 100%" class="flex-row gap-20 flex-space-between-end">
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
@@ -111,20 +111,20 @@
 
 <div *ngIf="isDisplayOnly" class="displayOnlyPatientWrapper">
 
-  <div fxLayout="row" fxLayoutGap='10px' fxLayoutAlign="start center" style="min-height: 2em;">
+  <div class="flex-row gap-10 flex-start-center"style="min-height: 2em;">
     <div>
       {{animalType.value}}
     </div>
     <div *ngIf="problemsArray?.value.length > 1">
-      {{problemsArray?.value[0].problem}} + {{problemsArray?.value.length - 1}}
+      {{problemsArray.value[0].problem}} + {{problemsArray.value.length - 1}}
     </div>
 
     <div *ngIf="problemsArray?.value.length == 1">
-      {{problemsArray?.value[0].problem}}
+      {{problemsArray.value[0].problem}}
     </div>
 
     <div class="mediaIconsWrapper">
-      <media-gallery-wrapper [patientData]="patientForm" [displayImagesAndButtons]='false'></media-gallery-wrapper>
+      <media-gallery-wrapper [patientData]="patientForm" [displayImagesAndButtons]="false"></media-gallery-wrapper>
     </div>
 
   </div>

@@ -3,12 +3,11 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { CallerDetailsComponent } from './caller-details.component';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MaterialModule } from 'src/app/material-module';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CallerAutocompleteComponent } from '../caller-autocomplete/caller-autocomplete.component';
@@ -21,12 +20,11 @@ describe('CallerDetailsComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 HttpClientTestingModule,
-                MatFormFieldModule,
                 MaterialModule,
                 NoopAnimationsModule,
                 MatAutocompleteModule,
                 FormsModule,
-                ReactiveFormsModule,
+                ReactiveFormsModule
             ],
             declarations: [
                 CallerDetailsComponent,
@@ -36,7 +34,7 @@ describe('CallerDetailsComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(CallerDetailsComponent);
         component = fixture.componentInstance;
 

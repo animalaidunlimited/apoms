@@ -7,18 +7,18 @@ import { Patient, PatientCalls, PatientCallModifyResponse, PatientCallResult, Pa
     CrueltyReport, CrueltyReportResult, PatientOutcome, PatientOutcomeResponse, UpdatePatientDetails, PriorityObject } from 'src/app/core/models/patients';
 import { PrintPatient } from 'src/app/core/models/print-templates';
 import { SuccessOnlyResponse } from '../../models/responses';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, FormGroup } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PatientService extends APIService {
-
+    
     endpoint = 'Patient';
 
     constructor(
         http: HttpClient,
-        private fb: FormBuilder) {
+        private fb: UntypedFormBuilder) {
         super(http);
     }
 

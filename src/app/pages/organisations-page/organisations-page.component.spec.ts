@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
 import { AngularFireModule } from '@angular/fire/compat';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
 import { OrganisationsPageComponent } from './organisations-page.component';
@@ -25,7 +25,7 @@ describe('OrganisationsPageComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(OrganisationsPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

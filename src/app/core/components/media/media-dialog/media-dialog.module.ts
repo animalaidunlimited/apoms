@@ -19,4 +19,4 @@ import { GalleryWrapperModule } from '../media-gallery-wrapper/media-gallery-wra
   ],
   exports: [MediaDialogComponent]
 })
-export class MediaDialogModule { }
+export class MediaMatDialogModule { }

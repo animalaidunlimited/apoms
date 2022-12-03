@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { SurgeryRecordComponent } from './surgery-record.component';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -11,7 +11,7 @@ describe('SurgeryRecordComponent', () => {
     let component: SurgeryRecordComponent;
     let fixture: ComponentFixture<SurgeryRecordComponent>;
 
-    const formBuilder: FormBuilder = new FormBuilder();
+    const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -22,13 +22,13 @@ describe('SurgeryRecordComponent', () => {
                 ReactiveFormsModule,
                 BrowserAnimationsModule,
             ],
-            providers: [{ provide: FormBuilder, useValue: formBuilder }],
+            providers: [{ provide: UntypedFormBuilder, useValue: formBuilder }],
             declarations: [SurgeryRecordComponent],
             schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(SurgeryRecordComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

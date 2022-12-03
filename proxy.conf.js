@@ -21,6 +21,7 @@ const PROXY_CONFIG = [
             "/ReleaseDetails",
             "/Reporting",
             "/RescueDetails",
+            "/Rota",
             "/StreetTreat",
             "/SurgeryRegister",
             "/Treatment",

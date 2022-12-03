@@ -1,22 +1,22 @@
-<div fxLayout="column">
+<div class="flex-column" >
 
   <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
     <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
       <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" >
 
-        <div fxLayout="row">
+        <div class="flex-row">
 
          <!--
            TODO: Leaving this in, because might want to set it in the organisation settings. Basically because I like it and
           it does look good.
 
-          <div class="vehicleImage">
-            <img [src]="vehicleDetail.vehicleImage" />
+          <div class="imageURL">
+            <img [src]="vehicleDetail.imageURL" />
           </div> -->
-          <div class="vehicleDescription" fxLayout="row">
+          <div class="vehicleDescription flex-row">
             <div >
               <p class="vehicleNumber"(click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
-              <div class="licensePlate" @fadeAnimation fxLayout="row" *ngIf="showPlate">
+              <div class="licensePlate flex-row" @fadeAnimation *ngIf="showPlate">
                 <div class="licensePlateBadge">
                   <div class="silver"></div>
                   <span>IND</span>
@@ -40,8 +40,8 @@
           </div>
         </div>
 
-        <div fxLayout="row" class="vehicleType">
-          <div  fxFlex   fxLayout="row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
+        <div class="flex-row vehicleType">
+          <div  fxFlex   class="flex-row vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
             <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
             <p>{{vehicle.VehicleType}}</p>
           </div>
@@ -65,7 +65,7 @@
 
           <div *ngIf="currentCapacity.capacity as capacity">
 
-            <div fxLayout="row" fxLayoutAlign="end" >
+            <div class="flex-row flex-end-end" >
 
               <div>
                 <h3>Current</h3>

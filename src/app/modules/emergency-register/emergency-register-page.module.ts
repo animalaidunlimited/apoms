@@ -6,7 +6,7 @@ import { EmergencyRegisterPageComponent } from './pages/emergency-register-page.
 
 import { MaterialModule } from '../../material-module';
 import { TabBarModule } from './components/tab-bar/tab-bar.module';
-import { AddSearchMediaDialogModule } from './components/add-search-media-dialog/add-search-media-dialog.module';
+import { AddSearchMediaMatDialogModule } from './components/add-search-media-dialog/add-search-media-dialog.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
@@ -18,7 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         EmergencyRegisterPageRoutingModule,
         TabBarModule,
         MaterialModule,
-        AddSearchMediaDialogModule,
+        AddSearchMediaMatDialogModule,
         MatProgressSpinnerModule
     ],
     exports: [],

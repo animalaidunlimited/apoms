@@ -1,9 +1,9 @@
-<div fxLayout="row" fxLayoutAlign="center start">
+<div class="flex-row flex-center-start">
 
-    <div fxLayout="column" fxLayoutAlign="center center" class="vehicle-shift-header-wrapper">
+    <div class="flex-column flex-center-center vehicle-shift-header-wrapper">
 
         <ng-container *ngIf="vehicle">
-            <div class="vehicle-shift-header" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
+            <div class="vehicle-shift-header gap-10 flex-row flex-center-center">
                 <div class="vehicle-image">
                     <img [src]="vehicle.imageURL" />
                 </div>
@@ -11,7 +11,7 @@
             <div class="vehicle-number">
                 {{vehicle.vehicleNumber}}
             </div>
-            <div class="license-plate" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="license-plate flex-row flex-space-between-center">
                     <div class="license-plate-badge">
                         <div class="silver"></div>
                         <span>IND</span>
@@ -20,20 +20,20 @@
                         {{vehicle.registrationNumber}}
                     </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="space-between center" class="vehicle-type">
+            <div class="vehicle-type flex-row flex-space-between-center">
                     <div class="vehicle-type-icon">
                         <img  src="assets/icons/ambulance_van.png" alt="Vehicle type">
                     </div>
                     <div>{{vehicle.vehicleType}}</div>
             </div>
-            <div fxLayout="column" fxLayoutAlign="center center" class="capacity-details">
+            <div class="flex-column flex-center-center capacity-details">
                 <div class="capacity">Capacity</div>
-                <div fxLayout="row" fxLayoutAlign="space-between center" class="capacity-item">
+                <div class="capacity-item flex-row flex-space-between-center">
                     <div>Small</div>
                     <div>:</div>
                     <div>{{vehicle.smallAnimalCapacity}}</div>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="space-between center" class="capacity-item">
+                <div class="capacity-item flex-row flex-space-between-center">
                     <div>Large</div>
                     <div>:</div>
                     <div>{{vehicle.largeAnimalCapacity}}</div>
@@ -44,9 +44,9 @@
 
     </div>
 
-    <div fxFlex fxLayout="column" class="vehicle-shift-hours">
+    <div fxFlex class="flex-column vehicle-shift-hours">
 
-        <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="flex-row flex-space-between-center">
 
             <div *ngFor="let hour of hours" class="single-hour" [ngStyle]="{'width' : 'calc(100% / ' + (hourRange.end - hourRange.start + 1) + ')'}">
                 {{hour}}
@@ -57,7 +57,7 @@
         <div fxFill class="shift-wrapper">
 
             <div
-            fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px"
+            class="flex-row flex-wrap flex-start-center gap-10"
             *ngFor="let shift of ( shifts$ | async)"
             [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
 

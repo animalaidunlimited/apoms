@@ -1,10 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { BehaviorSubject } from 'rxjs';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TimeAgoPipe } from 'src/app/core/pipes/time-ago/time-ago.pipe';
 import { MaterialModule } from 'src/app/material-module';
-import { MediaItem } from '../../../models/media';
-import { TimeAgoPipe } from '../media-preview/time-ago.pipe';
 
 import { GalleryWrapperComponent } from './media-gallery-wrapper.component';
 

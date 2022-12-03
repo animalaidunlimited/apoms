@@ -1,7 +1,7 @@
 
 import { VisitType } from '../../models/visit-type';
 import { Component, OnInit, ChangeDetectorRef, Input, Output, OnChanges, ViewChild, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { StreetTreatMainProblem } from 'src/app/core/models/responses';
 import { Status } from 'src/app/core/models/status';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -112,7 +112,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	constructor(
 
-		private fb: FormBuilder,
+		private fb: UntypedFormBuilder,
 		private changeDetectorRef: ChangeDetectorRef,
 		private dropdown: DropdownService,
 		private streetTreatService: StreetTreatService,

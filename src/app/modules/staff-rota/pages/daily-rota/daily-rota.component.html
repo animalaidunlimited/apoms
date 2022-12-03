@@ -1,0 +1,86 @@
+
+<div class="flex-row flex-wrap flex-start-start gap-20" [formGroup]="areaForm" style="margin-top: 10px; margin-left:10px;">
+
+  <div class="flex-row flex-start-center gap-10">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Areas</mat-label>
+      <mat-select formControlName="areas" multiple (selectionChange)="loadRotaDays()">
+        <mat-option *ngFor="let area of areas" [value]="area.rotationAreaId">{{area.rotationArea}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <button mat-mini-fab color="primary" (click)="areaSelected()" matTooltip="Save areas to preferences">
+      <mat-icon>save</mat-icon>
+    </button>
+
+
+  </div>
+
+  <div class="flex-row flex-space-between-center gap-20">
+
+    <div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Rota</mat-label>
+        <mat-select formControlName="rotaId">
+          <mat-option *ngFor="let rota of rotas | async" [value]="rota.rotaId">{{rota.rotaName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+    <div>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Version</mat-label>
+        <mat-select formControlName="rotaVersionId" (selectionChange)="getRotationPeriodForRotaVersion($event.value)">
+          <mat-option *ngFor="let version of rotaVersions | async" [value]="version.rotaVersionId">{{version.rotaVersionName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+    <div class="flex-column flex-center-center period-dates-wrapper">
+
+      <div [hidden]="!startDate">
+        {{(startDate | date : "EEE,dd/MMM") + ' - ' + (endDate | date : "EEE,dd/MMM")}}
+      </div>
+
+      <div class="flex-row gap-20 flex-space-around-center direction-container">
+
+        <button mat-mini-fab color="primary" (click)="shiftRotationPeriod(previous)" [disabled]="leftDisabled" matTooltip="Save areas to preferences">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+
+        <button mat-mini-fab color="primary" (click)="shiftRotationPeriod(next)" [disabled]="rightDisabled" matTooltip="Save areas to preferences">
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </div>
+
+
+    </div>
+
+  </div>
+
+  <div>
+    <button mat-mini-fab color="primary" (click)="loadRotaDays()" matTooltip="Reload rota">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+
+
+</div>
+
+<mat-tab-group >
+  <mat-tab *ngFor="let day of rotaDayForm.controls" >
+    <ng-template mat-tab-label>
+      <span>{{day.get('rotaDayDate')?.value | date : "EEE,dd/MMM"}}</span>
+      <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" matTooltip="Unsaved changes" style="margin-left: 10px">error</mat-icon>
+  </ng-template>    
+
+    <app-daily-rota-day [rotationPeriodId]="rotationPeriodId" [rotaDayDate]="day.get('rotaDayDate')?.value" [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-daily-rota-day>
+  
+  </mat-tab>
+</mat-tab-group>

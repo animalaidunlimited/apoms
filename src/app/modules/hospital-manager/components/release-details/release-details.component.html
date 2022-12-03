@@ -1,6 +1,6 @@
  <form [formGroup]="recordForm">
 
-<div formGroupName="releaseRequestForm" class="option-wrapper" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end">
+<div formGroupName="releaseRequestForm" class="option-wrapper flex-row flex-wrap gap-10 flex-start-end">
     <mat-form-field appearance="fill">
         <mat-label>Requested user</mat-label>
         <mat-select formControlName="requestedUser">
@@ -21,7 +21,7 @@
 
 </div>
 
-<div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="5px" class="option-wrapper">
+<div class="releaseTypeDiv flex-column gap-10 option-wrapper">
     <mat-slide-toggle [checked]="isCommented" (change)="valueChanges($event,2)" class="mat-slider">Caller special instruction</mat-slide-toggle>
 
     <mat-form-field appearance="fill" class="select">
@@ -31,11 +31,11 @@
 </div>
 
 
-<div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px" class="option-wrapper">
+<div class="releaseTypeDiv flex-column gap-10 option-wrapper">
 
-    <mat-slide-toggle [checked]="specificStaff" class="toggleDiv" (change)="valueChanges($event,3)" class="mat-slider">Specific staff</mat-slide-toggle>
+    <mat-slide-toggle [checked]="specificStaff" class="toggleDiv mat-slider" (change)="valueChanges($event,3)">Specific staff</mat-slide-toggle>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div class="flex-row flex-wrap gap-20 flex-start-center">
         <div [@openCloseDiv]= specificStaff [@visibilityDiv]= specificStaff>
             <mat-form-field appearance="fill">
                 <mat-label>Releaser 1</mat-label>
@@ -60,12 +60,12 @@
 </div>
 
 <div style="margin-left: 10px; margin-bottom: 30px;">
-    <p><mat-checkbox formControlName='IsStreetTreatRelease'>Release needs to be carried out by street treat staff</mat-checkbox></p>
+    <p><mat-checkbox formControlName="IsStreetTreatRelease">Release needs to be carried out by street treat staff</mat-checkbox></p>
 </div>
 
-<div class="releaseTypeDiv" fxLayout="column" fxLayoutGap="10px" class="option-wrapper">
+<div class="releaseTypeDiv option-wrapper flex-column gap-10">
 
-    <mat-slide-toggle [disabled]='disableStreetTreat' [checked]="isStreetTreat" (change)="valueChanges($event,4)" class="mat-slider">StreetTreat</mat-slide-toggle>
+    <mat-slide-toggle [disabled]="disableStreetTreat" [checked]="isStreetTreat" (change)="valueChanges($event,4)" class="mat-slider">StreetTreat</mat-slide-toggle>
 
     <div [@openCloseDiv]="isStreetTreat" [@visibilityDiv]="isStreetTreat">
         <app-patient-visit-details
@@ -79,10 +79,10 @@
 </div>
 
 <div class="disable">
-    <caller-details [incomingCallerDetails]='[]' [recordForm]="recordForm"></caller-details>
+    <caller-details [incomingCallerDetails]="[]" [recordForm]="recordForm"></caller-details>
 </div>
 
-<div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start end" style="padding-bottom:20px; padding-top:20px;">
+<div class="flex-row flex-wrap gap-20 flex-start-end" style="padding-bottom:20px; padding-top:20px;">
     <mat-slide-toggle formControlName="complainerInformed" class="mat-slider">Caller informed</mat-slide-toggle>
 </div>
 

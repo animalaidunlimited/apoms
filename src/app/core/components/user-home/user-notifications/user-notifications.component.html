@@ -1,5 +1,5 @@
 <div class="user-notifications">
-  <div fxLayout="row" fxLayoutAlign="center center">
+  <div class="flex-row flex-center-center">
     <h3>Notifications</h3>
     <div>
       <button mat-icon-button matSuffix color="primary" (click)="refreshNotifications()">
@@ -12,13 +12,12 @@
 
     <div formArrayName="notifications"
     
-    fxLayout="column"
-    fxLayoutAlign="start start"
+    class="flex-column flex-start-start"
     *ngFor="let note of notificationArray.controls; let i = index">
 
       <div formGroupName="{{i}}">
 
-        <div fxLayout="row" class="notificationPanel" [ngClass]="note.get('acknowledged')?.value ? 'acknowledged' : 'unacknowledged'">
+        <div class="flex-row notificationPanel" [ngClass]="note.get('acknowledged')?.value ? 'acknowledged' : 'unacknowledged'">
 
           <div (click)="followNotification(note)">
             <div>             

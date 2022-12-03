@@ -1,0 +1,24 @@
+DELIMITER !!
+
+DROP FUNCTION IF EXISTS AAU.fn_CastTinyIntToJSONBoolean !!
+
+-- SELECT AAU.fn_CastTinyIntToJSONBoolean(1)
+
+DELIMITER $$
+CREATE FUNCTION AAU.fn_CastTinyIntToJSONBoolean(prm_Value TINYINT) RETURNS JSON
+    DETERMINISTIC
+BEGIN
+
+DECLARE vResult JSON;
+
+	SELECT 
+		CASE
+			WHEN prm_Value = 1 THEN CAST(TRUE AS JSON)
+			WHEN prm_Value = 0 THEN CAST(FALSE AS JSON)
+			ELSE NULL
+		END INTO vResult;
+           
+	RETURN(vResult);
+
+END$$
+DELIMITER ;

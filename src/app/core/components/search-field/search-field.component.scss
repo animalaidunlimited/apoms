@@ -32,6 +32,15 @@ $standard-height: 48px;
     margin-top: -17px;
 }
 
+.history-list-container{
+    padding: 10px;
+}
+
+.list-item {
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
 .er-search-button {
     position: absolute;
     bottom: 0px;

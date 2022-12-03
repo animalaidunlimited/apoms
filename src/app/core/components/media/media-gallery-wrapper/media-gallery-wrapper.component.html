@@ -1,10 +1,10 @@
-<fieldset class="form-sub-group" *ngIf='displayImagesAndButtons'>
+<fieldset class="form-sub-group" *ngIf="displayImagesAndButtons">
     <legend class="legend" i18n>Media gallery</legend>
     <div class="gallery-wrapper">
-        <media-gallery [patientData]="patientData" [displayImagesAndButtons]='displayImagesAndButtons'></media-gallery>
+        <media-gallery [patientData]="patientData" [displayImagesAndButtons]="displayImagesAndButtons"></media-gallery>
     </div>
 </fieldset>
 
-<div *ngIf='!displayImagesAndButtons'>
-    <media-gallery [patientData]="patientData" [displayImagesAndButtons]='displayImagesAndButtons'></media-gallery>
+<div *ngIf="!displayImagesAndButtons">
+    <media-gallery [patientData]="patientData" [displayImagesAndButtons]="displayImagesAndButtons"></media-gallery>
 </div>

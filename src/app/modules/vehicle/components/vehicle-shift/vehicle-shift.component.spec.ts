@@ -22,6 +22,28 @@ describe('VehicleShiftComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VehicleShiftComponent);
     component = fixture.componentInstance;
+
+    component.shiftDate = "2022-11-09T11:01:00";
+
+    component.vehicle =   {
+                            vehicleId: 1,
+                            vehicleType: "van",
+                            vehicleNumber: "A1",
+                            vehicleStatus: "Active",
+                            vehicleTypeId: 1,
+                            vehicleStatusId: 1,
+                            registrationNumber: "RJ123235",
+                            largeAnimalCapacity: 1,
+                            smallAnimalCapacity: 4,
+                            minRescuerCapacity: 1,
+                            maxRescuerCapacity: 3,
+                            currentVehicleStaff: "",
+                            imageURL: "",
+                            vehicleColour: "yellow",
+                            streetTreatVehicle: false,
+                            streetTreatDefaultVehicle: false
+                            }
+
     fixture.detectChanges();
   });
 

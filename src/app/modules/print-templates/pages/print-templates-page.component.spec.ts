@@ -2,7 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -38,7 +38,7 @@ describe('PrintTemplatesPageComponent', () => {
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(PrintTemplatesPageComponent);
     component = fixture.componentInstance;
 

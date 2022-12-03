@@ -1,5 +1,5 @@
 <form [formGroup]="streetTreatForm" >
-	<div fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start center" class="patientVisitFrom">
+	<div class="flex-row flex-wrap flex-start-center patientVisitFrom gap-10">
 
 		<mat-form-field appearance="fill">
 			<mat-label>Assigned date</mat-label>
@@ -43,7 +43,7 @@
 
 		<mat-form-field appearance="fill" fxFlexOrder.lt-md="5" ngClass.lt-md="full-width" ngStyle.lt-md="margin-right: 4px;" ngStyle.gt-md="flex-grow: 2;">
 			<mat-label>Admin notes</mat-label>
-			<input type='text' formControlName='adminNotes' matInput [errorStateMatcher]="errorMatcher">
+			<input type="text" formControlName="adminNotes" matInput [errorStateMatcher]="errorMatcher">
 		</mat-form-field>
 
 		<mat-form-field appearance="fill" fxFlexOrder.lt-md="4">
@@ -59,7 +59,7 @@
 
 	</div>
 	<div class="visitsWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
-		<div fxLayout="row wrap" fxLayoutGap="10px" class="visitsWrapper-header">
+		<div class="flex-row flex-wrap visitsWrapper-header gap-10">
 			<h5 mat-dialog-title class="visit-header">Visits</h5>
 
 			<div class="visit-calendar-wrapper" *ngIf="visitDates.length > 0">
@@ -72,7 +72,7 @@
 
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 
-			<div  fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="start end" class="visit_row_data"
+			<div  class="flex-row flex-wrap flex-start-end visit_row_data gap-10"
 			[ngClass]=" isToday(item.get('visit_date')?.value) ? 'visit-today' : ''"
 			>
 
@@ -133,7 +133,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="mat-fab-wrapper" class="add-visits-fab-btn" fxLayout="row" fxLayoutAlign="center center">
+	<div class="mat-fab-wrapper add-visits-fab-btn flex-row flex-center-center">
 		<button mat-mini-fab color="primary" aria-label="Add this Visit" (click)="addVisits($event)">
 			<mat-icon>add</mat-icon>
 		</button>

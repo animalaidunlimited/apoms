@@ -19,7 +19,7 @@ export class AddSearchMediaDialogComponent {
   searchResults$!:Observable<SearchResponse[]>;
 
   constructor(
-              public dialogRef: MatDialogRef<AddSearchMediaDialogComponent>,
+              public MatDialogRef: MatDialogRef<AddSearchMediaDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               public dialog: MatDialog,
               private caseService: CaseService

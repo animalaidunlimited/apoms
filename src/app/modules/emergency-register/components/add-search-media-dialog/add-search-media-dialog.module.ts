@@ -15,4 +15,4 @@ import { SearchFieldModule } from 'src/app/core/components/search-field/search-f
     exports: [AddSearchMediaDialogComponent]
 })
 
-export class AddSearchMediaDialogModule {}
+export class AddSearchMediaMatDialogModule {}

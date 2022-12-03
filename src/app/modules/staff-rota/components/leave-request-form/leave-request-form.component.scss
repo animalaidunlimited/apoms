@@ -1,0 +1,45 @@
+
+
+.request-reasons {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    align-items: flex-start;
+  }
+
+  .reason-radio-button {
+    margin: 5px;
+  }
+
+  .mat-dialog-container {
+    height: 100vh;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+}
+
+.number-days-wrapper {
+    flex-grow: 1;
+    margin-bottom: 24px;
+}
+
+.number-days-number{
+    color: #90a4ae;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.number-days-label{
+    color: #90a4ae;
+}
+
+.out-of-protocol{
+  color: red;
+  font-size: larger;
+  margin-bottom: 15px;
+  align-self: center;
+  height: 25px;
+}
+
+.save-button{
+  margin-top: 10px;
+}

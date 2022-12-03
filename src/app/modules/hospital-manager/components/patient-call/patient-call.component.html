@@ -15,9 +15,9 @@
 
             <div formGroupName="{{i}}">
 
-            <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="start start">
+            <div class="flex-column gap-20 flex-start-start">
 
-            <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+            <div class="flex-row flex-wrap gap-20 flex-start-center">
 
             <mat-form-field >
                 <mat-label>Call type</mat-label>
@@ -45,7 +45,7 @@
 
             </div>
 
-            <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+            <div class="flex-row flex-wrap gap-20 flex-start-center">
 
 
             <mat-form-field>
@@ -76,7 +76,7 @@
 
     </div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div class="flex-row flex-wrap gap-20 flex-start-center">
 
         <button mat-raised-button (click)="addPatientCall(true)" color="primary">Add call</button>
         <button mat-raised-button (click)="savePatientCall()" color="primary">Save</button>

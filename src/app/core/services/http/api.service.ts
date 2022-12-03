@@ -112,13 +112,13 @@ export abstract class APIService<T = any> {
 
     }
 
-    public async postSubEndpoint(subEndpont: string, body: any): Promise<any> {
+    public async postSubEndpoint(subEndpoint: string, body: any): Promise<any> {
 
         let response = null;
 
         try {
             response = await this.http
-                .post(`${this.url}/${this.endpoint}/${subEndpont}`, body)
+                .post(`${this.url}/${this.endpoint}/${subEndpoint}`, body)
                 .toPromise();
         } catch (error: any) {
             response = this.errorHandler('POST', error);

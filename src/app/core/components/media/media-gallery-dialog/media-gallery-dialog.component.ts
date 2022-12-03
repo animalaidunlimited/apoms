@@ -17,12 +17,8 @@ export class MediaGalleryDialogComponent implements OnInit {
   mediaGalleryDates!: Observable<string[]>;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data:
-    {
-      patientId: number
-    },
+    @Inject(MAT_DIALOG_DATA) public data: { patientId: number },
     private mediaService: MediaService
-
     ) { }
 
   ngOnInit(): void {

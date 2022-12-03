@@ -10,17 +10,18 @@
         <a *ngFor="let item of navigationItem.groupedNavRoutes" mat-list-item class="sidenav-item"
             data-toggle="collapse"
             [routerLink]="[item.path]"
-            [ngClass]=" isSelected(item)? 'selected' : ''" disableRipple>
+            [ngClass]=" isSelected(item)? 'selected' : ''">
             <div class="item-selector"></div>
             <div fxFlex="100%"> {{item.data?.title}} </div>
             <mat-icon>{{item.icon}}</mat-icon>
         </a>
     </div>
 </mat-expansion-panel>
+
 <a *ngIf="!navigationItem.groupedNavRoutes" mat-list-item class="sidenav-item"
     data-toggle="collapse"
     [routerLink]="[navigationItem.path]"
-    [ngClass]=" isSelected(navigationItem)? 'selected' : ''" disableRipple>
+    [ngClass]=" isSelected(navigationItem)? 'selected' : ''">
     <div class="item-selector"></div>
     <div fxFlex="100%"> {{navigationItem.data?.title}} </div>
     <mat-icon>{{navigationItem.icon}}</mat-icon>

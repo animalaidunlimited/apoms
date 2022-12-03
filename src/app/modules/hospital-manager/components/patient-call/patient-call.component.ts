@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { FormBuilder, AbstractControl, FormArray, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, AbstractControl, FormArray, UntypedFormArray, FormGroup, Validators } from '@angular/forms';
 import { getCurrentTimeString } from '../../../../core/helpers/utils';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -38,7 +38,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
     errorMatcher = new CrossFieldErrorMatcher();
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private userOptions: UserOptionsService,
         private patientService: PatientService,
         private dropdown: DropdownService,
@@ -51,7 +51,7 @@ export class PatientCallComponent implements OnInit, OnChanges {
 
     }
 
-    calls: FormArray = new FormArray([]);
+    calls: UntypedFormArray = new UntypedFormArray([]);
 
     ngOnInit() {
 
@@ -221,9 +221,9 @@ export class PatientCallComponent implements OnInit, OnChanges {
             : callType1 === callType2;
     }
 
-    compareAssignedTo(assinedTo1: User, assignedTo2: User): boolean {
-        return assinedTo1 && assignedTo2
-            ? assinedTo1.userId === assignedTo2.userId
-            : assinedTo1 === assignedTo2;
+    compareAssignedTo(assignedTo1: User, assignedTo2: User): boolean {
+        return assignedTo1 && assignedTo2
+            ? assignedTo1.userId === assignedTo2.userId
+            : assignedTo1 === assignedTo2;
     }
 }

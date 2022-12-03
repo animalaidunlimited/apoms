@@ -10,7 +10,7 @@ import { LocationService } from 'src/app/core/services/location/location.service
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { DriverViewService } from '../../services/driver-view.service';
-import { PatientSelectFormediaDialogComponent } from '../patient-select-formedia-dialog/patient-select-formedia-dialog.component';
+import { PatientSelectForMediaDialogComponent } from '../patient-select-for-media-dialog/patient-select-for-media-dialog.component';
 
 interface DialogData {
   formGroup:FormGroup;
@@ -46,7 +46,7 @@ showVisits = false;
   isStreetTreat!: boolean;
   private ngUnsubscribe = new Subject();
 
-  constructor(public dialogRef: MatDialogRef<DriverActionDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<DriverActionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private driverView: DriverViewService,
     private snackBar: SnackbarService,
@@ -117,7 +117,7 @@ showVisits = false;
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
   checkAllPatientIds(updatedRecordPatients: Patient[], driverViewData: DriverAssignment) {
@@ -323,7 +323,7 @@ showVisits = false;
   }
 
   openPatientSelectForMediaDialog(assignment: DriverAssignment) {
-    const dialogRef = this.dialog.open(PatientSelectFormediaDialogComponent, {
+    const dialogRef = this.dialog.open(PatientSelectForMediaDialogComponent, {
       disableClose:true,
       minWidth: '100vw',
       data: {assignmentDetails: assignment}

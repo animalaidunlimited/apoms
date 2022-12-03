@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { UpdateResponse } from '../../models/outstanding-case';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -31,9 +31,9 @@ export class RescueDetailsDialogComponent implements OnInit {
     private ngUnsubscribe = new Subject();
 
   constructor(
-    private fb:FormBuilder,
+    private fb:UntypedFormBuilder,
     private detector: ChangeDetectorRef,
-    public dialogRef: MatDialogRef<RescueDetailsDialogComponent>,
+    public MatDialogRef: MatDialogRef<RescueDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
 
@@ -78,7 +78,7 @@ export class RescueDetailsDialogComponent implements OnInit {
 
         this.result.success = 1;
 
-        this.dialogRef.close(this.result);
+        this.MatDialogRef.close(this.result);
         this.detector.detectChanges();
       }
     });
@@ -88,7 +88,7 @@ export class RescueDetailsDialogComponent implements OnInit {
    }
 
   onCancel(): void {
-    this.dialogRef.close(this.result);
+    this.MatDialogRef.close(this.result);
   }
 
   onRescueDetailsResult(result:UpdateResponse){

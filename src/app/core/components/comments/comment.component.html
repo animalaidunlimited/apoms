@@ -1,7 +1,7 @@
 
 <form [formGroup]="commentForm">
 <h3 *ngIf="parentRecordType === 'media'">Comments</h3>
-<div class="commentSection" id='comments' fragment="comments">
+<div class="commentSection" id="comments" fragment="comments">
     <ng-container *ngFor="let comment of (comments$ | async); trackBy:trackComment">
         <div class="chatPanel" [id]="'comment-' + comment.commentId">
             <div class="chatUser">
@@ -15,7 +15,7 @@
     </ng-container>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center space-between" style="width: 100%; margin-top: 20px">
+<div class="flex-row flex-center-space-between" style="width: 100%; margin-top: 20px">
     <mat-form-field style="width: 100%;">
         <input matInput autocomplete="off" class="commentInput" formControlName="currentComment" type="text"
         [mention]="mentionUsers"

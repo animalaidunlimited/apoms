@@ -4,7 +4,7 @@ import { CrossFieldErrorMatcher } from '../../validators/cross-field-error-match
 import { DropdownService } from '../../services/dropdown/dropdown.service';
 import { DatePipe } from '@angular/common';
 import { UserOptionsService } from '../../services/user-option/user-options.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Patient, PatientStatusObject } from '../../models/patients';
 import { getCurrentTimeString } from '../../helpers/utils';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -12,6 +12,7 @@ import { PatientStatusResponse } from '../../models/responses';
 import { Observable, Subject } from 'rxjs';
 import { PatientService } from '../../services/patient/patient.service';
 import { take, takeUntil } from 'rxjs/operators';
+import { maxDateTodayValidator } from '../../validators/date-validators';
 
 
 @Component({
@@ -42,9 +43,8 @@ export class PatientStatusComponent implements OnInit {
         private datepipe: DatePipe,
         private patientService: PatientService,
         private userOptions: UserOptionsService,
-        private fb: FormBuilder,
-        private showSnackBar: SnackbarService,
-        private streetTreatService: StreetTreatService
+        private fb: UntypedFormBuilder,
+        private showSnackBar: SnackbarService
     ) {
 
         this.patientStates$ = this.dropdowns.getPatientStates();
@@ -59,7 +59,7 @@ export class PatientStatusComponent implements OnInit {
             tagNumber: [],
             createdDate: [, Validators.required],
             patientStatusId: [, Validators.required],
-            patientStatusDate: [, Validators.required],
+            patientStatusDate: [, [Validators.required, maxDateTodayValidator()]],
             PN: [],
             suspectedRabies: [false],
         });

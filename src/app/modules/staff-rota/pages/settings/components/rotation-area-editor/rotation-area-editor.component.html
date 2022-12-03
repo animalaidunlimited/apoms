@@ -1,0 +1,69 @@
+<form [formGroup]="rotationAreaForm" autocomplete="off">
+
+  <fieldset class="form-sub-group">
+    <legend class="legend" i18n>Add new rotation area</legend>
+
+    <div class="flex-column flex-start-start">
+
+      <div class="form-row flex-row gap-20 flex-center-center">
+
+        <mat-form-field>
+          <mat-label>Rotation area name</mat-label>
+          <input matInput type="string" formControlName="rotationArea" [errorStateMatcher]="errorMatcher"/>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Sort order</mat-label>
+          <input matInput type="number" min=1 formControlName="sortOrder" [errorStateMatcher]="errorMatcher"/>
+        </mat-form-field>
+
+      </div>
+
+      <div class="form-row flex-row gap-20 flex-center-center">
+
+        <mat-form-field>
+          <mat-label>Colour</mat-label>
+          <input matInput type="color" formControlName="colour" [errorStateMatcher]="errorMatcher"/>
+        </mat-form-field>
+    
+        <mat-checkbox
+          style="align-self: center; width: 212px"
+          matTooltip="Deleted"
+          formControlName="isDeleted">Deleted
+        </mat-checkbox>
+
+
+      </div>
+
+      <div class="form-row save-button flex-row flex-space-evenly-center gap-20">
+
+        <button
+          type="button"
+          (click)="saveRotationArea()"
+          mat-mini-fab
+          [disabled]="rotationAreaForm.invalid"
+          matTooltip="Save"
+          color="primary">
+          <mat-icon>save</mat-icon>
+        </button>
+
+        <button
+        type="button"
+        (click)="clearRotationArea()"
+        mat-mini-fab
+        matTooltip="Reset"
+        color="primary">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      </div>
+
+    </div>
+
+  </fieldset>
+
+  <app-generic-table [data]="rotationAreas$" dataName="rotationAreas" (clickedRow)="hydrateRotationAreaForEdit($event)"></app-generic-table>
+
+
+
+</form>

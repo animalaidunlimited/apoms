@@ -15,14 +15,14 @@ export interface Vehicle {
   currentVehicleStaff?: string;
   imageURL: string;
   vehicleColour: string;
-  streetTreatVehicle: boolean | number;
-  streetTreatDefaultVehicle: boolean | number;
+  streetTreatVehicle: boolean;
+  streetTreatDefaultVehicle: boolean;
 }
 
-//export interface VehicleUpsertResponse {
-//  vehicleId: number;
-//  success: number;
-//}
+export interface VehicleForm extends Vehicle {
+  organisationId: number;
+}
+
 
 
 export interface VehicleType {
@@ -47,6 +47,15 @@ export interface VehicleShift {
     length?: number;
     isDeleted: boolean;
     vehicleStaff: User[];
+  }
+
+  export interface VehicleShiftForm {
+    // shiftUUID: string;
+    // vehicleShiftId: number | null;
+    // vehicleId: number | null;
+    // shiftStartTime: string | null;
+    // shiftEndTime: string | null;
+    vehicleStaff: User[] | null;
   }
 
   export interface VehicleDetails {

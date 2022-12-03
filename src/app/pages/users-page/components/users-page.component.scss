@@ -61,6 +61,12 @@ $standard-width: 175px;
 
 }
 
+.user-details-form{
+  .mat-form-field {
+    width: 204px;
+  }
+}
+
 .mat-row {
     background-color: white;
     font-family: sans-serif;

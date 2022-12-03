@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Priority } from 'src/app/core/models/priority';
 import { PatientEditDialog } from 'src/app/core/components/patient-edit/patient-edit.component';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, UntypedFormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { TreatmentListService } from '../../services/treatment-list.service';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
@@ -89,7 +89,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     {name: 'Treatment priority', type: 'select'},
     {name: 'Other', type: 'select'}
   ]);
-  movedInDisplayColumns:Observable<string[]>;;
+  movedInDisplayColumns:Observable<string[]>;
 
   movedLists!: FormArray;
   otherAreas!: TreatmentArea[];
@@ -112,7 +112,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private printService: PrintTemplateService,
     private ts: TreatmentListService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private patientService: PatientService,
     private dropdown: DropdownService ) {
 

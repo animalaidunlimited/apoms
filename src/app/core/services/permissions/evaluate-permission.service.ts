@@ -13,14 +13,16 @@ export class EvaluatePermissionService {
 
   constructor(private userService: UserDetailsService) { }
 
-  public permissionTrueOrFalse(componentPermissionArray: number[]) : Promise<number | undefined>{
+  public async permissionTrueOrFalse(componentPermissionArray: number[]) : Promise<number | undefined>{
+    
+      await this.userService.permissionCheckComplete.toPromise();
 
       return of(this.evaluatePermission(componentPermissionArray, this.userService.permissionArray.value)).toPromise();    
-
 
   }
 
   public evaluatePermission(componentPermissionArray: number[], userPermissions: number[]) : number | undefined {
+
     if (!componentPermissionArray?.length) {
       this.componentPermissionLayer = 1;
     }

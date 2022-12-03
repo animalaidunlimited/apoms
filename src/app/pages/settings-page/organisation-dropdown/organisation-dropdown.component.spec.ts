@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
@@ -25,7 +25,7 @@ describe('ProblemComponent', () => {
     .compileComponents();
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(OrganisationDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

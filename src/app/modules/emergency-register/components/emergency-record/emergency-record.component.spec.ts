@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { EmergencyRecordComponent } from './emergency-record.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject, of } from 'rxjs';
@@ -15,7 +15,7 @@ import { EmergencyCaseOutcomeComponent } from '../emergency-case-outcome/emergen
 describe('EmergencyRecordComponent', () => {
     let component: EmergencyRecordComponent;
     let fixture: ComponentFixture<EmergencyRecordComponent>;
-    const formBuilder: FormBuilder = new FormBuilder();
+    const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
     const permissions$ = of({componentPermissionLevel: 2});
 
@@ -34,7 +34,7 @@ describe('EmergencyRecordComponent', () => {
             ],
             providers: [
                 { provide: ActivatedRoute, useValue: fakeActivatedRoute },
-                { provide: FormBuilder, useValue: formBuilder }
+                { provide: UntypedFormBuilder, useValue: formBuilder }
             ],
             declarations: [
                 EmergencyRecordComponent,
@@ -44,7 +44,7 @@ describe('EmergencyRecordComponent', () => {
         }).compileComponents();
     });
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(EmergencyRecordComponent);
         component = fixture.componentInstance;
 

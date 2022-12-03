@@ -17,7 +17,7 @@ export class UserOptionsService extends APIService{
     userName!: any;
     token!:any;
 
-    userDetails: BehaviorSubject<UserAccountDetails> = new BehaviorSubject<UserAccountDetails>(this.getEmtpyUserDetails());
+    userDetails: BehaviorSubject<UserAccountDetails> = new BehaviorSubject<UserAccountDetails>(this.getEmptyUserDetails());
 
     homeCoordinates$ = {
         lat: 24.57127,
@@ -36,10 +36,10 @@ export class UserOptionsService extends APIService{
 
             const userDetails = this.storage.read('UserDetails');
 
-            userDetails ? this.userDetails.next((userDetails as any) as UserAccountDetails) : this.userDetails.next(this.getEmtpyUserDetails());
+            userDetails ? this.userDetails.next((userDetails as any) as UserAccountDetails) : this.userDetails.next(this.getEmptyUserDetails());
     }
 
-    private getEmtpyUserDetails() : UserAccountDetails {
+    private getEmptyUserDetails() : UserAccountDetails {
 
         return {
             initials: "NA",
@@ -91,7 +91,7 @@ export class UserOptionsService extends APIService{
         }
         else {
             this.token = this.storage.read('AUTH_TOKEN');
-            let tokenData: any = window.atob(this.token.split('.')[1]);
+            let tokenData: any = window.atob(this.token?.split('.')[1]);
             tokenData = JSON.parse(tokenData);
             return tokenData.username;
         }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UserDetails, UserJobType } from 'src/app/core/models/user';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UserDetails, UserDetailsForm, UserJobType } from 'src/app/core/models/user';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -8,11 +8,13 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { state, style, transition, animate, trigger } from '@angular/animations';
-import { MatOptionSelectionChange } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { ModelFormGroup } from 'src/app/core/helpers/form-model';
+import { Department } from 'src/app/core/models/rota';
+import { MatOptionSelectionChange } from '@angular/material/core';
 
 
 interface StreetTreatRole {
@@ -69,58 +71,24 @@ interface Permissions {
 })
 
 export class UsersPageComponent implements OnInit {
-    loading = false;
 
-    permissionByGroupArray: PermissionObject[] = [];
+  private ngUnsubscribe = new Subject();
 
-    permissionGroupObject!: UserPermissions[];
-
-    userList!: UserDetails[];
-
-    jobTypes!: UserJobType[];
-
-    hide = true;
-
-    streetTreatDropdown = false;
-
-    isChecked = true;
-
-    myCheck = false;
     currentState = 'closed';
 
-    hasWritePermission!: boolean;
+    dataSource: MatTableDataSource<UserDetails>;
 
-    private ngUnsubscribe = new Subject();
+    days = [
+      {dayId: 0, name: "Monday"},
+      {dayId: 1, name: "Tuesday"},
+      {dayId: 2, name: "Wednesday"},
+      {dayId: 3, name: "Thursday"},
+      {dayId: 4, name: "Friday"},
+      {dayId: 5, name: "Saturday"},
+      {dayId: 6, name: "Sunday"}
+    ];
 
-
-    dataSource: MatTableDataSource<UserDetails> ;
-
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @ViewChild(MatSort) sort!: MatSort;
-    @ViewChild(MatTable) table!: MatTable<UserDetails>;
-
-    constructor(private dropdown : DropdownService,
-      private userOptionsService: UserOptionsService,
-      private fb : FormBuilder,
-      private userDetailsService : UserDetailsService,
-      private snackBar: SnackbarService,
-      private route: ActivatedRoute) {
-        const emptyUser = {
-          userId : 0,
-          employeeNumber: '',
-          firstName: '',
-          surname: '',
-          initials: '',
-          colour: '',
-          telephone: 0,
-          userName: '',
-          roleId: 0,
-          role: '',
-          jobTitleId: 0,
-          jobTitle: ''
-        };
-        this.dataSource = new MatTableDataSource([emptyUser]);
-      }
+    departments$: Observable<Department[]>;
 
     displayedColumns: string[] = [
       'employeeNumber',
@@ -133,27 +101,86 @@ export class UsersPageComponent implements OnInit {
       'jobTitle'
     ];
 
-    userDetails = this.fb.group({
-      userId : [],
-      employeeNumber : ['',Validators.required],
-      firstName : ['',Validators.required],
-      surname: ['',Validators.required],
-      telephone:[],
-      initials: [''],
-      userName:['',Validators.required],
-      password: [''],
-      colour:[''],
-      isStreetTreatUser:[],
-      roleId:[],
-      jobTitleId:[],
-      permissionArray:[]
-    });
+    isChecked = true;
+
+    jobTypes!: UserJobType[];
+
+    hasWritePermission!: boolean;
+
+    hide = true;
+
+    loading = false;
+
+    myCheck = false;
+
+    permissionGroupObject!: UserPermissions[];
+
+    streetTreatDropdown = false;
 
     streettreatRoles: StreetTreatRole[] = [{
       roleId: 1 , roleName: 'Admin'
     },{
       roleId: 2 , roleName: 'Operator'
     }];
+
+    userDetails: ModelFormGroup<Omit<UserDetailsForm, 'role' | 'jobTitle' | 'isDeleted'>> = this.fb.nonNullable.group({
+      userId : [0],
+      employeeNumber : ['',Validators.required],
+      firstName : ['',Validators.required],
+      surname: ['',Validators.required],
+      initials: [''],
+      colour:[''],
+      telephone:[0],
+      userName:['',Validators.required],
+      roleId:[0],
+      jobTitleId:[0],
+      password: [''],
+      isStreetTreatUser:[false],
+      permissionArray:[[0]],
+      fixedDayOff: [0],
+      departmentId: [0],
+      localName: ['']
+    });
+
+    userList!: UserDetails[];
+
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
+    @ViewChild(MatTable) table!: MatTable<UserDetails>;
+
+    constructor(private dropdown : DropdownService,
+      private userOptionsService: UserOptionsService,
+      private fb : UntypedFormBuilder,
+      private userDetailsService : UserDetailsService,
+      private snackBar: SnackbarService,
+      private route: ActivatedRoute) {
+
+        this.departments$ = this.dropdown.getDepartments();
+
+        const emptyUser: UserDetails = {
+          userId : 0,
+          employeeNumber: '',
+          firstName: '',
+          surname: '',
+          initials: '',
+          colour: '',
+          telephone: 0,
+          userName: '',
+          roleId: 0,
+          role: '',
+          jobTitleId: 0,
+          jobTitle: '',
+          permissionArray: [],
+          fixedDayOff: 0,
+          departmentId: 0,
+          localName: '',
+          isDeleted: false
+        };
+
+        this.dataSource = new MatTableDataSource([emptyUser]);
+      }
+
+
 
     ngOnInit() {
 
@@ -233,6 +260,17 @@ export class UsersPageComponent implements OnInit {
           }]
         },
         {
+          groupNameId: 7,
+          groupName: 'Rota',
+          permissions: [{
+            permissionId: 17,
+            permissionType: 'Read'
+          }, {
+            permissionId : 18,
+            permissionType: 'Write'
+          }]
+        },
+        {
           groupNameId: 8,
           groupName: 'Reporting',
           permissions: [{
@@ -268,6 +306,7 @@ export class UsersPageComponent implements OnInit {
     getRefreshTableData() {
 
       this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
+
         this.userList = userListData;
         this.initialiseTable(this.userList);
       });
@@ -279,10 +318,10 @@ export class UsersPageComponent implements OnInit {
       const permissions = this.userDetails.get('permissionArray');
 
       if(permission.isUserInput && permission.source.selected) {
-          const arrayval = permissions?.value?.filter((val: number)=>
+          const arrayVal = permissions?.value?.filter((val: number)=>
           val !== (permission.source.value + (permission.source.value % 2 === 0 ? -1 : 1))
-        );
-        permissions?.setValue(arrayval,{emitEvent:false});
+        ) || [];
+        permissions?.setValue(arrayVal,{emitEvent:false});
       }
 
     }
@@ -358,9 +397,8 @@ export class UsersPageComponent implements OnInit {
       this.afterSaveActions();
     }
 
-
     fail() {
-      this.snackBar.errorSnackBar('Error occured!','Ok');
+      this.snackBar.errorSnackBar('Error occurred!','Ok');
     }
 
     connectionError() {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { AdmissionAcceptReject, PatientCountInArea, ReportPatientRecord, TreatmentAreaChange, TreatmentList, TreatmentListMoveIn } from 'src/app/core/models/treatment-lists';
@@ -55,7 +55,8 @@ export class TreatmentListService extends APIService {
     private snackbar: SnackbarService,
     private patientService: PatientService,
     private zone: NgZone,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder,
+    private ufb: UntypedFormBuilder) {
     super(http);
 
     this.treatmentListForm = this.getEmptyTreatmentForm();
@@ -295,11 +296,12 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   }
 
-  private getEmptyMovedList(listType: string, treatmentListArray: FormArray) {
+  private getEmptyMovedList(listType: string, treatmentListArray: UntypedFormArray) {
 
-    const newList = this.fb.group({listType});
+    const newList = this.ufb.group({listType});
 
-    newList.addControl('movedList', treatmentListArray);
+    newList.addControl('movedList', treatmentListArray)
+
     return newList;
   }
 
@@ -359,7 +361,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
 
   private getTreatmentListForm(response: ReportPatientRecord[]) : FormArray {
 
-    const returnArray = this.fb.array([]);
+    const returnArray = new UntypedFormArray([]);
 
     response.forEach(() => returnArray.push(this.getEmptyPatient()));
 
@@ -371,7 +373,7 @@ public getTreatmentList() : BehaviorSubject<FormGroup> {
     // Whereas the patient service requires them like releaseStatus
     returnArray.controls.forEach(patient => {
 
-      const patientFormGroup = patient as FormGroup;
+      const patientFormGroup = patient as UntypedFormGroup;
 
       const patientDetails = this.patientService.getUpdatePatientObject(patient);
 

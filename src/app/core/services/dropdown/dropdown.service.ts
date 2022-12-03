@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AnimalType } from '../../models/animal-type';
-import { filter, map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { CallOutcomeResponse } from '../../models/call-outcome';
 import { EmergencyCode } from '../../models/emergency-code';
 import {
@@ -26,6 +26,8 @@ import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
 import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 import { VehicleType, Vehicle } from '../../models/vehicle';
+import { Department, Festival, LeaveRequestReason } from '../../models/rota';
+
 
 
 @Injectable({
@@ -43,28 +45,31 @@ export class DropdownService extends APIService {
     callStaff$!: Observable<User[]>;
     callTypes$!: Observable<CallType[]>;
     crueltyInspectors$!: Observable<User[]>;
+    departments$!: Observable<Department[]>;
     dispatchers$!: Observable<User[]>;
     editableDropdowns$!: Observable<EditableDropdown[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
     eyeDischarge$!: any[];
+    festivals$!: Observable<Festival[]>;
     isoReasons$!: any[];
+    jobTypes$!: Observable<UserJobType[]>;
     nasalDischarge$!: any[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
     patientCallOutcome$!: Observable<PatientCallerInteractionOutcome[]>;
     patientStates$!: Observable<PatientStatusResponse[]>;
     printableElements$!: Observable<PrintElement[]>;
-    problems$!: Observable<ProblemDropdownResponse[]>;
+	priority$!:Observable<Priority[]>;
+    problems$!: Observable<ProblemDropdownResponse[]>;    
+    releaseManagers$!: Observable<ReleaseManager[]>;
     rescuers$!: Observable<User[]>;
+    leaveRequestReasons$!: Observable<LeaveRequestReason[]>;
     surgeons$!: Observable<User[]>;
     surgerySites$!: Observable<SurgerySite[]>;
-    surgeryTypes$!: Observable<SurgeryType[]>;
-    jobTypes$!: Observable<UserJobType[]>;
+    surgeryTypes$!: Observable<SurgeryType[]>;    
 	status$!:Observable<Status[]>;
 	visitTypes$!:Observable<VisitType[]>;
-	priority$!:Observable<Priority[]>;
-    releaseManagers$!: Observable<ReleaseManager[]>;
     streetTreatMainProblem$!: Observable<StreetTreatMainProblem[]>;
     treatmentAreas$!:Observable<TreatmentArea[]>;
     yesNo$!:any[];
@@ -78,18 +83,61 @@ export class DropdownService extends APIService {
         super(http);
     }
 
-    getOfficeStaff(): Observable<User[]> {
-        const request = '/OfficeStaff';
+    getAnimalTypes(): Observable<AnimalType[]> {
+        const request = '/AnimalTypes';
 
-        if (!this.officeStaff$) {
-            this.officeStaff$ = this.getObservable(request).pipe(
+        if (!this.animalTypes$) {
+            this.animalTypes$ = this.getObservable(request).pipe(
                 map(response => {
-                    return response;
+                    return response.sort((a: AnimalType,b: AnimalType) => a.SortOrder- b.SortOrder);
                 }),
             );
         }
+        return this.animalTypes$;
+    }
 
-        return this.officeStaff$;
+    getAntibiotics() : Antibiotic[] {
+        if (!this.antibiotics$) {
+            this.antibiotics$ = [
+                { antibioticId: 1, antibiotic: 'Amoxicillin' },
+                { antibioticId: 2, antibiotic: 'Azithromycin' },
+                { antibioticId: 3, antibiotic: 'Bactoclav' },
+                { antibioticId: 4, antibiotic: 'Biotrim' },
+                { antibioticId: 5, antibiotic: 'Bovicef' },
+                { antibioticId: 6, antibiotic: 'Cefpet' },
+                { antibioticId: 7, antibiotic: 'Clindamycin' },
+                { antibioticId: 8, antibiotic: 'Doxycycline' },
+                { antibioticId: 9, antibiotic: 'Enrofloxacin' },
+                { antibioticId: 10, antibiotic: 'Intacef' },
+                { antibioticId: 11, antibiotic: 'Meloxicam' },
+                { antibioticId: 12, antibiotic: 'Metrogyl' },
+                { antibioticId: 13, antibiotic: 'Metronidazole' },
+                { antibioticId: 14, antibiotic: 'Metroxyl' },
+                { antibioticId: 15, antibiotic: 'Penicillin' },
+                { antibioticId: 16, antibiotic: 'Septran' },
+                { antibioticId: 17, antibiotic: 'Tramadol' },
+                { antibioticId: 18, antibiotic: 'Tribivet' }
+            ];
+        }
+
+        return this.antibiotics$;
+    }
+
+    getCallOutcomes(): Observable<CallOutcomeResponse[]> {
+        const request = '/CallOutcomes';
+
+        if (!this.callOutcomes$) {
+            this.callOutcomes$ = this.getObservable(request).pipe(
+                map((response: CallOutcomeResponse[]) => {
+                    return response.sort((a,b) => (a?.SortOrder || 0) - (b?.SortOrder || 0));
+                }),
+            );
+        }
+        else {
+
+        }
+
+        return this.callOutcomes$;
     }
 
     getCallStaff(): Observable<User[]> {
@@ -106,7 +154,73 @@ export class DropdownService extends APIService {
         return this.callStaff$;
     }
 
+    getCallTypes(): Observable<CallType[]> {
+        const request = '/CallTypes';
 
+        if (!this.callTypes$) {
+            this.callTypes$ = this.getObservable(request).pipe(
+                map((response: CallType[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.callTypes$;
+    }
+
+    getCrueltyInspectors(): Observable<User[]> {
+        const request = '/CrueltyStaff';
+
+        if (!this.crueltyInspectors$) {
+            this.crueltyInspectors$ = this.getObservable(request).pipe(
+                map((response: User[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.crueltyInspectors$;
+    }
+
+    getDepartments(): Observable<Department[]> {
+        const request = '/GetDepartments';
+
+        if (!this.departments$) {
+            this.departments$ = this.getObservable(request).pipe(
+                map((response: Department[]) => response.sort((a,b) => a.sortOrder - b.sortOrder)),
+            );
+        }
+
+        return this.departments$;
+    }
+
+    getDispatchers(): Observable<User[]> {
+        const request = '/Dispatchers';
+
+        if (!this.dispatchers$) {
+            this.dispatchers$ = this.getObservable(request).pipe(
+                map((response: User[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.dispatchers$;
+    }
+
+    getEmergencyCodes(): Observable<EmergencyCode[]> {
+        const request = '/EmergencyCodes';
+
+        if (!this.emergencyCodes$) {
+            this.emergencyCodes$ = this.getObservable(request).pipe(
+                map((response: EmergencyCode[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.emergencyCodes$;
+    }
 
     getExclusions() {
         if (!this.exclusions$) {
@@ -301,34 +415,29 @@ export class DropdownService extends APIService {
         return this.exclusions$;
     }
 
-    // Here we get the response and map it to our observable array and then use
-    // share replay for caching to avoid hitting the API every time we want to add
-    // a new case
-    getAnimalTypes(): Observable<AnimalType[]> {
-        const request = '/AnimalTypes';
-
-        if (!this.animalTypes$) {
-            this.animalTypes$ = this.getObservable(request).pipe(
-                map(response => {
-                    return response.sort((a: AnimalType,b: AnimalType) => a.SortOrder- b.SortOrder);
-                }),
-            );
+    getEyeDischarge() {
+        if (!this.eyeDischarge$) {
+            this.eyeDischarge$ = [
+                {key: 1, value: 'Nil'},
+                {key: 2, value: 'ED'},
+                {key: 3, value: 'ED⊕'},
+                {key: 4, value: 'ED⊕⊕'}
+            ];
         }
-        return this.animalTypes$;
+
+        return this.eyeDischarge$;
     }
 
-    getProblems(): Observable<ProblemDropdownResponse[]> {
-        const request = '/Problems';
-        if (!this.problems$) {
-            this.problems$ = this.getObservable(request).pipe(
-                map((response: ProblemDropdownResponse[]) => {
-                    return response;
-                }),
+    getFestivals(): Observable<Festival[]> {
+        const request = '/GetFestivals';
+
+        if (!this.festivals$) {
+            this.festivals$ = this.getObservable(request).pipe(
+                map((response: Festival[]) => response.sort((a,b) => a.sortOrder - b.sortOrder)),
             );
         }
-        return this.problems$.pipe(
-            map(problems => problems.filter((problem:any) => problem.IsDeleted === 0))
-        );
+
+        return this.festivals$;
     }
 
     getIsoReasons() {
@@ -349,27 +458,19 @@ export class DropdownService extends APIService {
         return this.isoReasons$;
     }
 
-    getEyeDischarge() {
-        if (!this.eyeDischarge$) {
-            this.eyeDischarge$ = [
-                {key: 1, value: 'Nil'},
-                {key: 2, value: 'ED'},
-                {key: 3, value: 'ED⊕'},
-                {key: 4, value: 'ED⊕⊕'}
-            ];
-        }
-
-        return this.eyeDischarge$;
-    }
-
-    getYesNo() : Observable<KeyValuePair[]> {
-
-        const yesNo:KeyValuePair[] = [
-            {key: '1', value: 'Yes'},
-            {key: '2', value: 'No'}
-        ];
-
-        return of(yesNo);
+    getLeaveRequestReasons(): Observable<LeaveRequestReason[]> {
+      const request = '/GetLeaveRequestReasons';
+  
+      if(!this.leaveRequestReasons$) {
+          this.leaveRequestReasons$ = this.getObservable(request).pipe(
+              map((response: LeaveRequestReason[]) => response.sort((a,b) => a.sortOrder - b.sortOrder)
+              )
+          );
+      }
+  
+      return this.leaveRequestReasons$;
+  
+  
     }
 
     getNasalDischarge() {
@@ -385,104 +486,46 @@ export class DropdownService extends APIService {
         return this.nasalDischarge$;
     }
 
-    getAntibiotics() : Antibiotic[] {
-        if (!this.antibiotics$) {
-            this.antibiotics$ = [
-                { antibioticId: 1, antibiotic: 'Amoxicillin' },
-                { antibioticId: 2, antibiotic: 'Azithromycin' },
-                { antibioticId: 3, antibiotic: 'Bactoclav' },
-                { antibioticId: 4, antibiotic: 'Biotrim' },
-                { antibioticId: 5, antibiotic: 'Bovicef' },
-                { antibioticId: 6, antibiotic: 'Cefpet' },
-                { antibioticId: 7, antibiotic: 'Clindamycin' },
-                { antibioticId: 8, antibiotic: 'Doxycycline' },
-                { antibioticId: 9, antibiotic: 'Enrofloxacin' },
-                { antibioticId: 10, antibiotic: 'Intacef' },
-                { antibioticId: 11, antibiotic: 'Meloxicam' },
-                { antibioticId: 12, antibiotic: 'Metrogyl' },
-                { antibioticId: 13, antibiotic: 'Metronidazole' },
-                { antibioticId: 14, antibiotic: 'Metroxyl' },
-                { antibioticId: 15, antibiotic: 'Penicillin' },
-                { antibioticId: 16, antibiotic: 'Septran' },
-                { antibioticId: 17, antibiotic: 'Tramadol' },
-                { antibioticId: 18, antibiotic: 'Tribivet' }
-            ];
-        }
+    getOfficeStaff(): Observable<User[]> {
+        const request = '/OfficeStaff';
 
-        return this.antibiotics$;
-    }
-
-    getCrueltyInspectors(): Observable<User[]> {
-        const request = '/CrueltyStaff';
-
-        if (!this.crueltyInspectors$) {
-            this.crueltyInspectors$ = this.getObservable(request).pipe(
-                map((response: User[]) => {
+        if (!this.officeStaff$) {
+            this.officeStaff$ = this.getObservable(request).pipe(
+                map(response => {
                     return response;
                 }),
             );
         }
 
-        return this.crueltyInspectors$;
+        return this.officeStaff$;
     }
 
-    getDispatchers(): Observable<User[]> {
-        const request = '/Dispatchers';
+    getPaperDimensions(): Observable<PaperDimensions[]> {
+        const request = '/PaperDimensions';
 
-        if (!this.dispatchers$) {
-            this.dispatchers$ = this.getObservable(request).pipe(
-                map((response: User[]) => {
+        if (!this.paperDimensions$) {
+            this.paperDimensions$ = this.getObservable(request).pipe(
+                map((response: PaperDimensions[]) => {
                     return response;
                 }),
             );
         }
 
-        return this.dispatchers$;
+        return this.paperDimensions$;
     }
 
-    getCallOutcomes(): Observable<CallOutcomeResponse[]> {
-        const request = '/CallOutcomes';
+    getPatientCallerInteractionOutcomes(): Observable<PatientCallerInteractionOutcome[]> {
+        const request = '/PatientCallerInteractionOutcomes';
 
-        if (!this.callOutcomes$) {
-            this.callOutcomes$ = this.getObservable(request).pipe(
-                map((response: CallOutcomeResponse[]) => {
-                    return response.sort((a,b) => (a?.SortOrder || 0) - (b?.SortOrder || 0));
-                }),
-            );
-        }
-        else {
-
-        }
-
-        return this.callOutcomes$;
-    }
-
-    getRescuers(): Observable<User[]> {
-        const request = '/Rescuers';
-
-        if (!this.rescuers$) {
-            this.rescuers$ = this.getObservable(request).pipe(
-                map((response: User[]) => {
+        if (!this.patientCallOutcome$) {
+            this.patientCallOutcome$ = this.getObservable(request).pipe(
+                map((response: PatientCallerInteractionOutcome[]) => {
                     return response;
                 }),
             );
         }
 
-        return this.rescuers$;
-    }
-
-    getEmergencyCodes(): Observable<EmergencyCode[]> {
-        const request = '/EmergencyCodes';
-
-        if (!this.emergencyCodes$) {
-            this.emergencyCodes$ = this.getObservable(request).pipe(
-                map((response: EmergencyCode[]) => {
-                    return response;
-                }),
-            );
-        }
-
-        return this.emergencyCodes$;
+        return this.patientCallOutcome$;
     }
 
     getPatientStates(): Observable<PatientStatusResponse[]> {
@@ -499,18 +542,71 @@ export class DropdownService extends APIService {
         return this.patientStates$;
     }
 
-    getCallTypes(): Observable<CallType[]> {
-        const request = '/CallTypes';
+    getPrintableElements(): Observable<PrintElement[]> {
+        const request = '/PrintableElements';
 
-        if (!this.callTypes$) {
-            this.callTypes$ = this.getObservable(request).pipe(
-                map((response: CallType[]) => {
+        if (!this.printableElements$) {
+            this.printableElements$ = this.getObservable(request).pipe(
+                map((response: PrintElement[]) => {
                     return response;
                 }),
             );
         }
 
-        return this.callTypes$;
+        return this.printableElements$;
+    }
+
+    getPriority(): Observable<Priority[]>{
+        const request = '/GetPriority';
+        if(!this.priority$){
+            this.priority$ = this.getObservable(request).pipe(
+                map(response=> {
+                    return response;
+                })
+            );
+        }
+        return this.priority$;
+    }
+
+    getProblems(): Observable<ProblemDropdownResponse[]> {
+        const request = '/Problems';
+        if (!this.problems$) {
+            this.problems$ = this.getObservable(request).pipe(
+                map((response: ProblemDropdownResponse[]) => {
+                    return response;
+                }),
+            );
+        }
+        return this.problems$.pipe(
+            map(problems => problems.filter((problem:any) => problem.IsDeleted === 0))
+        );
+    }
+
+    getRescuers(): Observable<User[]> {
+        const request = '/Rescuers';
+
+        if (!this.rescuers$) {
+            this.rescuers$ = this.getObservable(request).pipe(
+                map((response: User[]) => {
+                    return response;
+                }),
+            );
+        }
+
+        return this.rescuers$;
+    }
+
+    getStatus(): Observable<Status[]>{
+        const request = '/GetStatus';
+
+        if(!this.status$) {
+        this.status$ = this.getObservable(request).pipe(
+            map(response=>{
+            return response.data;
+            })
+        );
+        }
+        return this.status$;
     }
 
     getSurgeon(): Observable<User[]> {
@@ -555,109 +651,18 @@ export class DropdownService extends APIService {
         return this.surgeryTypes$;
     }
 
-    getPatientCallerInteractionOutcomes(): Observable<PatientCallerInteractionOutcome[]> {
-        const request = '/PatientCallerInteractionOutcomes';
+    getReleaseManagers(): Observable<ReleaseManager[]> {
+        const request = '/GetReleaseManagers';
 
-        if (!this.patientCallOutcome$) {
-            this.patientCallOutcome$ = this.getObservable(request).pipe(
-                map((response: PatientCallerInteractionOutcome[]) => {
+        if(!this.releaseManagers$) {
+            this.releaseManagers$ = this.getObservable(request).pipe(
+                map((response: ReleaseManager[])=>{
                     return response;
-                }),
+                })
             );
         }
 
-        return this.patientCallOutcome$;
-    }
-
-    getPrintableElements(): Observable<PrintElement[]> {
-        const request = '/PrintableElements';
-
-        if (!this.printableElements$) {
-            this.printableElements$ = this.getObservable(request).pipe(
-                map((response: PrintElement[]) => {
-                    return response;
-                }),
-            );
-        }
-
-        return this.printableElements$;
-    }
-
-    getPaperDimensions(): Observable<PaperDimensions[]> {
-        const request = '/PaperDimensions';
-
-        if (!this.paperDimensions$) {
-            this.paperDimensions$ = this.getObservable(request).pipe(
-                map((response: PaperDimensions[]) => {
-                    return response;
-                }),
-            );
-        }
-
-        return this.paperDimensions$;
-    }
-
-  getUserJobType(): Observable<UserJobType[]> {
-    const request = '/GetJobTypes';
-
-    if(!this.jobTypes$) {
-      this.jobTypes$ = this.getObservable(request).pipe(
-        map(response=>{
-          return response;
-        })
-      );
-    }
-    return this.jobTypes$;
-  }
-
-  getStatus(): Observable<Status[]>{
-	const request = '/GetStatus';
-
-	if(!this.status$) {
-	  this.status$ = this.getObservable(request).pipe(
-		map(response=>{
-		  return response.data;
-		})
-	  );
-	}
-	return this.status$;
-  }
-  getVisitType(): Observable<VisitType[]>{
-	  const request = '/GetVisitType';
-	  if(!this.visitTypes$){
-		this.visitTypes$ = this.getObservable(request).pipe(
-			map(response => {
-				return response.data;
-			})
-		);
-	  }
-	  return this.visitTypes$;
-  }
-
-  getPriority(): Observable<Priority[]>{
-	  const request = '/GetPriority';
-	  if(!this.priority$){
-		  this.priority$ = this.getObservable(request).pipe(
-			  map(response=> {
-				  return response;
-			  })
-		  );
-	  }
-	  return this.priority$;
-    }
-
-  getReleaseManagers(): Observable<ReleaseManager[]> {
-    const request = '/GetReleaseManagers';
-
-    if(!this.releaseManagers$) {
-        this.releaseManagers$ = this.getObservable(request).pipe(
-            map((response: ReleaseManager[])=>{
-                return response;
-            })
-        );
-    }
-
-    return this.releaseManagers$;
+        return this.releaseManagers$;
 
 
     }
@@ -675,94 +680,130 @@ export class DropdownService extends APIService {
 
     return this.streetTreatMainProblem$;
 
-  }
+    }
 
-  getTreatmentAreas(): Observable<TreatmentArea[]> {
+    getTreatmentAreas(): Observable<TreatmentArea[]> {
     const request = '/GetTreatmentAreas';
 
     if(!this.treatmentAreas$) {
-      this.treatmentAreas$ = this.getObservable(request).pipe(
-          map((response: TreatmentArea[])=> {
-              return response;
-          })
-      );
-  }
-
-  return this.treatmentAreas$;
-
-}
-
-getDynamicDropdown(dropdowName: string) : Observable<any> {
-
-    const request = `/${dropdowName}`;
-
-    return this.getObservable(request).pipe(map((response: any) => {
-
-        let sortedResponse = response.sort((a: any, b: any) => (a.SortOrder || 99) - (b.SortOrder || 99));
-
-        return sortedResponse;
-
-    }));
-
-}
-
-getEditableDropdowns(): Observable<EditableDropdown[]> {
-    const request = '/GetEditableDropdowns';
-
-    if(!this.editableDropdowns$) {
-      this.editableDropdowns$ = this.getObservable(request).pipe(
-          map((response: EditableDropdown[])=> {
-
-                let sortedResponse = response.sort((a: EditableDropdown, b: EditableDropdown) => a.dropdown < b.dropdown ? -1 : 1);
-
-                return sortedResponse;
-          })
-      );
-  }
-
-  return this.editableDropdowns$;
-
-}
-
-public async saveEditableDropdownElement(tableName: string, updatedElement : EditableDropdownElement) : Promise<any> {
-
-    const request = '/UpsertDropdownElement';
-
-    return await this.postSubEndpoint(request, {tableName:tableName, ...updatedElement});
-
-}
-
-
-getVehicleType(): Observable<VehicleType[]> {
-
-    const request = '/GetVehicleTypes';
-
-    if(!this.vehicleTypes$) {
-        this.vehicleTypes$ = this.getObservable(request).pipe(
-            map((response: VehicleType[])=>{
+        this.treatmentAreas$ = this.getObservable(request).pipe(
+            map((response: TreatmentArea[])=> {
                 return response;
             })
         );
     }
 
-return this.vehicleTypes$;
+    return this.treatmentAreas$;
 
-}
+    }
 
-getVehicleListDropdown(): Observable<Vehicle[]> {
+    getUserJobType(): Observable<UserJobType[]> {
+        const request = '/GetJobTypes';
 
-    const request = '/GetVehicleList';
+        if(!this.jobTypes$) {
+        this.jobTypes$ = this.getObservable(request).pipe(
+            map(response=>{
+            return response;
+            })
+        );
+        }
+        return this.jobTypes$;
+    }
 
-    if(!this.vehicleList$) {
-        this.vehicleList$ = this.getObservable(request).pipe(
-            map((response: Vehicle[])=>{
-                return response;
+    getVehicleType(): Observable<VehicleType[]> {
+
+        const request = '/GetVehicleTypes';
+
+        if(!this.vehicleTypes$) {
+            this.vehicleTypes$ = this.getObservable(request).pipe(
+                map((response: VehicleType[])=>{
+                    return response;
+                })
+            );
+        }
+
+    return this.vehicleTypes$;
+
+    }
+
+    getVehicleListDropdown(): Observable<Vehicle[]> {
+
+        const request = '/GetVehicleList';
+
+        if(!this.vehicleList$) {
+            this.vehicleList$ = this.getObservable(request).pipe(
+                map((response: Vehicle[])=>{
+                    return response;
+                })
+            );
+        }
+
+    return this.vehicleList$;
+
+    }
+
+    getVisitType(): Observable<VisitType[]>{
+        const request = '/GetVisitType';
+        if(!this.visitTypes$){
+            this.visitTypes$ = this.getObservable(request).pipe(
+                map(response => {
+                    return response.data;
+                })
+            );
+        }
+        return this.visitTypes$;
+    }
+
+    getYesNo() : Observable<KeyValuePair[]> {
+
+        const yesNo:KeyValuePair[] = [
+            {key: '1', value: 'Yes'},
+            {key: '2', value: 'No'}
+        ];
+
+        return of(yesNo);
+    }
+
+/**** DYNAMIC DROPDOWNS ****/
+
+    getDynamicDropdown(dropdownName: string) : Observable<any> {
+
+        const request = `/${dropdownName}`;
+
+        return this.getObservable(request).pipe(map((response: any) => {
+
+            let sortedResponse = response.sort((a: any, b: any) => (a.SortOrder || 99) - (b.SortOrder || 99));
+
+            return sortedResponse;
+
+        }));
+
+    }
+
+    getEditableDropdowns(): Observable<EditableDropdown[]> {
+        const request = '/GetEditableDropdowns';
+
+        if(!this.editableDropdowns$) {
+        this.editableDropdowns$ = this.getObservable(request).pipe(
+            map((response: EditableDropdown[])=> {
+
+                    let sortedResponse = response.sort((a: EditableDropdown, b: EditableDropdown) => a.dropdown < b.dropdown ? -1 : 1);
+
+                    return sortedResponse;
             })
         );
     }
 
-return this.vehicleList$;
+    return this.editableDropdowns$;
 
-}
+    }
+
+    public async saveEditableDropdownElement(tableName: string, updatedElement : EditableDropdownElement) : Promise<any> {
+
+        const request = '/UpsertDropdownElement';
+
+        return await this.postSubEndpoint(request, {tableName:tableName, ...updatedElement});
+
+    }
 
 }

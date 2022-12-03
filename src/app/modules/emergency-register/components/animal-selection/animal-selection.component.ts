@@ -1,9 +1,9 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-import { MatChipList } from '@angular/material/chips';
+import { MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -30,7 +30,7 @@ import { generateUUID } from 'src/app/core/helpers/utils';
 export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private patientService: PatientService,
         private tagNumberValidator: UniqueTagNumberValidator,
         private cdr: ChangeDetectorRef,

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Comment } from '../../models/comment'
@@ -34,7 +34,7 @@ export class CommentComponent implements OnInit, OnDestroy {
   mentionConfig = {triggerChar:'@', labelKey:'firstName'}
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private commentService: CommentService,
     private snackbar: SnackbarService,
     private route: ActivatedRoute,

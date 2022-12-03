@@ -35,7 +35,7 @@
         </mat-tab-group>
 
         <div class="hotkeys">
-                <button mat-icon-button (click)="openShortcutsDialog($event,selected.value)">
+                <button mat-icon-button (click)="openShortcutsDialog($event,selected.value || -1)">
                         <mat-icon color="primary">help_outline</mat-icon>
                 </button>
         </div>

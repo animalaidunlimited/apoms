@@ -40,6 +40,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "src/flex-styles.scss",
               "src/theme.scss",
               "src/app/core/styles/nav-styles.scss"
             ],

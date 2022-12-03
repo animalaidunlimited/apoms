@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { UpdatedRescue } from 'src/app/core/models/outstanding-case';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
@@ -17,18 +17,18 @@ export class PatientCallDialogComponent implements OnInit {
     result: UpdatedRescue | undefined;
 
     constructor(
-        private fb: FormBuilder,
-        public dialogRef: MatDialogRef<PatientCallDialogComponent>,
+        private fb: UntypedFormBuilder,
+        public MatDialogRef: MatDialogRef<PatientCallDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
     ) {}
 
     ngOnInit() {}
 
     onCancel(): void {
-        this.dialogRef.close(this.result);
+        this.MatDialogRef.close(this.result);
     }
 
     onResult($event:any) {
-        this.dialogRef.close($event);
+        this.MatDialogRef.close($event);
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
@@ -18,7 +18,7 @@ export class VehicleStaffAssignerComponent implements OnInit {
   showInActive = true;
 
   shiftDate = this.fb.group({
-    date: []}
+    date: ['']}
   );
 
   
@@ -26,7 +26,7 @@ export class VehicleStaffAssignerComponent implements OnInit {
   private ngUnsubscribe = new Subject();
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private vehicleService: VehicleService
   ) { }
 
@@ -34,9 +34,9 @@ export class VehicleStaffAssignerComponent implements OnInit {
 
     this.toggleInactive();
 
-    this.shiftDate.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(changes => {
-      this.vehicleService.populateVehicleShiftDetails(changes.date);
-    });
+    this.shiftDate.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(changes => 
+      this.vehicleService.populateVehicleShiftDetails(changes.date || "")
+    );
 
     this.shiftDate.get("date")?.setValue(getCurrentDateString());
 

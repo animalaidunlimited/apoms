@@ -16,7 +16,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Overlay } from '@angular/cdk/overlay';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 describe('NavComponent', () => {
     let component: NavComponent;
@@ -52,7 +52,7 @@ describe('NavComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(NavComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

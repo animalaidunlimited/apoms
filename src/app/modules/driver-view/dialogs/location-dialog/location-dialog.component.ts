@@ -26,7 +26,7 @@ export class LocationDialogComponent implements OnInit {
 
   zoom!: number;
 
-  constructor(public dialogRef: MatDialogRef<LocationDialogComponent>,
+  constructor(public MatDialogRef: MatDialogRef<LocationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
@@ -67,7 +67,7 @@ export class LocationDialogComponent implements OnInit {
 }
 
 closeLocationDialog() {
-  this.dialogRef.close();
+  this.MatDialogRef.close();
 }
 
 }

@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from 'src/app/material-module';
@@ -46,7 +46,7 @@ describe('PatientVisitDetailsComponent', () => {
     .compileComponents();
   }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(PatientVisitDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

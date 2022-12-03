@@ -2,7 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditableDropdownService } from './editable-dropdown.service';
@@ -22,7 +22,7 @@ describe('EditableDropdownService', () => {
     });
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     service = TestBed.inject(EditableDropdownService);
   }));
 

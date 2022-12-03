@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -26,9 +26,9 @@ export class TagNumberDialog implements OnInit, OnDestroy {
     errorMatcher = new CrossFieldErrorMatcher();
 
     constructor(
-        public dialogRef: MatDialogRef<TagNumberDialog>,
+        public MatDialogRef: MatDialogRef<TagNumberDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private uniqueTagNumberValidator: UniqueTagNumberValidator
     ) {}
 
@@ -64,6 +64,6 @@ export class TagNumberDialog implements OnInit, OnDestroy {
     }
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.MatDialogRef.close();
     }
 }

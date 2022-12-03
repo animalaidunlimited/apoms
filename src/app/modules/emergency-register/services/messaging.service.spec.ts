@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
 
 
@@ -16,7 +16,7 @@ describe('BoardSocketService', () => {
 
   let service: MessagingService;
 
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,7 +38,7 @@ describe('BoardSocketService', () => {
 
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     service = TestBed.inject(MessagingService);
 
   }));

@@ -45,6 +45,14 @@
             "format": ["strictCamelCase", "PascalCase"]
           }
         ],
+        "@typescript-eslint/quotes": [
+          "error",
+          "single",
+          {
+            "avoidEscape": true,
+            "allowTemplateLiterals": true
+          }
+        ],
         "@typescript-eslint/type-annotation-spacing": "off",
         "arrow-parens": [
           "off",

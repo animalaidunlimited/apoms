@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, takeUntil, map } from 'rxjs/operators';
@@ -35,7 +35,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private route: ActivatedRoute,
     private printService: PrintTemplateService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
     this.areas = this.fb.group({
       area: {},

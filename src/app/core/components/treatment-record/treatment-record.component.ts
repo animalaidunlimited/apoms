@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatChip, MatChipList } from '@angular/material/chips';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { MatLegacyChip as MatChip, MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -48,11 +48,11 @@ export class TreatmentRecordComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private snackbar: SnackbarService,
     public dialog: MatDialog,
-    private dialogRef:MatDialogRef<TreatmentRecordComponent>,
+    private MatDialogRef:MatDialogRef<TreatmentRecordComponent>,
     private treatmentService: TreatmentService,
     private treatmentListService: TreatmentListService,
     private dropdown: DropdownService,
@@ -171,7 +171,7 @@ saveTreatment(treated: boolean){
       (
         this.treatmentDetails.get('treatmentId')?.setValue(result.treatmentId),
         this.snackbar.successSnackBar('Treatment saved successfully', 'OK'),
-        this.dialogRef.close(this.treatmentDetails.value)
+        this.MatDialogRef.close(this.treatmentDetails.value)
        ) :
       this.snackbar.errorSnackBar('An error occured when saving treatment', 'OK');
 

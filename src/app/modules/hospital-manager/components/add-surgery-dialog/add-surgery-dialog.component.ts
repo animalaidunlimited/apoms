@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SurgeryRecord, UpdatedSurgery } from 'src/app/core/models/surgery-details';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 
 export interface DialogData {
     patientId: number;
@@ -25,9 +25,9 @@ export class AddSurgeryDialogComponent implements OnInit {
     invalidSurgeryForm = false;
 
     constructor(
-        public dialogRef: MatDialogRef<AddSurgeryDialogComponent>,
+        public MatDialogRef: MatDialogRef<AddSurgeryDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
     ) {}
 
     ngOnInit() {
@@ -39,13 +39,13 @@ export class AddSurgeryDialogComponent implements OnInit {
         this.canExit.valueChanges.subscribe((values: CanExitChange) => {
             // TODO update this to handle any errors and display them to a toast.
             if (values.surgeryDetailsSaveComplete !== 0) {
-                this.dialogRef.close(this.result);
+                this.MatDialogRef.close(this.result);
             }
         });
     }
 
     onCancel(): void {
-        this.dialogRef.close(this.result);
+        this.MatDialogRef.close(this.result);
     }
 
     onSurgerySaveResult(result: SurgeryRecord) {

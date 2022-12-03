@@ -18,7 +18,7 @@ export class ReleaseDetailsDialogComponent implements OnInit {
   formInvalid = true;
 
   constructor(
-    public dialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
+    public MatDialogRef: MatDialogRef<ReleaseDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) { }
 

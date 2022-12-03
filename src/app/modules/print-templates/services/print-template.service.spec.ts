@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { sideNavPath } from 'src/app/nav-routing';
@@ -11,7 +11,7 @@ import { PrintTemplateService } from './print-template.service';
 describe('PrintTemplatesService', () => {
   let service: PrintTemplateService;
 
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,14 +29,14 @@ describe('PrintTemplatesService', () => {
       providers: [
         MatSnackBar,
         Overlay,
-        { provide: FormBuilder, useValue: formBuilder }
+        { provide: UntypedFormBuilder, useValue: formBuilder }
       ]
 
     });
 
   });
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     service = TestBed.inject(PrintTemplateService);
 
   }));

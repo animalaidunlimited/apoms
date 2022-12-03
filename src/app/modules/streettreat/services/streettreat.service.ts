@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { ActiveCasesForVehicleByDateResponse, ChartResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreet';
+import { ActiveCasesForVehicleByDateResponse, ChartResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreat';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 

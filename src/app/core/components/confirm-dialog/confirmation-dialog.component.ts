@@ -29,18 +29,19 @@ export class ConfirmationDialog {
   title = 'Confirm action';
   icon = 'warn';
 
-  get vals() {
+  get messageValues() {
     return this.message.split('\n');
   }
 
   @HostListener('document:keydown.enter', ['$event'])
-  closeConfirmationDailog(event: KeyboardEvent){
+  closeConfirmationDialog(event: KeyboardEvent){
     event.preventDefault();
     this.onConfirmClick();
   }
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: DialogData,
-    private dialogRef: MatDialogRef<ConfirmationDialog>) {
+    private MatDialogRef: MatDialogRef<boolean>) {
 
         if(data){
 
@@ -53,11 +54,11 @@ export class ConfirmationDialog {
   }
 
   onConfirmClick(): void {
-    this.dialogRef.close(true);
+    this.MatDialogRef.close(true);
   }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.MatDialogRef.close(false);
   }
 
 }

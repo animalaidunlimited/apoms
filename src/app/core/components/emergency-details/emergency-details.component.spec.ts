@@ -6,7 +6,7 @@ import {
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ReactiveFormsModule, FormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule, Validators, FormArray } from '@angular/forms';
 
 import { EmergencyDetailsComponent } from './emergency-details.component';
 import { MaterialModule } from 'src/app/material-module';
@@ -38,7 +38,7 @@ describe('EmergencyDetailsComponent', () => {
         }).compileComponents();
     });
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(EmergencyDetailsComponent);
         rescueDetailsFixture = TestBed.createComponent(RescueDetailsComponent);
 
@@ -115,8 +115,8 @@ describe('EmergencyDetailsComponent', () => {
     it('Invalid form - Missing code', () => {
         component.recordForm.get('emergencyDetails.emergencyNumber')?.setValue(70022);
 
-        component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
-        component.recordForm.get('emergencyDetails.dispatcher')?.setValue('1');
+        // component.recordForm.get('emergencyDetails.emergencyCode')?.setValue({ EmergencyCodeId: 1, EmergencyCode: "Red"});
+        component.recordForm.get('rescueDetails.ambulanceAssignmentTime')?.setValue('2022-11-05T13:25:00');
 
         component.recordForm.get('emergencyDetails.code')?.setValue(null);
 

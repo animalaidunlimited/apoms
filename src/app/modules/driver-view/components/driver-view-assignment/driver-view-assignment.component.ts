@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Form, FormArray, FormBuilder, FormControl, FormControlName, FormGroup } from '@angular/forms';
+import { Form, FormArray, UntypedFormBuilder, FormControl, FormControlName, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { getCurrentTimeString } from 'src/app/core/helpers/utils';
@@ -78,7 +78,7 @@ export class DriverViewAssignmentComponent implements OnInit {
   patientArray!: FormArray;
 
   constructor(private driverView: DriverViewService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private dialog: MatDialog) { }
 
   ngOnInit(): void {

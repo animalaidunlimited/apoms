@@ -26,7 +26,17 @@ export interface UserDetails {
     role: string;
     jobTitleId: number;
     jobTitle: string;
+    permissionArray: number[];
+    fixedDayOff: number;
+    departmentId: number;
+    localName: string;
+    isDeleted: boolean;
   }
+
+export interface UserDetailsForm extends UserDetails {
+    password: string;
+    isStreetTreatUser: boolean;
+}
 
 export interface ReleaseManager {
     EmployeeNumber: string;
@@ -41,4 +51,5 @@ export interface UserAccountDetails{
 
 export interface UserPreferences {
     clearSearchOnTabReturn? : boolean;
+    rotaAreas?: number[];
 }

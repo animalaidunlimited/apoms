@@ -1,0 +1,12 @@
+.generic-table{
+    width: 100%
+}
+
+.generic-column-header:first-letter{
+    text-transform: uppercase
+}
+
+td, th, td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}

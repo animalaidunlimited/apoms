@@ -1,12 +1,12 @@
-<div *ngIf='driverViewAssignments | async' class="actionStatusWrapper">
-    <fieldset class="form-sub-group" *ngIf="(showCompleteFlag && actionStatus==='Complete') || (!showCompleteFlag && actionStatus!=='Complete')">
+<div *ngIf="driverViewAssignments | async" class="actionStatusWrapper">
+    <fieldset class="form-sub-group" *ngIf="(showCompleteFlag && actionStatus === 'Complete') || (!showCompleteFlag && actionStatus !== 'Complete')">
         <legend class="legend">{{actionStatus}}</legend>
 
         <div *ngFor="let assignments of driverViewAssignments | async" >
 
-            <div class="caseDivContainer" fxLayout="column" fxLayoutAlign='start'>
+            <div class="caseDivContainer flex-column flex-start-start" >
 
-                <div style="margin-bottom: -1em; padding-top: 1em;" fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start end'>
+                <div style="margin-bottom: -1em; padding-top: 1em;" class="flex-row flex-wrap gap-20 flex-start-end">
 
                     <div *ngIf="assignments.ambulanceAction === 'Rescue'" class="emergencyDetailsCode" [ngClass]="{
                         'grey' : assignments.emergencyCodeId == 4,
@@ -15,7 +15,7 @@
                         'yellow' : assignments.emergencyCodeId == 3}">
                     </div>
 
-                    <div *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction ==='StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                    <div *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction === 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
                         'grey' : assignments.streetTreatPriorityId == 4,
                         'red' : assignments.streetTreatPriorityId == 1,
                         'green' : assignments.streetTreatPriorityId == 2,
@@ -24,7 +24,7 @@
 
                     <p>EmNo:{{assignments.emergencyNumber}}</p>
 
-                    <div fxLayout='row wrap' fxLayoutAlign='start'>
+                    <div class="flex-row flex-wrap flex-start-start">
                         <p>AnimalType: {{assignments.patients[0].animalType}}</p>
                         <p class="countWrapper" *ngIf="assignments.patients.length > 1">+{{assignments.patients.length - 1}}</p>
                     </div>
@@ -39,18 +39,18 @@
                     <p>Address: {{assignments.location}}</p>
                 </div>
 
-                <div style="margin-bottom: 0em;" fxLayout='row wrap' fxLayoutGap='20px' fxLayoutAlign='start'>
+                <div style="margin-bottom: 0em;" class="flex-row flex-wrap flex-start-start gap-20">
 
 
 
-                    <div fxLayout='row'>
+                    <div class="flex-row">
                         <p>Main Problem:</p>
-                        <p *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction ==='StreetTreat'"> {{assignments.streetTreatMainProblem}} </p>
-                        <div fxLayout='row wrap' fxLayoutAlign='start'>
+                        <p *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction === 'StreetTreat'"> {{assignments.streetTreatMainProblem}} </p>
+                        <div class="flex-row flex-wrap flex-start-start">
 
-                            <p *ngIf="(assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction ==='Release') && assignments.patients.length > 1">({{assignments.patients[0].problems[0].problem}}+{{assignments.patients.length - 1}})</p>
+                            <p *ngIf="(assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction === 'Release') && assignments.patients.length > 1">({{assignments.patients[0].problems[0].problem}}+{{assignments.patients.length - 1}})</p>
 
-                            <p *ngIf="(assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction ==='Release') && assignments.patients.length === 1">({{assignments.patients[0].problems[0].problem}})</p>
+                            <p *ngIf="(assignments.ambulanceAction === 'Rescue' || assignments.ambulanceAction === 'Release') && assignments.patients.length === 1">({{assignments.patients[0].problems[0].problem}})</p>
 
                         </div>
 
@@ -58,7 +58,7 @@
 
                 </div>
 
-                <div style="margin-bottom: -0.6em;" fxLayout="row wrap" fxLayoutGap='5px' *ngIf="assignments.ambulanceAction === 'Rescue'">
+                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap gap-5" *ngIf="assignments.ambulanceAction === 'Rescue'">
 
                     <button (click)="toggleButtonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Arrived
@@ -75,7 +75,7 @@
 
                 </div>
 
-                <div style="margin-bottom: -0.6em;" fxLayout="row wrap" fxLayoutGap='5px' *ngIf="assignments.ambulanceAction === 'STRelease'">
+                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap gap-5" *ngIf="assignments.ambulanceAction === 'STRelease'">
                     <button (click)="toggleButtonSelection('PickedUp', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Picked up
                         <mat-icon *ngIf = "assignments.releasePickupDate" class="selectionButton">check_circle</mat-icon>
@@ -98,7 +98,7 @@
 
                 </div>
 
-                <div style="margin-bottom: -0.6em;" fxLayout="row wrap" fxLayoutGap='5px' *ngIf="assignments.ambulanceAction === 'Release'">
+                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap gap-5" *ngIf="assignments.ambulanceAction === 'Release'">
 
                     <button (click)="toggleButtonSelection('PickedUp', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Picked up
@@ -115,7 +115,7 @@
 
                 </div>
 
-                <div style="margin-bottom: -0.6em;" fxLayout="row wrap" fxLayoutGap='5px' *ngIf="assignments.ambulanceAction === 'StreetTreat'">
+                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap gap-5" *ngIf="assignments.ambulanceAction === 'StreetTreat'">
 
                     <button (click)="toggleButtonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Arrived
@@ -128,7 +128,7 @@
 
                 </div>
 
-                <div fxLayout="row-reverse" style="margin:1em 1em 0 0">
+                <div class="flex-row-reverse" style="margin:1em 1em 0 0">
                     <div class="actionWrapper" [ngClass]="{
                         'STRelease' : assignments.ambulanceAction === 'STRelease',
                         'StreetTreat' : assignments.ambulanceAction === 'StreetTreat',

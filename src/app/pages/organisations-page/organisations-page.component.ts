@@ -1,10 +1,11 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { LogoService } from 'src/app/core/services/logo/logo.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { GoogleMap } from '@angular/google-maps';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { OrganisationMarker, OrganisationDetail, OrganisationAddress } from 'src/app/core/models/organisation';
 import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
+import { LatLngLiteral } from 'src/app/core/models/driver-view';
 
 
 @Component({
@@ -31,7 +32,7 @@ export class OrganisationsPageComponent implements OnInit {
     constructor(
         private logoService:LogoService,
         private organisationDetails: OrganisationDetailsService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private changeDetector: ChangeDetectorRef,
         private snackbar: SnackbarService
     ) {
@@ -224,20 +225,28 @@ export class OrganisationsPageComponent implements OnInit {
     }
 
     createAddressArray(address:any) : FormArray{
-        
 
-        const addressGroup = this.fb.array([]);
+        const emptyLatLngLiteral: LatLngLiteral = {lat : 0, lng: 0}
+        
+        const emptyValue = this.fb.nonNullable.group({
+            name: '',
+            latLng: [emptyLatLngLiteral],
+            address: '',
+            number: ''
+        })
+
+        const addressGroup = this.fb.array([emptyValue]);
 
         // tslint:disable-next-line: no-shadowed-variable
         address.forEach((address:OrganisationAddress, index:number) => {
 
             this.addMarker(address.latLng, index);
 
-            addressGroup.push(this.fb.group({
-                name: address.name,
-                latLng: address.latLng,
-                address: address.address,
-                number: address.number
+            addressGroup.push(this.fb.nonNullable.group({
+                name: [address.name],
+                latLng: [address.latLng],
+                address: [address.address],
+                number: [address.number]
             }));
         });
 

@@ -1,6 +1,6 @@
 <form [formGroup]="addShiftFormGroup" class="add-shift-dialog" (ngSubmit)="upsertStaffShift()">
 
-    <div fxLayout="row wrap">
+    <div class="flex-row flex-wrap">
 
         <mat-form-field>
             <input formControlName="shiftStartTime" type="datetime-local"
@@ -60,7 +60,7 @@
 
     </div>
 
-    <div fxLayout="column">
+    <div class="flex-column" >
 
         <div formArrayName="vehicleStaff" *ngFor="let staff of staffArray?.controls; let i = index;">
 

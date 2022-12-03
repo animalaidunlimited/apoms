@@ -3,7 +3,7 @@ import { MaterialModule } from 'src/app/material-module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,7 +20,7 @@ describe('TreatmentListComponent', () => {
     close: jasmine.createSpy('close'),
 };
 
-const formBuilder: FormBuilder = new FormBuilder();
+const formBuilder: UntypedFormBuilder = new UntypedFormBuilder();
 
 
 const dialogData = {};
@@ -57,7 +57,7 @@ let dialog: MatDialogRef<TreatmentListComponent>;
     .compileComponents();
   }));
 
-  beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+  beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
     fixture = TestBed.createComponent(TreatmentListComponent);
     component = fixture.componentInstance;
 

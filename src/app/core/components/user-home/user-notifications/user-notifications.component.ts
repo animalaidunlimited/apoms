@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
+import { FormGroup, UntypedFormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { Notification } from 'src/app/core/models/notification';
 import { UserNotificationService } from './../../../services/user-notification/user-notification.service';
 import { Router } from '@angular/router';
@@ -30,7 +30,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
   get notificationArray() : FormArray { return this.notificationForm.get('notifications') as FormArray }
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     public dialog: MatDialog,
     private mediaService: MediaService,

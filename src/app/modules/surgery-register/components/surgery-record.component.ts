@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { Validators, UntypedFormBuilder } from '@angular/forms';
 import { SurgerySite, SurgeryType, SurgeryById, SurgeryRecord } from 'src/app/core/models/surgery-details';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { Observable, Subject } from 'rxjs';
@@ -42,7 +42,7 @@ export class SurgeryRecordComponent implements OnInit {
     diedDateTime: string | Date = new Date();
     callDateTime: string | Date = new Date();
 
-    surgeryForm = this.fb.group({
+    surgeryForm = this.ufb.group({
         SurgeryId: [],
         PatientId: [],
         TagNumber: [{value: '', disabled:true}],
@@ -66,7 +66,7 @@ export class SurgeryRecordComponent implements OnInit {
     private ngUnsubscribe = new Subject();
 
     constructor(
-        private fb: FormBuilder,
+        private ufb: UntypedFormBuilder,
         private dropdown: DropdownService,
         private surgeryService: SurgeryService,
         private showSnackBar : SnackbarService

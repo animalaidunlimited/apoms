@@ -13,7 +13,7 @@
             (
                 marker.ambulanceAction == 'Release'? (
 
-                    hasLargeAninmal(marker.patients)?
+                    hasLargeAnimal(marker.patients)?
                     'assets/icons/large_animal_release_purple.png'
                     :
                     'assets/icons/small_animal_release_purple.png'
@@ -21,7 +21,7 @@
                 :
                 (
                     marker.ambulanceAction == 'Rescue' ? (
-                    hasLargeAninmal(marker.patients) ?
+                    hasLargeAnimal(marker.patients) ?
                             (marker.emergencyCodeId == 1 ? 'assets/icons/large_animal_red.png'
                             :
                             marker.emergencyCodeId == 2 ? 'assets/icons/large_animal_green.png'
@@ -42,14 +42,14 @@
                     (
                         marker.ambulanceAction == 'StreetTreat'? (
 
-                            hasLargeAninmal(marker.patients)?
+                            hasLargeAnimal(marker.patients)?
                             'assets/icons/large_animal_ST.png'
                             :
                             'assets/icons/small_animal_ST.png'
                         ) :
 
                         (
-                            hasLargeAninmal(marker.patients)?
+                            hasLargeAnimal(marker.patients)?
                             'assets/icons/large_animal_STRelease.png'
                             :
                             'assets/icons/small_animal_STRelease.png'
@@ -68,7 +68,7 @@
 
 <mat-toolbar-row class="horizontalTab">
 
-    <div (click)='changeRoute()' fxLayout='column' class="backIconDiv">
+    <div (click)="changeRoute()" class="backIconDiv flex-column">
         <mat-icon aria-label="Complete" style="font-size: 30px;">arrow_back</mat-icon>
         <p class="iconText">Back</p>
     </div>

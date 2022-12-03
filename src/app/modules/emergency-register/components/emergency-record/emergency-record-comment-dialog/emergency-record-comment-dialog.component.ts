@@ -11,7 +11,7 @@ export class EmergencyRecordCommentDialogComponent implements OnInit {
 
   caseComment = new FormControl('');
   constructor(
-    public dialogRef: MatDialogRef<EmergencyRecordCommentDialogComponent>,
+    public MatDialogRef: MatDialogRef<EmergencyRecordCommentDialogComponent>,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: {caseComment: string}
   ) { }
@@ -21,11 +21,11 @@ export class EmergencyRecordCommentDialogComponent implements OnInit {
   }
 
   saveComment():void{
-    this.dialogRef.close(this.caseComment.value);
+    this.MatDialogRef.close(this.caseComment.value);
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }

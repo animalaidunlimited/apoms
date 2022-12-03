@@ -17,7 +17,7 @@
 
         <!--<div class="imageOptions" *ngIf="showImageOptions">
 
-            <div fxLayout="row" fxLayoutGap='5px' fxLayoutAlign="space-between center">
+            <div class="flex-row gap-5 flex-space-between-center">
 
                 <button mat-icon-button class="circle-image-button">
                     <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_a_photo</mat-icon>
@@ -43,13 +43,13 @@
 
 
 
-        <div fxLayout="column" fxLayoutAlign="space-around start" >
+        <div class="flex-column flex-space-around-start" >
 
 
 
             <div *ngFor="let callerDetails of callerObject">
 
-                <div fxLayout="row" fxLayoutAlign="start end">
+                <div class="flex-row flex-start-end">
 
                     <div class="name">{{callerDetails.callerName}}</div>
 

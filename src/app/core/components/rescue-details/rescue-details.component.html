@@ -2,10 +2,10 @@
     [formGroup]="rescueDetails"
     fxLayout.gt-sm="column"
     fxLayoutAlign.gt-sm="center center"
-    fxLayoutGap="20"
+    class="gap-20"
     [fxLayout.gt-sm]="selfAdmission ? 'row' : 'column'">
 
-    <div fxLayout="row wrap" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center"
+    <div class="flex-row flex-wrap gap-20 flex-start-center" fxLayout.lt-md="row wrap"
     [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>
@@ -17,12 +17,12 @@
                 <mat-select-trigger *ngIf="code?.value?.EmergencyCodeId" >
 
                     <mat-icon [ngClass]="{
-                        'dot-grey' : code?.value?.EmergencyCodeId == 4,
-                        'dot-red' : code?.value?.EmergencyCodeId == 1,
-                        'dot-green' : code?.value?.EmergencyCodeId == 2,
-                        'dot-yellow' : code?.value?.EmergencyCodeId == 3}"
+                        'dot-grey' : code.value?.EmergencyCodeId == 4,
+                        'dot-red' : code.value?.EmergencyCodeId == 1,
+                        'dot-green' : code.value?.EmergencyCodeId == 2,
+                        'dot-yellow' : code.value?.EmergencyCodeId == 3}"
                         matSuffix>fiber_manual_record</mat-icon>
-                    {{code?.value?.EmergencyCode}}
+                    {{code.value?.EmergencyCode}}
                 </mat-select-trigger>
 
                 <mat-option *ngFor="let code of emergencyCodes$ | async" [value]="code">
@@ -42,7 +42,7 @@
 
     </div>
 
-    <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div class="flex-row flex-wrap gap-20 flex-start-center">
 
         <ng-container *ngIf="!selfAdmission && !streetTreat">
 
@@ -98,7 +98,7 @@
 
     </div>
 
-    <div fxLayout="row wrap"  fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="start center">
+    <div class="flex-row flex-wrap gap-20 flex-start-center">
 
 
         <ng-container *ngIf="!selfAdmission">

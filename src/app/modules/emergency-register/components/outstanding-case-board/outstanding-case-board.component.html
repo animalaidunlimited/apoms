@@ -1,6 +1,6 @@
-<div fxLayout="row wrap" fxLayoutAlign="space-between center">
+<div class="flex-row flex-wrap flex-space-between-center">
   <form [formGroup]="searchForm">
-  <mat-spinner class="loader"  *ngIf="loading | async" class="mat-spinner"></mat-spinner>
+  <mat-spinner class="loader mat-spinner"  *ngIf="loading | async"></mat-spinner>
 
   <mat-form-field class="search-box" >
 
@@ -18,14 +18,14 @@
   </mat-form-field>
   </form>
 
-  <div class="filterChipWrapper" fxLayout="row wrap" fxLayoutGap="10px" fxLayoutAlign="center">
+  <div class="filterChipWrapper flex-row flex-wrap gap-10 flex-center-center">
 
     <p *ngIf="filterKeysArray.length > 0" class="filterText">Filter:</p>
 
-    <mat-chip-list #filteredChipList aria-label="Filter selection">
+    <!-- <mat-chip-list #filteredChipList aria-label="Filter selection">
       <div *ngFor="let selectedChips of filterChips">
+        (removed)="selected.toggleSelected()"
         <mat-chip [removable]="removable"
-          (removed)="selected.toggleSelected()"
           style="cursor: pointer"
           selected
           *ngFor="let selected of (selectedChips.selected | chipListType)">
@@ -33,11 +33,11 @@
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
       </div>
-    </mat-chip-list>
+    </mat-chip-list> -->
 
   </div>
 
-  <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="refresh-box" #filterDiv>
+  <div class="refresh-box flex-row flex-wrap flex-space-between-center gap-5" #filterDiv>
 
     <button mat-mini-fab color="primary" *ngIf="!hideMap" [color]="showAmbulancePaths ? filterBtnColor : 'primary'"
     (click)="showAmbulancePaths = !showAmbulancePaths">
@@ -70,11 +70,11 @@
       </div>
 
       <div class="filter-content ambulance-list" *ngFor="let ambulance of (ambulanceLocations$ | async)"
-      fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="center space-between">
+      class="flex-row gap-50 flex-center-space-between">
 
         <img src="assets/icons/ambulance_van.png" class="ambulance-icon" alt="Ambulance filter">
 
-          <div fxLayout="column" fxLayoutAlign="center center">
+          <div class="flex-column flex-center-center">
 
             <div *ngFor="let rescuer of ambulance.vehicleStaff; let i = index;">
 
@@ -122,7 +122,7 @@
 
 <outstanding-case-map [hidden]="hideMap"></outstanding-case-map>
 
-<div fxLayout="row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
+<div class="flex-row" [fxHide]="!hideMap" ngStyle.gt-sm="margin: 0 0.5em;" fxLayout.lt-sm="column">
   <div class="swimlane">
     <h2  style="text-align: center;">Received</h2>
     <div *ngFor="let outstandingCase of receivedVehicleList$ | async">

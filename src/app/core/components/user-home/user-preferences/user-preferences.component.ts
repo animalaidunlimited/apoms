@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserAccountDetails, UserPreferences } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -15,7 +15,6 @@ export class UserPreferencesComponent implements OnInit {
 
   notificationCount: BehaviorSubject<number>;
 
-
   showPreferences = false;
 
   userDetails!: BehaviorSubject<UserAccountDetails>;
@@ -27,7 +26,7 @@ export class UserPreferencesComponent implements OnInit {
 
   @ViewChild('preferencesDiv') preferencesDiv!: ElementRef;
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
     private snackbar: SnackbarService,
     private userService: UserOptionsService,
     private notificationService: UserNotificationService,

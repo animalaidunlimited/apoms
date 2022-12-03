@@ -3,6 +3,8 @@ import { UUID } from 'angular2-uuid';
 import { DriverAssignment } from '../models/driver-view';
 import { OutstandingAssignment } from '../models/outstanding-case';
 import { SearchResponse } from '../models/responses';
+import { AreaShift, RotationRole } from '../models/rota';
+import { HourRange } from 'src/app/core/models/vehicle';
 
 export function getCurrentTimeString() : string {
     let currentTime = new Date();
@@ -93,6 +95,15 @@ export function convertAssignmentToSearchResponse(caseSearchResult:OutstandingAs
 
     return result;
 
+}
+
+export function fnSortBySortOrderAndRotationPeriodSortOrder(firstAreaShift: AreaShift | RotationRole, secondAreaShift: AreaShift | RotationRole) : number {
+
+    return firstAreaShift.rotationAreaSortOrder === secondAreaShift.rotationAreaSortOrder ?
+      firstAreaShift.sortOrder - (secondAreaShift.sortOrder || 999)
+      :
+      firstAreaShift.rotationAreaSortOrder - (secondAreaShift.rotationAreaSortOrder || -999);
+  
   }
 
 export function getNotificationTypeFromCommentType(commentType: string) : number {
@@ -110,4 +121,56 @@ export function getNotificationTypeFromCommentType(commentType: string) : number
         default : return -1
         
       }
+}
+
+// A function that determines the length of the shift in minutes and returns that as a % of 24 hours
+export function getShiftLengthAsPercentageOf24Hours(endTime: number, startTime: number, hourRange: HourRange) : number {
+
+  const shiftLengthInSeconds = Math.round((endTime - startTime) / 1000);
+
+  return shiftLengthInSeconds / ((hourRange.end - hourRange.start + 1) * 60 * 60) * 100;
+
+}
+
+export function getShiftLeftStartingPosition(startTime: number, hourRange: HourRange) : number {
+
+    let midnight = new Date(startTime).setHours(hourRange.start, 0, 0, 0);
+
+    return (((startTime - midnight - 6000) / 1000) / ((hourRange.end - hourRange.start + 1) * 60 * 60) * 100);   
+
+}
+
+
+export function generateRangeOfHours(start: number, end: number) : HourRange {
+
+  var range = [];
+
+  for (let i = start; i <= end; i++) {
+    range.push(i);
+  }
+
+  range.sort((a,b) => a-b);
+
+  return { start, end, range } as HourRange;
+
+}
+
+export function generateRangeOfQuarterHours(start: number, end: number) : string[] {
+
+  var range:string[] = [];
+
+  for (let i = start; i <= end; i++) {
+
+    let startHour = ("" + i).padStart(2,"0");
+
+    range.push(`${startHour}:00`);
+    range.push(`${startHour}:15`);
+    range.push(`${startHour}:30`);
+    range.push(`${startHour}:45`);
+  }
+
+  range.sort((a,b) => (new Date("1970-03-21" + a).getTime()) - (new Date("1970-03-21" + b).getTime()));
+
+  return range;
+
 }

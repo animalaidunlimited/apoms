@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, inject, waitForAsync } from '@angular/core/t
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { LocationDetailsComponent } from './location-details.component';
-import { ReactiveFormsModule, FormBuilder, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MaterialModule } from 'src/app/material-module';
 
@@ -25,7 +25,7 @@ describe('LocationDetailsComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(LocationDetailsComponent);
         component = fixture.componentInstance;
 

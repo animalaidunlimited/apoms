@@ -138,7 +138,10 @@ export class TreatmentComponent implements OnInit {
 
             const currentTreatment = this.treatmentRecords.find(elem => elem.treatmentId === treatment.treatmentId);
 
-            Object.assign(currentTreatment, treatment);
+            if(currentTreatment){
+              Object.assign(currentTreatment, treatment);
+            }
+            
     }
 
     else if (source === 'insert'){

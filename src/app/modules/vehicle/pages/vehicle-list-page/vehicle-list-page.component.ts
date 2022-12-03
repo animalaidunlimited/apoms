@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { VehicleService } from '../../services/vehicle.service';
 import { AuthService } from 'src/app/auth/auth.service';
-import { VehicleStatus, Vehicle, VehicleType } from 'src/app/core/models/vehicle';
+import { VehicleStatus, Vehicle, VehicleType, VehicleForm } from 'src/app/core/models/vehicle';
 import { MediaService } from 'src/app/core/services/media/media.service';
+import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 
 
 @Component({
@@ -44,27 +45,28 @@ export class VehicleListPageComponent implements OnInit {
 
   vehicleType$!: Observable<VehicleType[]>;
 
-  vehicleListForm = this.fb.group({
-    vehicleId: [],
-    registrationNumber: [''],
+  
+  vehicleListForm: ModelFormGroup<Omit<VehicleForm, 'vehicleType' | 'vehicleStatus'| 'currentVehicleStaff'>> = this.fb.nonNullable.group({
+    vehicleId: [0],
     vehicleNumber:[''],
-    vehicleTypeId: [],
-    largeAnimalCapacity:[],
-    smallAnimalCapacity: [],
-    vehicleStatusId:[],
-    minRescuerCapacity:[],
-    maxRescuerCapacity:[],
-    streetTreatVehicle: [],
-    streetTreatDefaultVehicle: [],
-    vehicleColour: [],
-    organisationId: this.authService.getOrganisationId(),
-    vehicleImage:''
+    vehicleTypeId: [0],
+    vehicleStatusId:[0],
+    registrationNumber: [''],
+    largeAnimalCapacity:[0],
+    smallAnimalCapacity: [0],
+    minRescuerCapacity:[0],
+    maxRescuerCapacity:[0],
+    imageURL:[''],
+    vehicleColour: [''],
+    streetTreatVehicle: [false],
+    streetTreatDefaultVehicle: [false],
+    organisationId: [this.authService.getOrganisationId()]
   });
 
 
 
   constructor(private dropdown: DropdownService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private vehicleService: VehicleService,
               private snackBar: SnackbarService,
               private authService: AuthService,
@@ -97,10 +99,10 @@ export class VehicleListPageComponent implements OnInit {
   }
 
   refreshVehicleTable() : void {
-    this.vehicleService.getVehicleList().then((vehicleListTabledata)=> {
+    this.vehicleService.getVehicleList().then((vehicleListTableData)=> {
 
-      if(vehicleListTabledata){
-        this.dataSource = new MatTableDataSource(vehicleListTabledata);
+      if(vehicleListTableData){
+        this.dataSource = new MatTableDataSource(vehicleListTableData);
       }
 
     });
@@ -158,7 +160,7 @@ export class VehicleListPageComponent implements OnInit {
 
         if(url) {
           this.uploading = false;
-          this.vehicleListForm.get('vehicleImage')?.setValue(url);
+          this.vehicleListForm.get('imageURL')?.setValue(url);
         }
       })
 

@@ -24,7 +24,7 @@ export class EmergencyCaseDialogComponent implements OnInit, AfterViewInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<EmergencyCaseDialogComponent>
+    public MatDialogRef: MatDialogRef<EmergencyCaseDialogComponent>
   ) {
     this.dataSource = new MatTableDataSource(this.data.emergencyCases);
     this.emergencyCaseDate = this.data.emergencyCases[0]?.callDateTime;
@@ -39,7 +39,7 @@ export class EmergencyCaseDialogComponent implements OnInit, AfterViewInit {
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.MatDialogRef.close();
   }
 
 }

@@ -19,7 +19,7 @@ export class SurgeryDetailsComponent implements OnInit {
 
     constructor(
         private surgeryService: SurgeryService,
-        public dialog: MatDialog,
+        public dialog: MatDialog
     ) {}
 
     @Input() patientId!: number;

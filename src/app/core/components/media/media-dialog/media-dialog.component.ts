@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Platform } from '@angular/cdk/platform';
 import { MediaItem } from 'src/app/core/models/media';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { MediaService } from 'src/app/core/services/media/media.service';
 
 interface IncomingData {
@@ -28,7 +28,7 @@ export class MediaDialogComponent implements OnInit, OnDestroy {
   constructor(public dialogRef: MatDialogRef<MediaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomingData,
     private mediaService: MediaService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public dialog: MatDialog,
     public platform: Platform) { }
 

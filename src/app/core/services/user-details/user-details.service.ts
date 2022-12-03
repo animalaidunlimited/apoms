@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { APIService } from '../http/api.service';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, share } from 'rxjs/operators';
-
-
+import { BehaviorSubject } from 'rxjs';
+import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
+import { UserDetails } from '../../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +12,38 @@ export class UserDetailsService extends APIService{
 
   endpoint = 'UserAdmin';
 
-  public permissionArray = new BehaviorSubject<number[]>([]);
+  public permissionArray = new BehaviorSubject<number[]>([-1]);
+  public permissionCheckComplete = new BehaviorSubject<boolean>(false);
 
-  constructor(public http: HttpClient) {
+  userList = new BehaviorSubject<UserDetails[]>([])
+
+  constructor(
+    public http: HttpClient,
+    private userOptionsService: UserOptionsService
+    ) {
   super(http);
   this.setUserPermissions();
+  }
+
+  public initialiseUserList() : Promise<any> {
+
+    if(this.userList.value.length > 0){
+      //Let's tell the resolver that we've already loaded the user list.
+      return Promise.resolve(true);
+    }
+
+    return this.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[]) => {
+      
+      this.userList.next(userListData); 
+  
+    });
+
+  }
+
+  public getUserList() : BehaviorSubject<UserDetails[]> {
+
+    return this.userList;
+
   }
 
   public async insertUser(userDetails:any): Promise<any> {
@@ -46,6 +72,9 @@ export class UserDetailsService extends APIService{
     this.get(request).then(permissionResult => {
 
       const permissions: number[] = permissionResult as number[];
+
+      this.permissionCheckComplete.next(true);
+      this.permissionCheckComplete.complete();
 
       this.permissionArray.next(permissions);
     })

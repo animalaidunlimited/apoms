@@ -8,7 +8,7 @@ import {
     MatDialogModule,
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UniqueTagNumberValidator } from 'src/app/core/validators/tag-number.validator';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -54,7 +54,7 @@ describe('TagNumberDialog', () => {
         }).compileComponents();
     }));
 
-    beforeEach(inject([FormBuilder], (fb: FormBuilder) => {
+    beforeEach(inject([UntypedFormBuilder], (fb: UntypedFormBuilder) => {
         fixture = TestBed.createComponent(TagNumberDialog);
         component = fixture.componentInstance;
         dialog = TestBed.get(MatDialog);

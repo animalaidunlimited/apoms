@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ChangeDetectorRef, Component,  OnDestroy,  OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -30,12 +30,17 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
   displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'saving'];
 
   dropdowns: Observable<EditableDropdown[]> | undefined;
-  dropdownForm = this.fb.group({currentDropdown: ''});
+
+  
+  
+  dropdownForm = this.fb.nonNullable.group({
+    currentDropdown: [this.generateEmptyEditableDropdown()]
+  });
 
   refreshing: BehaviorSubject<boolean>;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private changeDetector: ChangeDetectorRef,
     private dropdownService: DropdownService,
     private eDropdownService: EditableDropdownService
@@ -58,7 +63,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const drop:EditableDropdown = dropdown.currentDropdown;
+        const drop:EditableDropdown = dropdown.currentDropdown || this.generateEmptyEditableDropdown();
 
         this.currentDropdownValue = drop.dropdown;
         this.currentDisplayName = drop.displayName;
@@ -67,7 +72,9 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
         let dropData = this.dropdownService.getDynamicDropdown(drop.request);
 
-        this.generateDropDownForOrganisation(dropData).subscribe(dropdownResult => this.eDropdownService.repopulateDropDownFormArray(dropdownResult));
+        this.generateDropDownForOrganisation(dropData)
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe(dropdownResult => this.eDropdownService.repopulateDropDownFormArray(dropdownResult));
       });
 
       this.currentDropdownDataSource.subscribe(() => {
@@ -80,6 +87,15 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+}
+
+generateEmptyEditableDropdown() : EditableDropdown {
+  return {
+    dropdown: '',
+    displayName: '',
+    request: '',
+    tableName: ''
+  };
 }
 
 applyFilter(filterValue: string) {

@@ -2,7 +2,7 @@
 
 	<div cdkDropListGroup style="padding-left: 10px;">
 
-		<div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-around start" style="padding-top: 20px">
+		<div class="flex-row gap-20 flex-space-around-start" style="padding-top: 20px">
 
 			<mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
@@ -60,8 +60,7 @@
 			<div class="resize-horizontal" (mousedown)="$event.stopPropagation(); horizontalResizeStart(element, $event)"></div>
 			<div class="resize-vertical" (mousedown)="$event.stopPropagation(); verticalResizeStart(element, $event)"></div>
 
-			<div class="style-bar" *ngIf="element.get('showStyleBar')?.value" fxLayout="row"
-				fxLayoutGap="5px" fxLayoutAlign="space-evenly center">
+			<div class="style-bar flex-row gap-5 flex-space-evenly-center" *ngIf="element.get('showStyleBar')?.value">
 				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('bold')?.value ? 'gray' : 'darkgray' }" (click)="setBold(element);">format_bold</mat-icon>
 				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('italics')?.value ? 'gray' : 'darkgray' }" (click)="setItalics(element);">format_italics</mat-icon>
 				<mat-icon class="edit-icon" [ngStyle]="{ 'color': element.get('underlined')?.value ? 'gray' : 'darkgray' }" (click)="setUderlined(element);">format_underlined</mat-icon>
@@ -138,7 +137,7 @@
 
 
 
-				<div cdkDropList [cdkDropListData]="printableElements" class="bottom-list" fxLayout="column">
+				<div cdkDropList [cdkDropListData]="printableElements" class="bottom-list flex-column" >
 
 					<div class="print-element" style="position: relative;" *ngFor="let element of printableElements | async"
 						cdkDrag>{{element.name}}</div>

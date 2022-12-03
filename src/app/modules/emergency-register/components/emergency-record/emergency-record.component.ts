@@ -1,6 +1,6 @@
 import { EmergencyRecordCommentDialogComponent } from './emergency-record-comment-dialog/emergency-record-comment-dialog.component';
 import { Component, OnInit, Input, Output, EventEmitter, HostListener, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { CrossFieldErrorMatcher } from '../../../../core/validators/cross-field-error-matcher';
 import { CaseService } from '../../services/case.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -88,7 +88,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private userOptions: UserOptionsService,
         private caseService: CaseService,
         private showSnackBar: SnackbarService,

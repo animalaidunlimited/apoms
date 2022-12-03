@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, NgZone } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { EditableDropdownElement } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -33,7 +33,7 @@ export class EditableDropdownService {
 
   constructor(
     private zone: NgZone,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: SnackbarService,
     private dropdownService: DropdownService
   ) {
@@ -54,20 +54,21 @@ export class EditableDropdownService {
 
   repopulateDropDownFormArray(dropdownData: any[]) {
 
-    this.editableDropdownForm = this.generateDropDownFormArray(
-      dropdownData.map(result => {
+    const data =  dropdownData.map(result => {   
+              
+        const values = Object.values(result);
 
-            const vals = Object.values(result);
+        return this.getEmptyElement(
+          values[0] as number,
+          values[1] as string,
+          values[2] as boolean,
+          values[3] as number,
+          false);
 
-            return this.getEmptyElement(
-                          vals[0] as number,
-                          vals[1] as string,
-                          vals[2] as boolean,
-                          vals[3] as number,
-                          false);
-          }
-        )
-    );
+      }
+    )
+
+    this.editableDropdownForm = this.generateDropDownFormArray(data);
 
     this.emit();
 
@@ -157,7 +158,7 @@ export class EditableDropdownService {
       dropdownElement.get('saving')?.setValue(false);
 
       if(result?.error){
-        this.snackbar.errorSnackBar('A server error has occured: error EDS-156', 'OK');
+        this.snackbar.errorSnackBar('A server error has occurred: error EDS-156', 'OK');
       }
       else {
         this.emit();

@@ -1,0 +1,97 @@
+<div [formGroup]="period">
+
+  <div class="flex-column flex-center-center"
+  *ngIf="period.get('startDate')?.value
+  && period.get('endDate')?.value
+  && (period.get('editable')?.value === true)
+  && period.get('startDate')?.valid
+  && period.get('endDate')?.valid;
+  else dateInputs" class="period-header-text">
+
+    <div (click)="editPeriod(period, false)"> 
+      {{ (period.get('startDate')?.value | date : "EEE,dd/MMM") + " - " + (period.get('endDate')?.value | date : "EEE,dd/MMM") }}
+
+    </div>
+
+    <div class="flex-row flex-center-center">
+
+      <mat-checkbox
+        class="unassigned-checkbox"
+        matTooltip="check unassigned staff"
+        formControlName="checkUnassigned"
+        (change)="checkUnassignedStaff(inputPeriod, $event.checked)">
+      </mat-checkbox>
+
+      <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, false)">
+        <mat-icon matTooltip="copy" class="close-icon" >content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, true)">
+        <mat-icon matTooltip="copy + rotate" class="close-icon" >difference</mat-icon>
+      </button>
+
+    </div>
+    <div class="flex-row flex-center-center">
+      <button mat-icon-button (click)="generateRotationPeriodDays(period)"
+      *ngIf="!period.get('locked')?.value" [disabled]="!period.get('rotationPeriodId')?.value || period.dirty">        
+        <mat-icon matTooltip="generate" [ngClass]="(!period.get('rotationPeriodId')?.value  || period.dirty) ? 'close-icon disabled' : 'close-button key'">key</mat-icon>
+      </button>
+
+      <button mat-icon-button class="close-button"
+      *ngIf="period.get('locked')?.value"
+      (click)="navigateToRotationPeriod(period)"
+      >        
+        <mat-icon matTooltip="go to period rota" class="close-icon lock">lock</mat-icon>
+      </button>      
+
+      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">        
+        <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
+      </button>
+
+      <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
+        <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <ng-template #dateInputs>
+
+        <div class="flex-row flex-center-center">
+          <mat-form-field>
+          <input matInput type="date" [max]="period.get('endDate')?.value" formControlName="startDate" placeholder="Period start"  [errorStateMatcher]="errorMatcher"/>
+          <mat-error *ngIf="period.get('startDate')?.hasError('dateExistsInRange')">
+            Day exists in another range
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="date" [min]="period.get('startDate')?.value" formControlName="endDate" placeholder="Period end" [errorStateMatcher]="errorMatcher"/>
+          <mat-error *ngIf="period.get('endDate')?.hasError('dateExistsInRange')">
+            Day exists in another range
+          </mat-error>
+        </mat-form-field> 
+
+        <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
+          <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+        </button>
+
+            <div class="flex-column" *ngIf="period.get('startDate')?.value && period.get('endDate')?.value">
+
+              <button mat-icon-button class="close-button" (click)="editPeriod(period, true)">
+                  <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
+              </button>
+
+              <button mat-icon-button class="close-button" (click)="cancelPeriodEdit(period, true)">
+                <mat-icon matTooltip="cancel" class="close-icon" >close</mat-icon>
+              </button>
+
+            </div>                     
+
+        </div> 
+
+  </ng-template>
+
+
+
+
+</div>

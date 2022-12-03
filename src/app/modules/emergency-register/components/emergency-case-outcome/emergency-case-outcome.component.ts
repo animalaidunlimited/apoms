@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, UntypedFormBuilder, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { CallOutcomeResponse } from '../../../../core/models/call-outcome';
 import { DropdownService } from '../../../../core/services/dropdown/dropdown.service';
@@ -41,7 +41,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
   constructor(
     private dropdowns: DropdownService,
     private caseService: CaseService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private emergencyNumberValidator:UniqueEmergencyNumberValidator,
     private changeDetector:ChangeDetectorRef
   ) {

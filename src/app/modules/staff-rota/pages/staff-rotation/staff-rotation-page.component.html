@@ -1,0 +1,313 @@
+<div class="flex-column flex-start-start" style="margin-left:15px;">
+
+  <div class="flex-row flex-center-center table-container">
+
+    <form [formGroup]="rotaForm">
+
+      <section class="rotation-container mat-elevation-z8" tabindex="0">
+
+        <table mat-table [dataSource]="dataSource"
+        cdkDropList
+        [cdkDropListData]="dataSource"
+        (cdkDropListDropped)="rowDropped($event)"
+        >
+
+        <ng-container matColumnDef="area" sticky>
+          <th mat-header-cell *matHeaderCellDef [attr.colspan]=2>
+            <div class="flex-row flex-center-center gap-20">
+
+              <div formGroupName="currentRota" class="flex-column flex-center-center" style="margin-top: 10px;">
+
+                <div class="flex-row flex-center-center">
+
+                  <mat-form-field class="hidden-input" >
+                    <input matInput autocomplete="off" formControlName="rotaId" type="number" pattern="\d*"/>  
+                  </mat-form-field>
+
+                  <div *ngIf="!getCurrentRota.get('editingRota')?.value; else addRotaSection"
+                  class="flex-row flex-center-center">
+
+                    <mat-form-field class="shift-form-field">
+                      <mat-label>Rota</mat-label>
+                          <mat-select (selectionChange)="rotaSelected($event)" formControlName="rotaId">
+                          <mat-option>N/A</mat-option>
+                              <mat-option *ngFor="let rota of (rotas$ | async)" [value]="rota.rotaId">
+                              {{rota.rotaName}}
+                          </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <div class="flex-row flex-center-center">
+
+                      <button mat-icon-button color="primary"
+                      [disabled]="getCurrentRota.get('editingRotaVersion')?.value"
+                      (click)="addRota()">
+                        <mat-icon matTooltip="add" class="close-icon">add</mat-icon>
+                      </button>
+        
+                      <button mat-icon-button color="primary"
+                      [disabled]="getCurrentRota.get('editingRotaVersion')?.value"
+                      (click)="editRota()">                  
+                        <mat-icon matTooltip="edit" class="close-icon">edit</mat-icon>
+                      </button>
+        
+                      <button mat-icon-button color="primary"
+                      [disabled]="getCurrentRota.get('editingRotaVersion')?.value"
+                      (click)="deleteRota()">
+                        <mat-icon matTooltip="delete" class="close-icon">delete</mat-icon>
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                    <ng-template #addRotaSection>
+
+                      <mat-form-field class="shift-form-field">
+                        <input matInput autocomplete="off" formControlName="rotaName" type="string"
+                        placeholder="Enter rota name" [errorStateMatcher]="errorMatcher"/>  
+                      </mat-form-field>
+
+                      <mat-checkbox
+                      class="default-checkbox-wrapper"
+                      matTooltip="set rota as default"
+                      formControlName="defaultRota">
+                      </mat-checkbox>
+
+                      <div class="flex-row flex-center-center">
+    
+                        <button mat-icon-button color="primary" (click)="saveRota()" [disabled]="getCurrentRota.invalid">                  
+                          <mat-icon matTooltip="save" class="close-icon">save</mat-icon>
+                        </button>
+          
+                        <button mat-icon-button color="primary" (click)="cancelRotaEdit()">                  
+                          <mat-icon matTooltip="cancel" class="close-icon">cancel</mat-icon>
+                        </button>
+    
+                      </div>
+
+                </ng-template>
+
+                </div>
+
+                <div class="rota-version-wrapper">                  
+
+                  <mat-form-field class="hidden-input" >
+                    <input matInput autocomplete="off" formControlName="rotaVersionId" type="number" pattern="\d*"/>  
+                  </mat-form-field>
+
+                  <div *ngIf="!getCurrentRota.get('editingRotaVersion')?.value; else editRotaVersionSection"                        
+                  class="flex-row flex-center-center">
+
+                    <mat-form-field class="shift-form-field">
+                      <mat-label>Rota version</mat-label>
+                          <mat-select (selectionChange)="rotaVersionSelected($event)" formControlName="rotaVersionId">
+                          <mat-option>N/A</mat-option>
+                              <mat-option *ngFor="let rotaVersion of (rotaVersions$ | async)" [value]="rotaVersion.rotaVersionId">
+                              {{rotaVersion.rotaVersionName}}
+                          </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <div class="flex-row flex-center-center">
+
+                      <button mat-icon-button color="primary"
+                      [disabled]="getCurrentRota.get('editingRota')?.value"
+                      (click)="addRotaVersion()">
+                        <mat-icon matTooltip="add" class="close-icon">add</mat-icon>
+                      </button>
+        
+                      <button mat-icon-button color="primary"
+                      [disabled]="getCurrentRota.get('editingRota')?.value"
+                      (click)="editRotaVersion()">                  
+                        <mat-icon matTooltip="edit" class="close-icon">edit</mat-icon>
+                      </button>
+        
+                      <button mat-icon-button color="primary"
+                      [disabled]="getCurrentRota.get('editingRota')?.value"
+                      (click)="deleteRotaVersion()">
+                        <mat-icon matTooltip="delete" class="close-icon">delete</mat-icon>
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                  <ng-template #editRotaVersionSection>
+
+                    <div class="flex-row flex-start-center">
+
+                      <mat-form-field>
+                        <input matInput autocomplete="off" formControlName="rotaVersionName" type="string"
+                        placeholder="Enter version name"  [errorStateMatcher]="errorMatcher"/>  
+                      </mat-form-field>
+
+                      <div class="flex-row flex-center-center"
+                      >
+
+                        <div class="default-checkbox-wrapper">
+                          <mat-checkbox
+                          matTooltip="set rota as default"
+                          formControlName="defaultRotaVersion">
+                          </mat-checkbox>
+
+                        </div>
+
+                        <button mat-icon-button color="primary" (click)="saveRotaVersion()"
+                        *ngIf="!getCurrentRota.get('editingRota')?.value">
+                          <mat-icon matTooltip="save" class="close-icon">save</mat-icon>
+                        </button>
+          
+                        <button mat-icon-button color="primary" (click)="cancelRotaVersionEdit()"
+                        *ngIf="!getCurrentRota.get('editingRota')?.value">                  
+                          <mat-icon matTooltip="edit" class="close-icon">cancel</mat-icon>
+                        </button>
+    
+                      </div>
+
+                    </div>
+
+                  </ng-template>  
+
+                </div>
+
+              </div>
+
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index"
+          [attr.rowspan]="(element.get('area')?.value.areaRowSpan)"
+          [style.display]="element.get('area')?.value.areaRowSpan !== 0  ? '' : 'none'"
+          class="area-header"
+          [ngStyle]="{backgroundColor: element.get('area')?.value.rotationAreaColour}"
+          >{{element.get('area')?.value.rotationArea}}</td>
+        </ng-container>
+
+          <ng-container matColumnDef="areaShift" sticky>
+            <th mat-header-cell *matHeaderCellDef style="display: none;"></th>
+            <td mat-cell *matCellDef="let element"> 
+
+              <app-area-shift [inputAreaShift]="element.get('areaShift')"></app-area-shift>
+
+            </td>
+          </ng-container>
+        
+          <div *ngFor="let period of (rotationPeriods | async); let i = index;">            
+            
+            <ng-container [matColumnDef]="period">
+              <th mat-header-cell *matHeaderCellDef>                
+                <app-rotation-period [inputPeriod]="period"></app-rotation-period>
+              </th>
+              
+              <td mat-cell *matCellDef="let element"
+              [style.background-color]="element.get('areaShift')?.get('colour')?.value">
+                <div formGroupName="matrix">
+    
+                      <div class="flex-center-center"
+                      [formGroupName]="(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)"
+                      class="assigned-staff-wrapper">
+      
+                        <div *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser'); let assignedUser">                                      
+      
+                          <input matInput
+                          type="text"
+                          class="user-input"
+                          formControlName="assignedUser"                            
+                          (focus)="setFilteredUsers(period, assignedUser)"                          
+                          [matAutocomplete]="auto">
+
+                          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                  (optionSelected)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value, assignedUser)">
+                            <mat-option>N/A</mat-option>
+                            <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user">
+                              {{ user.employeeNumber + ' - ' + user.firstName }}
+                            </mat-option>
+                          </mat-autocomplete>
+
+                            <mat-icon *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('leave')?.value; let leave;"
+                            matTooltipClass="leave-tooltip"
+                            [ngClass]="leave.fullOverlap === true ? 'leave-full-overlap' : leave.granted === 'Granted' ? 'leave-granted' : 'leave-pending'"
+                            [matTooltip]="(leave.startDate | date: 'EEE,dd/MMM') + ' to ' + (leave.endDate | date: 'EEE,dd/MMM')
+                            + ' (' + leave.granted + ')'"  matSuffix >event_busy</mat-icon>
+                          
+
+                        </div>
+      
+                      </div>            
+                  
+                </div>
+                
+              </td>
+            </ng-container>        
+         
+          </div>
+
+          <ng-container matColumnDef="move" sticky>
+            <th mat-header-cell *matHeaderCellDef class="move-icon"></th>
+            <td mat-cell *matCellDef="let element;" class="move-icon">
+              <mat-icon matSuffix >more_vert</mat-icon>
+            </td>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="(displayColumns | async); sticky: true;"></tr>
+            <tr mat-row *matRowDef="let row; columns: (displayColumns | async);"
+            cdkDrag
+            [cdkDragData]=row></tr>
+        
+        </table>
+
+      </section>
+
+    </form>
+
+    
+    <div class="add-rotation-period">
+      <button
+          type="button"
+          (click)="addRotationPeriod(true)"
+          [disabled]="!rotaForm.get('currentRota')?.get('rotaId')?.value"
+          mat-mini-fab
+          color="primary">
+          <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  
+  </div>
+  
+  </div>
+  
+    <div class="flex-row flex-center-center gap-20 area-shift">
+  
+      <button
+          type="button"
+          (click)="shiftLeftRotation()"
+          mat-mini-fab
+          [disabled]="beginningOfRange || !rotaForm.get('currentRota')?.get('rotaId')?.value"
+          color="primary">
+          <mat-icon style="margin-left:10px;">arrow_back_ios</mat-icon>
+      </button>
+  
+      <button
+          type="button"
+          (click)="addAreaShift()"
+          [disabled]="(addAreaShiftDisabled$ | async) || !rotaForm.get('currentRota')?.get('rotaId')?.value"
+          mat-mini-fab
+          color="primary">
+          <mat-icon>add</mat-icon>
+      </button>
+
+  </div>
+  
+  <div class="flex-row" *ngIf="(unassignedUsers | async); let unassigned">
+      <div class="group-header">
+          <div class="group-header-text">Unassigned staff:</div>
+      </div>
+  
+      <div cdkDropList [cdkDropListData]="unassignedUsers | async">
+          <div *ngFor="let user of unassigned" class="flex-row" cdkDrag>
+              <div class="staff-member">
+                  {{ user.employeeNumber + ' - ' + user.firstName }}
+              </div>
+          </div>
+      </div>
+  </div>

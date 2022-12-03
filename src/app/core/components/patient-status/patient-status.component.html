@@ -1,6 +1,6 @@
 <form autocomplete="off" [formGroup]="patientStatusForm">
 
-      <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
+      <div class="flex-row flex-wrap gap-20 flex-space-around-center">
 
       <mat-form-field>
         <mat-label>Status</mat-label>
@@ -16,11 +16,15 @@
         <input formControlName="patientStatusDate" type="date" (click)="setDate()"
         name="patientStatusDate" min="{{createdDate | date:'yyyy-MM-dd'}}" max="{{currentTime | date:'yyyy-MM-dd'}}"
         placeholder="Date" [errorStateMatcher]="errorMatcher" matInput>
+
+        <mat-error *ngIf="patientStatusForm.get('patientStatusDate')?.errors?.invalidDate">
+          Cannot enter dates in the future
+        </mat-error>
       </mat-form-field>
 
     </div>
 
-    <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="space-around center">
+    <div class="flex-row flex-wrap gap-20 flex-space-around-center">
 
       <mat-form-field *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
         <mat-label>P/N</mat-label>
