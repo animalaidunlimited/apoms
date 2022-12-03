@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetLeaveRequests !!
 
--- CALL AAU.sp_GetLeaveRequests2('Jim',null, null);
+-- CALL AAU.sp_GetLeaveRequests('Jim',null, null);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetLeaveRequests( IN prm_Username VARCHAR(45), IN prm_StartDate DATE, IN prm_EndDate DATE)

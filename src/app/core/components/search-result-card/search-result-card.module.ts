@@ -12,7 +12,8 @@ import { GalleryWrapperModule } from '../media/media-gallery-wrapper/media-galle
 @NgModule({
     declarations: [
         SearchResultCardComponent,
-        PatientEditDialog],
+        PatientEditDialog
+    ],
     imports: [
         CommonModule,
         MaterialModule,
