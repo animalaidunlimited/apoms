@@ -22,7 +22,7 @@
     "configure:ci": "ts-node set-environment.ts",
     "app-config:ci": "ts-node set-app-yaml.ts",
     "index-config:ci": "ts-node set-index-html.ts",
-    "build:ci": "ng build --configuration=$NPM_CONFIG_ENVIRONMENT --sourceMap=false",
+    "build:ci": "ng build --configuration=$NPM_CONFIG_ENVIRONMENT --source-map=false",
     "test:ci": "ng test --watch=false --code-coverage --source-map true --browsers=ChromeHeadlessCustom",
     "source-map-explorer": "source-map-explorer dist/apoms/**/*.js"
   },
