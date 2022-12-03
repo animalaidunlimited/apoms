@@ -1,9 +1,9 @@
 <div class="flex-row flex-center-start">
 
-    <div class="flex-column" class="flex-center-center" class="vehicle-shift-header-wrapper">
+    <div class="flex-column flex-center-center vehicle-shift-header-wrapper">
 
         <ng-container *ngIf="vehicle">
-            <div class="vehicle-shift-header gap-10" class="flex-row flex-center-center">
+            <div class="vehicle-shift-header gap-10 flex-row flex-center-center">
                 <div class="vehicle-image">
                     <img [src]="vehicle.imageURL" />
                 </div>
@@ -26,7 +26,7 @@
                     </div>
                     <div>{{vehicle.vehicleType}}</div>
             </div>
-            <div class="flex-column" class="flex-center-center" class="capacity-details">
+            <div class="flex-column flex-center-center capacity-details">
                 <div class="capacity">Capacity</div>
                 <div class="capacity-item flex-row flex-space-between-center">
                     <div>Small</div>
@@ -44,7 +44,7 @@
 
     </div>
 
-    <div fxFlex class="flex-column" class="vehicle-shift-hours">
+    <div fxFlex class="flex-column vehicle-shift-hours">
 
         <div class="flex-row flex-space-between-center">
 
@@ -57,7 +57,7 @@
         <div fxFill class="shift-wrapper">
 
             <div
-            class="flex-row flex-wrap" class="flex-start-center" class="gap-10"
+            class="flex-row flex-wrap flex-start-center gap-10"
             *ngFor="let shift of ( shifts$ | async)"
             [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
 

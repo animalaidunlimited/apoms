@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { generateUUID } from 'src/app/core/helpers/utils';
+import { generateRangeOfHours, generateUUID } from 'src/app/core/helpers/utils';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { HourRange, Vehicle, VehicleShift } from 'src/app/core/models/vehicle';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
@@ -215,15 +215,11 @@ export class VehicleService  extends APIService {
     let start = Number(this.shiftStart.substring(0,2));
     let end = Number(this.shiftEnd.substring(0,2));
 
-    var range = [];
+    return generateRangeOfHours(start, end)
 
-    for (let i = start; i <= end; i++) {
-      range.push(i);
-    }
 
-    range.sort((a,b) => a-b);
 
-    return { start, end, range } as HourRange;
+
 
 
   }

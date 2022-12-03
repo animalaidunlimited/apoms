@@ -1,0 +1,114 @@
+.heading {
+    position: sticky;
+    left: 0;
+    display: inline-block;
+}
+  .area-coverage{
+    display: inline-block;
+  }
+
+
+.form-header{
+    display: grid;
+    grid-template-columns: 230px auto;
+}
+
+
+.quarter-hour{
+    font-size: x-small;
+    padding: 0 3px;
+}
+
+.header-block{
+    height:24px;
+}
+
+.worker-column{
+    width: 250px;
+}
+
+.row-header{
+    position: sticky;
+    left: 0;
+    background-color: white;
+    opacity: 90%;
+}
+
+.assignment-row{
+    height: 30px;
+    display: flex;
+    align-items: center;    
+}
+
+.shift{
+    background-color: #359A88;
+    height: 24px;
+    color: white;
+}
+
+.coverage{
+    flex-grow: 1;
+    justify-content: center;
+    font-size: x-small;
+}
+
+.start-shift{
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.end-shift{
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.break{
+    background-color: slategrey;
+}
+
+.timing-wrapper{
+    position: relative;
+}
+
+.user-block{
+    border: 1px solid lightgrey;
+    border-top: none;
+}
+
+.user-autocomplete{
+    justify-self: center;
+    margin-top:10px
+}
+
+.edit-timings{
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 4px;
+    background-color: whitesmoke;
+    position: absolute;
+}
+
+.shift-edit-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+  }
+  
+  .shift-edit-menu-item {
+    background-color: transparent;
+    cursor: pointer;
+    border: none !important;
+  
+    user-select: none;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+  
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 1;
+  }

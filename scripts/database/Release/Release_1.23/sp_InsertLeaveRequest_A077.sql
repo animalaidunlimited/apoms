@@ -52,19 +52,19 @@ SET vOrganisationId = 0;
     IF(vLeaveRequestExists = 0) THEN    
     
 	INSERT INTO AAU.LeaveRequest (
-	UserId,
-    OrganisationId,
-	RequestDate,
-	LeaveRequestReasonId,
-	AdditionalInformation,
-	LeaveStartDate,
-	LeaveEndDate,
-	Granted,
-	CommentReasonManagementOnly,
-	DateApprovedRejected,
-	RecordedOnNoticeBoard,
-    WithinProtocol,
-    FestivalId
+		UserId,
+		OrganisationId,
+		RequestDate,
+		LeaveRequestReasonId,
+		AdditionalInformation,
+		LeaveStartDate,
+		LeaveEndDate,
+		Granted,
+		CommentReasonManagementOnly,
+		DateApprovedRejected,
+		RecordedOnNoticeBoard,
+		WithinProtocol,
+		FestivalId
 	)
 	VALUES
 	(

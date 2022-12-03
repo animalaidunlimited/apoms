@@ -88,8 +88,6 @@ export class RotationRoleEditorComponent implements OnInit {
 
     this.rotaSettingsService.saveRotationRole(this.rotationRoleForm.value).then(response => {
 
-      console.log(this.rotationRoleForm.value)
-
       if(response.success === 1) {
         this.snackbar.successSnackBar("Rotation role updated successfully", "OK");
         this.rotationRoleForm.get('rotationRoleId')?.setValue(response.rotationRoleId);

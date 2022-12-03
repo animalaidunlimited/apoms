@@ -1,12 +1,221 @@
-<form [formGroup]="assignmentForm">
+
+<div class="area-coverage">
+
+  <div class="heading">
+    <h1>Department shift timings</h1>
+    <h2>{{'Department: ' + data.department}} </h2>
+    <h3>{{'Date: ' + (data.rotaDayDate | date: "EEE,dd/MMM")}}</h3>
+
+  </div>
 
 
-<div *ngFor="let assignment of data.assignments; let i = index" formArrayName="assignments">
+  <form [formGroup]="assignmentForm" class="form-header">
+    <div>Worker</div>
+    <div>
+      
+      <div class="flex-row flex-start-start">
+        <div class="header-block hour-header flex-row flex-start-start single-hour quarter-hour"     
+        *ngFor="let quarterHour of quarterHours">{{quarterHour}}
+        </div>
+      </div>
 
-  <div formGroupName={{i}}>
-    <app-user-autocomplete formControlName="userId"></app-user-autocomplete>
+    </div>
+    <div class="row-header">
+      
+      <div *ngFor="let assignment of data.assignments; let i = index" formArrayName="assignments">
+        <div formGroupName={{i}} class="assignment-row" style="justify-content: center;">
+          {{assignment.get('userCode')?.value}}
+        </div>
+
+      </div>
+
+    </div>  
+    <div>
+      
+      <div *ngFor="let assignment of data.assignments; let i = index" formArrayName="assignments">
+
+        <div formGroupName={{i}} class="flex-row flex-start-center assignment-row">
+
+          <div [style.width.%]="generateShiftLeft(assignment)"></div>
+    
+          <div class="shift start-shift" [style.width.%]="generateShiftStart(assignment)"
+          [matTooltip]="generateShiftTiming(assignment)"
+          [cdkContextMenuTriggerFor]="context_menu">   
+          </div>
+    
+          <div class="shift break" [style.width.%]="generateBreak(assignment)"
+          [matTooltip]="generateShiftTiming(assignment)"
+          [cdkContextMenuTriggerFor]="context_menu">   
+          </div>
+    
+          <div class="shift end-shift" [style.width.%]="generateShiftEnd(assignment)"
+          [matTooltip]="generateShiftTiming(assignment)"
+          [cdkContextMenuTriggerFor]="context_menu">   
+          </div>
+    
+          <ng-template #context_menu>
+            <div class="timing-wrapper" cdkMenu>
+              <div class="edit-timings">
+    
+                <div class="form-row flex-row gap-20 flex-center-center">
+    
+                  <mat-form-field>
+                    <mat-label>Shift start time</mat-label>
+                    <input matInput type="time" formControlName="actualShiftStartTime" [errorStateMatcher]="errorMatcher"/>
+                  </mat-form-field>
+              
+                  <mat-form-field>
+                    <mat-label>Shift end time</mat-label>
+                    <input matInput type="time" formControlName="actualShiftEndTime" [errorStateMatcher]="errorMatcher"/>
+                  </mat-form-field>
+          
+                </div>
+          
+                <div class="form-row flex-row gap-20 flex-center-center">
+          
+                  <mat-form-field>
+                    <mat-label>Break start time</mat-label>
+                    <input matInput type="time" formControlName="actualBreakStartTime" [errorStateMatcher]="errorMatcher"/>
+                  </mat-form-field>
+              
+                  <mat-form-field>
+                    <mat-label>Break end time</mat-label>
+                    <input matInput type="time" formControlName="actualBreakEndTime" [errorStateMatcher]="errorMatcher"/>
+                  </mat-form-field>
+          
+                </div>         
+    
+              </div>
+    
+            </div>
+          </ng-template>
+    
+        </div>
+
+      </div>
+
+    </div>
+    <div></div>
+    <div>
+
+      <div class="flex-row flex-start-start">
+        <div class="header-block hour-header flex-row flex-start-start single-hour coverage"     
+        *ngFor="let coverage of coverageByHour">{{coverage.value}}
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+<!-- <form [formGroup]="assignmentForm">
+
+  <h1>Department shift timings</h1>
+  <h2>{{'Department: ' + data.department}} </h2>
+  <h3>{{'Date: ' + (data.rotaDayDate | date: "EEE,dd/MMM")}}</h3>
+
+<div class="form-header">
+
+  <div class="header-block single-hour"> Worker</div>
+
+  <div class="flex-row flex-start-start">
+    <div class="header-block hour-header flex-row flex-start-start single-hour quarter-hour"
+    *ngFor="let quarterHour of quarterHours">{{quarterHour}}
+    </div>
   </div>
 
 </div>
 
+<div *ngFor="let assignment of data.assignments; let i = index" formArrayName="assignments">
+
+  <div formGroupName={{i}} class="form-header user-block">
+    <app-user-autocomplete formControlName="userId" [showLabel]="false" class="user-autocomplete"></app-user-autocomplete>
+
+    <div class="flex-row flex-start-center">
+
+      <div [style.width.%]="generateShiftLeft(assignment)"></div>
+
+      <div class="shift start-shift" [style.width.%]="generateShiftStart(assignment)"
+      [matTooltip]="generateShiftTiming(assignment)"
+      [cdkContextMenuTriggerFor]="context_menu">   
+      </div>
+
+      <div class="shift break" [style.width.%]="generateBreak(assignment)"
+      [matTooltip]="generateShiftTiming(assignment)"
+      [cdkContextMenuTriggerFor]="context_menu">   
+      </div>
+
+      <div class="shift end-shift" [style.width.%]="generateShiftEnd(assignment)"
+      [matTooltip]="generateShiftTiming(assignment)"
+      [cdkContextMenuTriggerFor]="context_menu">   
+      </div>
+
+      <ng-template #context_menu>
+        <div class="timing-wrapper" cdkMenu>
+          <div class="edit-timings">
+
+            <div class="form-row flex-row gap-20 flex-center-center">
+
+              <mat-form-field>
+                <mat-label>Shift start time</mat-label>
+                <input matInput type="time" formControlName="actualShiftStartTime" [errorStateMatcher]="errorMatcher"/>
+              </mat-form-field>
+          
+              <mat-form-field>
+                <mat-label>Shift end time</mat-label>
+                <input matInput type="time" formControlName="actualShiftEndTime" [errorStateMatcher]="errorMatcher"/>
+              </mat-form-field>
+      
+            </div>
+      
+            <div class="form-row flex-row gap-20 flex-center-center">
+      
+              <mat-form-field>
+                <mat-label>Break start time</mat-label>
+                <input matInput type="time" formControlName="actualBreakStartTime" [errorStateMatcher]="errorMatcher"/>
+              </mat-form-field>
+          
+              <mat-form-field>
+                <mat-label>Break end time</mat-label>
+                <input matInput type="time" formControlName="actualBreakEndTime" [errorStateMatcher]="errorMatcher"/>
+              </mat-form-field>
+      
+            </div>         
+
+          </div>
+
+        </div>
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>
+
+
 </form>
+
+
+<div class="form-header">
+
+  <div class="header-block single-hour"></div>
+
+  <ngx-charts-bar-vertical 
+    [view]="view"
+    [results]="coverageByHour"
+    [gradient]="verticalBarOptions.gradient"
+    [xAxis]="verticalBarOptions.showXAxis"
+    [yAxis]="verticalBarOptions.showYAxis"
+    [legend]="verticalBarOptions.showLegend"
+    [showXAxisLabel]="verticalBarOptions.showXAxisLabel"
+    [showYAxisLabel]="verticalBarOptions.showYAxisLabel"
+    [xAxisLabel]="verticalBarOptions.xAxisLabel"
+    [yAxisLabel]="verticalBarOptions.yAxisLabel"
+    [barPadding]="verticalBarOptions.barPadding"
+    [showGridLines]="verticalBarOptions.showGridLines"
+  ></ngx-charts-bar-vertical>
+
+</div> -->

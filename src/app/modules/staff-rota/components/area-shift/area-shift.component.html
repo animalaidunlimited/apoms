@@ -1,8 +1,8 @@
 
 <div [formGroup]="areaShift" class="flex-row flex-space-between-center">
 
-  <mat-form-field style="width:125px">
-        <mat-select (selectionChange)="groupSelected($event, areaShift)"
+  <div style="width:125px">
+    <mat-select (selectionChange)="groupSelected($event, areaShift)"
         style="text-align: center;"
         formControlName="rotationRoleId"
         [errorStateMatcher]="errorMatcher">
@@ -11,9 +11,9 @@
             {{role.rotationRole}}
         </mat-option>
     </mat-select>
-  </mat-form-field>
+  </div>
 
-  <div class="area-shift-edit-buttons" class="flex-row flex-center-center">
+  <div class="area-shift-edit-buttons flex-row flex-center-center">
 
     <div class="colour-input">
       <input type="color" formControlName="colour" (blur)="updateColour()">

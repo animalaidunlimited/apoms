@@ -6,13 +6,15 @@ import { DailyRotaComponentRoutingModule } from './daily-rota-routing.module';
 import { DailyRotaDayComponent } from '../../components/daily-rota-day/daily-rota-day.component';
 import { UserAutoCompleteModule } from '../../components/user-autocomplete/user-autocomplete.module';
 import { AreaStaffCoverageComponent } from './../../components/area-staff-coverage/area-staff-coverage.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   imports: [
   CommonModule,
     DailyRotaComponentRoutingModule,
     MaterialModule,
-    UserAutoCompleteModule
+    UserAutoCompleteModule,
+    NgxChartsModule
   ],
   declarations: [
     DailyRotaComponent,

@@ -17,7 +17,7 @@
 
       </div>
 
-      <div class="flex-row" class="flex-start-center" class="gap-15" style="margin-top: 15px" *ngIf="!isPrinting">
+      <div class="flex-row flex-start-center gap-15" style="margin-top: 15px" *ngIf="!isPrinting">
 
         <mat-form-field >
           <mat-label>Filter by tag number</mat-label>
@@ -375,7 +375,7 @@ class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th
 
       </div>
 
-        <div *ngIf="column.type === 'checkbox'" class="checkbox-column" class="flex-row flex-center-center">
+        <div *ngIf="column.type === 'checkbox'" class="checkbox-column flex-row flex-center-center">
        <mat-radio-group>
           <mat-radio-button [value]="1"></mat-radio-button>
         </mat-radio-group>

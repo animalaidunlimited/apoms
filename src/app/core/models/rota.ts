@@ -129,6 +129,8 @@ export interface AssignedUser {
 }
 
 export interface RotaDayAssignmentResponse {
+  rotaId: number,
+  rotaVersionId: number,
   rotationPeriodId: number;
   rotaDays: RotaDay[];
 }
@@ -141,17 +143,18 @@ export interface RotaDay{
 export interface RotaDayAssignment{
   rotaDayId: number;
   areaRowSpan: number;
-  areaShiftId: number;
   userId: number;
+  userCode: string;
   rotationUserId: number;
   leaveRequestId: number;
   leaveGranted: string;
   leaveUser: string;
+  rotationRoleId: number;
   rotationRole: string;
   rotationAreaId: number;
   rotationArea: string;  
   rotationAreaColour: string;
-  rotationAreaSortOrder: string;
+  rotationAreaSortOrder: number;
   plannedShiftStartTime: string;
   plannedShiftEndTime: string;
   actualShiftStartTime: string;
@@ -161,6 +164,10 @@ export interface RotaDayAssignment{
   actualBreakStartTime: string;
   actualBreakEndTime: string;
   notes: string;
+  isAdded: boolean;
+  guid: string;
+  rotaDayDate?: string;
+  rotationPeriodId?: number;
 }
 export interface RotationPeriodLeave {
   leaveRequestId: number;

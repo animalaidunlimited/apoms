@@ -16,7 +16,7 @@
         <mat-icon>refresh</mat-icon>
     </button>
 
-    <div class="flex-row" class="gap-10" fxLayout.lt-md="row" fxLayoutAlign = "center center">
+    <div class="flex-row gap-10 flex-center-center" fxLayout.lt-md="row">
         <fieldset class="form-sub-group small-box">
             <div *ngFor = "let data of patientCountData">
                 <div *ngIf="data.area === 'Total'">
@@ -26,12 +26,12 @@
         </fieldset>
     </div>
 
-    <div class="flex-column" class="gap-10" fxLayout.lt-md="column" fxLayoutAlign = "center center" [formGroup]="reportingDetails">
+    <div class="flex-column gap-10 flex-center-center" fxLayout.lt-md="column" [formGroup]="reportingDetails">
 
         <fieldset class="form-sub-group small-box">
             <legend class="legend">Case count by date</legend>
 
-            <div class="flex-row" class="gap-10" style="margin-top: 15px;">
+            <div class="flex-row gap-10" style="margin-top: 15px;">
                 <mat-slide-toggle [checked]="isStreetTreatChecked | async" (change)="streetTreatChecked($event)" formControlName="streetTreat">StreetTreat</mat-slide-toggle>
                 <mat-slide-toggle [checked]="isAdmissionChecked | async" (change)="admissionChecked($event)" formControlName="admission">Admission</mat-slide-toggle>
             </div>

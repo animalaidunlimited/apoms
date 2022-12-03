@@ -1,11 +1,11 @@
 
-<div class="flex-row" class="mediaGalleryContainer" *ngIf="displayImagesAndButtons">
+<div class="flex-row mediaGalleryContainer" *ngIf="displayImagesAndButtons">
 
     <media-thumbnails [patientId]="patientId" [limitSize]=true></media-thumbnails>
 
 </div>
 
-<div class="flex-row"  class="gap-10 flex-end-center" *ngIf="displayImagesAndButtons">
+<div class="flex-row gap-10 flex-end-center" *ngIf="displayImagesAndButtons">
 
     <button type="button" color="primary" mat-mini-fab>
         <mat-icon (click)="openMediaDialog()" style="cursor: pointer;">add_a_photo</mat-icon>
@@ -17,7 +17,7 @@
 
 </div>
 
-<div class="flex-row"  class="gap-50 flex-end-center" *ngIf="!displayImagesAndButtons">
+<div class="flex-row gap-50 flex-end-center" *ngIf="!displayImagesAndButtons">
 
     <div>
         <mat-icon (click)="openMediaDialog()" style="cursor: pointer;">add_a_photo</mat-icon>

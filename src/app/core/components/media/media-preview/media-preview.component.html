@@ -42,12 +42,12 @@
             (dragleave)="onDragLeave($event)">
                 <!--camera -->
                 <div class="flex-row" ngStyle.xs="margin-top:1.5em;">
-                    <div class="flex-column" class="flex-center-center" *ngIf="platform.ANDROID || platform.IOS" >
+                    <div class="flex-column flex-center-center" *ngIf="platform.ANDROID || platform.IOS" >
                         <mat-icon aria-label="Upload new image" (click)="openMobileMediaCaptureDialog()">image</mat-icon>
                         <p style="text-align:center;">Click here to capture video/image</p>
                     </div>
                     <!--From gallery-->
-                    <div class="flex-column" class="flex-center-center" *ngIf="!platform.ANDROID && !platform.IOS" >
+                    <div class="flex-column flex-center-center" *ngIf="!platform.ANDROID && !platform.IOS" >
                         <mat-icon aria-label="Upload new image" >add_a_photo</mat-icon>
                         <p style="text-align:center;">Drag and drop files here</p>
                     </div>
@@ -69,7 +69,7 @@
 
     <div style="padding: 0.5rem;" ngStyle.gt-xs="width: 98%;" [formGroup]="recordForm">
         <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
-            <mat-form-field class="imageDate" appearance="fill" class="flex-column" >
+            <mat-form-field class="imageDate flex-column" appearance="fill">
                 <mat-label>Date</mat-label>
                 <input matInput style="width: 100%;" type="datetime-local" name="imageDate"
                 formControlName="imageDate" style="background: transparent;
@@ -86,8 +86,8 @@
         </div>
 
 
-        <div class="imagePreviewSidePanel imageTagsSidePanel" class="flex-column" >
-            <mat-form-field appearance="fill" class="flex-column" class="imageTags">
+        <div class="imagePreviewSidePanel imageTagsSidePanel flex-column" >
+            <mat-form-field appearance="fill" class="flex-column imageTags">
                 <mat-label>Tags</mat-label>
                 <input matInput style="width: 100%;" type="text"
                 autocomplete="off"
@@ -109,7 +109,7 @@
                 </mat-chip>
               </mat-chip-list>
         </div>
-        <div class="imagePreviewSidePanel chatSidePanel" class="flex-column" >
+        <div class="imagePreviewSidePanel chatSidePanel flex-column" >
             <app-comment style="width:100%" [parentRecordId]="data.mediaData?.patientMediaItemId || -1" [parentRecordType]="data.mediaData?.mediaType?.includes('image') ? 'image' : 'video'"></app-comment>
         </div>
 

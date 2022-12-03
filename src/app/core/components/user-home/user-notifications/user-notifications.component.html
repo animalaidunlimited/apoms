@@ -17,7 +17,7 @@
 
       <div formGroupName="{{i}}">
 
-        <div class="flex-row" class="notificationPanel" [ngClass]="note.get('acknowledged')?.value ? 'acknowledged' : 'unacknowledged'">
+        <div class="flex-row notificationPanel" [ngClass]="note.get('acknowledged')?.value ? 'acknowledged' : 'unacknowledged'">
 
           <div (click)="followNotification(note)">
             <div>             

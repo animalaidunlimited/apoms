@@ -116,8 +116,6 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     this.requestService.getLeaveRequests()
     .pipe(takeUntil(this.ngUnsubscribe)).subscribe(requests => {
 
-      console.log(requests);
-
       let foundRequest = requests.find(element => element.leaveRequestId === loadLeaveRequest);
 
       if(foundRequest){
@@ -194,11 +192,6 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
     const noticeGiven = ((new Date(this.leaveStartDate || "").getTime()) - (new Date(this.requestDate || "").getTime())) / 86400 / 1000;
 
-    console.log(noticeGiven);
-    console.log(noticeDaysRequired);
-    console.log(noticeGiven > noticeDaysRequired);
-
-
     this.leaveRequestForm.get('withinProtocol')?.setValue(noticeGiven > noticeDaysRequired);
 
   }
@@ -214,8 +207,6 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
   getFestivalNoticeDays() : number {
 
     const selectedFestival = this.leaveRequestForm.get('leaveRequestReasonId')?.value || -1;
-
-    console.log(selectedFestival);
 
     return this.festivals.find(festival => festival?.festivalId === selectedFestival)?.noticeDaysRequired || 30;
 
@@ -246,8 +237,6 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
   saveLeaveRequest() : void {  
 
     this.requestService.saveLeaveRequest(this.leaveRequestForm.value).then((response: LeaveRequestSaveResponse) => {
-
-      console.log(response);
 
       switch(response.success){
         case 1 : {

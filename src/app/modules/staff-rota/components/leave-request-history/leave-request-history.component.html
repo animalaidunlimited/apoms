@@ -1,7 +1,7 @@
 <h1>Leave request history</h1>
-<form [formGroup]="userForm" class="flex-row" class="flex-start-center">
+<form [formGroup]="userForm" class="flex-row flex-start-center">
 
-    <app-user-autocomplete formControlName="userId"></app-user-autocomplete>
+    <app-user-autocomplete formControlName="userId" [showLabel]="true"></app-user-autocomplete>
 
     <mat-form-field appearance="fill">
         <mat-label>Department</mat-label>

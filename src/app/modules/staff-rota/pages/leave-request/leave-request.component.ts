@@ -13,6 +13,8 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
+import { FormBuilder, AbstractControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-leave-request',
@@ -24,6 +26,10 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngUnsubscribe = new Subject();
+
+  departmentForm = this.fb.group({
+    departmentId: new FormControl<number[]>([])
+  })
 
   currentDate = getCurrentDateString();
 
@@ -39,10 +45,14 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
 
   requests!: DisplayLeaveRequest[];
 
+  get departmentId() : AbstractControl<number[] | null, number[] | null> | null {
+    return this.departmentForm.get("departmentId")
+  }
 
   constructor(
     private requestService: LeaveRequestService,
     private dialog: MatDialog,
+    private fb: FormBuilder,
     private dropdown: DropdownService,
     private _liveAnnouncer: LiveAnnouncer,
     private snackbar: SnackbarService
@@ -68,6 +78,8 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
     )
 
     this.departments$ = this.dropdown.getDepartments();
+
+    this.departmentId?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(idArray => this.departmentFilterChanged(idArray || []))
 
    }
 
@@ -175,6 +187,8 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
   }
 
   departmentFilterChanged(selectedDepartments: number[]) : void {
+
+    this.departmentId?.setValue(selectedDepartments, {emitEvent: false});
 
     let filteredRequests = this.requests.filter(request => selectedDepartments.includes(request.departmentId));
 

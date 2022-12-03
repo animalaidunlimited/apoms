@@ -1,6 +1,6 @@
 <form
 [formGroup]="rotaOptions"
-class="flex-column" class="flex-center-center">
+class="flex-column flex-center-center">
 
 <mat-accordion class="accordian">
   <mat-expansion-panel>
@@ -12,23 +12,23 @@ class="flex-column" class="flex-center-center">
         Here you can edit the settings for the rota system.
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div class="flex-column" class="flex-center-center">
+    <div class="flex-column flex-center-center">
 
-        <div formGroupName="defaults" class="flex-row flex-wrap" class="flex-center-center">
+        <div formGroupName="defaults" class="flex-row flex-wrap gap-20 flex-center-center">
 
           <div>
             <mat-form-field>
+              <mat-label>Periods to show</mat-label>
                 <input
                 formControlName="periodsToShow" 
                 type="number"
                 min=1
-                placeholder="Periods to show"
                 autocomplete="off"
                 matInput>
             </mat-form-field>
           </div>
 
-          <div>
+          <div style="padding-bottom: 20px;">
             <button mat-raised-button color="primary" (click)="saveOrganisationRotaDetails();" [disabled]="rotaOptions.invalid">Save</button>
           </div>
 
@@ -48,7 +48,7 @@ class="flex-column" class="flex-center-center">
         Add and update the rota areas.
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div class="flex-column" class="flex-center-center">
+    <div class="flex-column gap-20 flex-center-center">
 
       <app-rotation-area-editor class="add-records"></app-rotation-area-editor>
 
@@ -64,7 +64,7 @@ class="flex-column" class="flex-center-center">
         Add and update the rotation roles.
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div class="flex-column" class="flex-center-center">
+    <div class="flex-column gap-20 flex-center-center">
 
       <app-rotation-role-editor class="add-records"></app-rotation-role-editor>
 

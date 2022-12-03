@@ -98,7 +98,7 @@
 
                 </div>
 
-                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap" class="gap-5" *ngIf="assignments.ambulanceAction === 'Release'">
+                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap gap-5" *ngIf="assignments.ambulanceAction === 'Release'">
 
                     <button (click)="toggleButtonSelection('PickedUp', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Picked up
@@ -115,7 +115,7 @@
 
                 </div>
 
-                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap" class="gap-5" *ngIf="assignments.ambulanceAction === 'StreetTreat'">
+                <div style="margin-bottom: -0.6em;" class="flex-row flex-wrap gap-5" *ngIf="assignments.ambulanceAction === 'StreetTreat'">
 
                     <button (click)="toggleButtonSelection('Arrived', assignments.ambulanceAction, assignments)" class="selectionButtonWrapper">
                         Arrived

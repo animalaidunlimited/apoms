@@ -8,10 +8,10 @@
 
     <div class="flex-column" >
 
-        <div class="flex-row flex-wrap" class="flex-space-around-center">
+        <div class="flex-row flex-wrap flex-space-around-center">
             <fieldset class="form-sub-group">
                 <legend class="legend" i18n>Logo</legend>
-                <div class="flex-column" class="flex-center-center" >
+                <div class="flex-column flex-center-center" >
 
                     <img [src]="imageSrc ? imageSrc: organisationForm.get('logoUrl')?.value" style="width:10em"/>
 
@@ -39,19 +39,19 @@
             </fieldset>
         </div>
 
-        <fieldset fxFlex="1 1 auto"  class="form-sub-group" class="flex-column" >
+        <fieldset fxFlex="1 1 auto"  class="form-sub-group flex-column" >
 
             <legend class="legend" i18n>Address</legend>
 
             <div formArrayName="address" >
 
-                <div class="flex-column" class="flex-center-center">
+                <div class="flex-column flex-center-center">
 
-                    <div class="flex-column" class="address-row-wrapper">
+                    <div class="flex-column address-row-wrapper">
 
                         <div *ngFor="let item of addressArray.controls; let i = index">
 
-                            <div [formGroupName]="i"  class="flex-row" style="width: 100%;" class="gap-15">
+                            <div [formGroupName]="i"  class="flex-row gap-15" style="width: 100%;">
 
                                 <mat-form-field class="name-field" autocomplete="none">
 

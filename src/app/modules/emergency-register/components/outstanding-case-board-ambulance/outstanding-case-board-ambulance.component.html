@@ -16,7 +16,7 @@
           <div class="vehicleDescription flex-row">
             <div >
               <p class="vehicleNumber"(click)="showPlate = !showPlate">{{vehicleDetail.vehicleNumber}}</p>
-              <div class="licensePlate" @fadeAnimation class="flex-row" *ngIf="showPlate">
+              <div class="licensePlate flex-row" @fadeAnimation *ngIf="showPlate">
                 <div class="licensePlateBadge">
                   <div class="silver"></div>
                   <span>IND</span>
@@ -40,8 +40,8 @@
           </div>
         </div>
 
-        <div class="flex-row" class="vehicleType">
-          <div  fxFlex   class="flex-row" class="vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
+        <div class="flex-row vehicleType">
+          <div  fxFlex   class="flex-row vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
             <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
             <p>{{vehicle.VehicleType}}</p>
           </div>

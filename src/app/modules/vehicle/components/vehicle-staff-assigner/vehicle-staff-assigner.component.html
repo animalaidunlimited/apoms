@@ -11,7 +11,7 @@
 
 <div style="margin-bottom: 60px;">
 
-    <div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container" class="flex-row flex-center-center">
+    <div *ngFor="let vehicle of (activeVehicles$ | async)" class="assigner-container flex-row flex-center-center">
 
 
         <app-vehicle-shift class="vehicle-shift-container" [shiftDate]="shiftDate.get('date')?.value" [vehicle]="vehicle"></app-vehicle-shift>

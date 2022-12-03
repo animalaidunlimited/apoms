@@ -8,12 +8,16 @@ table {
   min-width: 465px;
 }
 
-.shift-form-field{
-    width: 100px;
-}
+// .shift-form-field{
+//     width: 100px;
+// }
 
 table {
     border-collapse: collapse;
+}
+
+::ng-deep .mat-mdc-table .mdc-data-table__row {
+    height: 49px;
 }
 
 ::ng-deep .mat-table thead {    
@@ -31,7 +35,6 @@ tr, th, td {
     transform: scale(-1);
     vertical-align: middle;
     width: 35px;
-    padding-left: 0 !important;
 }
 
 .move-icon{
@@ -42,19 +45,6 @@ tr, th, td {
         cursor: ns-resize;
     }
 }
-
-::ng-deep .assigned-user {
-
-    .mat-form-field {
-        height: 34px !important;
-      }
-
-    .mat-form-field-infix {
-        border: none !important;
-    }
-
-}
-
 .rota-version-wrapper{
     width: 100%;
 }
@@ -145,6 +135,8 @@ tr, th, td {
 .user-input{
     text-align: center;
     cursor: pointer;
+    border: none !important;
+    border-radius: 5px;
 }
 
 ::ng-deep .leave-tooltip{

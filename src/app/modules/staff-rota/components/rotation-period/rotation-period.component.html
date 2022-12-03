@@ -1,6 +1,6 @@
 <div [formGroup]="period">
 
-  <div class="flex-column" class="flex-center-center"
+  <div class="flex-column flex-center-center"
   *ngIf="period.get('startDate')?.value
   && period.get('endDate')?.value
   && (period.get('editable')?.value === true)

@@ -31,7 +31,7 @@ $my-app-theme: mat.define-light-theme(
         accent: $my-app-accent,
         warn: $my-app-warn),
     typography: mat.define-typography-config(),
-    density: -2
+    density: 0
     )
     
 );
@@ -40,6 +40,3 @@ $my-app-theme-with-foreground: map-merge($my-app-theme, (foreground: $my-app-for
 
 @include mat.all-legacy-component-themes($my-app-theme-with-foreground);
 @include mat.all-component-themes($my-app-theme-with-foreground);
-
-
-// @include mat.all-component-themes($my-app-theme);

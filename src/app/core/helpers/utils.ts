@@ -141,3 +141,36 @@ export function getShiftLeftStartingPosition(startTime: number, hourRange: HourR
 }
 
 
+export function generateRangeOfHours(start: number, end: number) : HourRange {
+
+  var range = [];
+
+  for (let i = start; i <= end; i++) {
+    range.push(i);
+  }
+
+  range.sort((a,b) => a-b);
+
+  return { start, end, range } as HourRange;
+
+}
+
+export function generateRangeOfQuarterHours(start: number, end: number) : string[] {
+
+  var range:string[] = [];
+
+  for (let i = start; i <= end; i++) {
+
+    let startHour = ("" + i).padStart(2,"0");
+
+    range.push(`${startHour}:00`);
+    range.push(`${startHour}:15`);
+    range.push(`${startHour}:30`);
+    range.push(`${startHour}:45`);
+  }
+
+  range.sort((a,b) => (new Date("1970-03-21" + a).getTime()) - (new Date("1970-03-21" + b).getTime()));
+
+  return range;
+
+}

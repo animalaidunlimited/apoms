@@ -28,18 +28,16 @@ IF vRotationPeriodExists = 0 THEN
 
 UPDATE AAU.RotationPeriod SET `Locked` = 1 WHERE RotationPeriodId = prm_RotationPeriodId;
 
-INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, AreaShiftId, UserId, RotationUserId, LeaveRequestId)
+INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleId, UserId, RotationUserId, LeaveRequestId)
 SELECT DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
 p.RotationPeriodId,
-a.AreaShiftId,
+a.RotationRoleId,
 NULLIF(NULLIF(rmi.UserId, -1), lr.LeaveRequestId IS NOT NULL) AS `UserId`,
-NULLIF(rmi.UserId, -1) AS `RotationUserId`,
-lr.LeaveRequestId
+NULLIF(rmi.UserId, -1) AS `RotationUserId`
 FROM AAU.RotaMatrixItem rmi
 INNER JOIN AAU.RotationPeriod p ON p.RotationPeriodGUID = rmi.RotationPeriodGUID AND p.IsDeleted = 0
 INNER JOIN AAU.AreaShift a ON a.AreaShiftGUID = rmi.AreaShiftGUID AND a.IsDeleted = 0
 INNER JOIN AAU.Tally t ON t.Id <= (DATEDIFF(p.EndDate, p.StartDate))
-LEFT JOIN AAU.LeaveRequest lr ON lr.UserId = rmi.UserId AND DATE_ADD(p.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE p.RotationPeriodId = prm_RotationPeriodId;
 
 SELECT 1 INTO vSuccess;

@@ -5,7 +5,7 @@
     class="gap-20"
     [fxLayout.gt-sm]="selfAdmission ? 'row' : 'column'">
 
-    <div class="flex-row flex-wrap" fxLayout.lt-md="row wrap" class="gap-20" class="flex-start-center"
+    <div class="flex-row flex-wrap gap-20 flex-start-center" fxLayout.lt-md="row wrap"
     [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>
@@ -42,7 +42,7 @@
 
     </div>
 
-    <div class="flex-row flex-wrap"  class="gap-20" class="flex-start-center">
+    <div class="flex-row flex-wrap gap-20 flex-start-center">
 
         <ng-container *ngIf="!selfAdmission && !streetTreat">
 
@@ -98,7 +98,7 @@
 
     </div>
 
-    <div class="flex-row flex-wrap" class="gap-20" class="flex-start-center">
+    <div class="flex-row flex-wrap gap-20 flex-start-center">
 
 
         <ng-container *ngIf="!selfAdmission">

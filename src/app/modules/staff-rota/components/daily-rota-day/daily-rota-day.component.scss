@@ -3,6 +3,10 @@
     height: 100%;
 }
 
+.delete-shift-button{
+    transform: scale(-1);
+}
+
 .area-header{
     writing-mode: vertical-lr;
     text-align: -webkit-center;
@@ -11,6 +15,11 @@
     width: 35px;
     padding-left: 0 !important;
     cursor: pointer;
+}
+
+.time-error{
+    color: red;
+    border: 1px solid red;
 }
 
 th, td {
@@ -23,9 +32,27 @@ th, td {
     z-index: 101 !important;
 }
 
-.time-field{
-    max-width: 75px;
+::ng-deep .mat-cell {
+    padding: 0 8px;
+  }
+
+::ng-deep .mat-mdc-table .mdc-data-table__row {
+    height: 35px;
 }
+
+::ng-deep .mat-mdc-form-field {
+    padding: 5px 0;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper{
+        display: none;
+    }
+
+.time-field{
+    max-width: 78px;
+}
+
+
 
 .notes-field{
     min-width: 150px;

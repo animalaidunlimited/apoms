@@ -22,7 +22,7 @@
 
           <div fxFlex="40" style="text-align: center;">
             {{outstandingCase.emergencyNumber}}
-            <div class="flex-row flex-wrap" class="flex-space-around-center"
+            <div class="flex-row flex-wrap flex-space-around-center"
               *ngFor="let patient of outstandingCase?.patients">
               ({{outstandingCase.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
             </div>

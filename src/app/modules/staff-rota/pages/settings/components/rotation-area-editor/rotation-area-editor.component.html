@@ -5,29 +5,32 @@
 
     <div class="flex-column flex-start-start">
 
-      <div class="form-row flex-row flex-space-evenly-center">
+      <div class="form-row flex-row gap-20 flex-center-center">
 
         <mat-form-field>
-          <input matInput type="string" formControlName="rotationArea" placeholder="Rotation area name"  [errorStateMatcher]="errorMatcher"/>
+          <mat-label>Rotation area name</mat-label>
+          <input matInput type="string" formControlName="rotationArea" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
 
         <mat-form-field>
-          <input matInput type="number" min=1 formControlName="sortOrder" placeholder="Sort order"  [errorStateMatcher]="errorMatcher"/>
+          <mat-label>Sort order</mat-label>
+          <input matInput type="number" min=1 formControlName="sortOrder" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
 
       </div>
 
-      <div class="form-row flex-row flex-space-evenly-center">
+      <div class="form-row flex-row gap-20 flex-center-center">
 
         <mat-form-field>
-          <input matInput type="color" formControlName="colour" placeholder="Colour"  [errorStateMatcher]="errorMatcher"/>
+          <mat-label>Colour</mat-label>
+          <input matInput type="color" formControlName="colour" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
     
-          <mat-checkbox
-            style="align-self: center;"
-            matTooltip="Deleted"
-            formControlName="isDeleted">Deleted
-          </mat-checkbox>
+        <mat-checkbox
+          style="align-self: center; width: 212px"
+          matTooltip="Deleted"
+          formControlName="isDeleted">Deleted
+        </mat-checkbox>
 
 
       </div>

@@ -8,7 +8,7 @@
 
               <legend class="legend">StreetTreat details</legend>
 
-              <div class="flex-row flex-wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" class="st_form">
+              <div class="st_form flex-row flex-wrap" fxLayoutGap.gt-sm="20px" fxLayoutAlign.gt-sm="start" >
                     <mat-form-field appearance="fill" >
                         <mat-label>Emergency number</mat-label>
                         <input tabindex="1" formControlName="EmergencyNumber" type="text" placeholder="Name"  matInput>
@@ -52,7 +52,7 @@
                         <input matInput type="date"  placeholder="End Date" formControlName="EndDate">
                      </mat-form-field>
 
-                     <div class="flex-column" fxLayout.lt-md="row" fxLayoutGap.lt-md="30px" class="st_form">
+                     <div class="st_form flex-column" fxLayout.lt-md="row" fxLayoutGap.lt-md="30px" >
 
                         <mat-checkbox formControlName="EarlyReleaseFlag">Early release flag</mat-checkbox>
                         <mat-checkbox formControlName="IsIsolation">Isolation</mat-checkbox>
@@ -64,7 +64,7 @@
 
 
         </fieldset>
-        <div class="flex-row flex-wrap" class="gap-20" class="flex-center-center" class="form-sub-group">
+        <div class="flex-row flex-wrap gap-20 flex-center-center form-sub-group">
 
             <button mat-raised-button color="primary"  [disabled]="recordForm.invalid" (click)="saveForm()">Save</button>
             <button mat-raised-button color="primary" >Reset</button>

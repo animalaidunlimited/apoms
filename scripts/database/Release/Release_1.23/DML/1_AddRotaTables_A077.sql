@@ -263,7 +263,7 @@ CREATE TABLE `AAU`.`RotaDayAssignment` (
 `ActualBreakStartTime` TIME NULL,
 `ActualBreakEndTime` TIME NULL,
 `RotationUserId` INTEGER NULL,
-`Notes` VARCHAR(1024) NULL,
+`Notes` VARCHAR(1024) CHARACTER SET UTF8MB4 NULL,
 `IsDeleted` TINYINT NOT NULL DEFAULT 0,
 `DeletedDate` DATETIME NULL,
 `CreatedDate` DATETIME NULL,

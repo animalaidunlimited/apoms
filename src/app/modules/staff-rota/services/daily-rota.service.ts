@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { FormBuilder } from '@angular/forms';
+import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { RotaDayAssignment } from 'src/app/core/models/rota';
-import { UserDetails } from 'src/app/core/models/user';
-import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { APIService } from 'src/app/core/services/http/api.service';
 
 @Injectable({
@@ -16,14 +14,20 @@ export class DailyRotaService extends APIService{
   endpoint = 'Rota';
 
 constructor(
-  http: HttpClient  
+  http: HttpClient,
+  private fb: FormBuilder
 ) {
   super(http);
  }
 
-saveAssignment(assignment: RotaDayAssignment) : Promise<SuccessOnlyResponse> {
+saveAssignment(rotaDayDate: string, rotationPeriodId: number, assignment: RotaDayAssignment) : Promise<SuccessOnlyResponse> {
 
-  return this.putSubEndpoint(`RotaDayAssignment`, assignment);
+  assignment.rotaDayDate = rotaDayDate;
+  assignment.rotationPeriodId = rotationPeriodId;
+
+  return assignment.rotaDayId === 0 ?
+                              this.postSubEndpoint(`RotaDayAssignment`, assignment) :
+                              this.putSubEndpoint(`RotaDayAssignment`, assignment);
 
 }
 
@@ -33,6 +37,48 @@ getRotationPeriodForRotaVersion(rotaVersionId: number, limit?: number, offset?: 
   offset = offset || 0;
 
   return this.get(`GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${limit}&offset=${offset}`)
+
+}
+
+public generateNewAssignment(assignment: RotaDayAssignment) : ModelFormGroup<RotaDayAssignment> {
+
+  let emptyAssignment = this.emptyAssignment();
+
+  emptyAssignment.patchValue(assignment);
+
+  return emptyAssignment;
+
+}
+
+public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
+
+  return this.fb.nonNullable.group({
+    rotaDayId :             [0],
+    areaRowSpan :           [1],
+    userId :                [0],
+    userCode :              [''],
+    rotationUserId :        [0],
+    leaveRequestId :        [0],
+    leaveGranted :          [''],
+    leaveUser :             [''],
+    rotationRoleId :        [0],
+    rotationRole :          [''],
+    rotationAreaId :        [0],
+    rotationArea :          [''],
+    rotationAreaColour :    [''],
+    rotationAreaSortOrder : [0],
+    plannedShiftStartTime : [''],
+    plannedShiftEndTime :   [''],
+    actualShiftStartTime :  [''],
+    actualShiftEndTime :    [''],
+    plannedBreakStartTime : [''],
+    plannedBreakEndTime :   [''],
+    actualBreakStartTime :  [''],
+    actualBreakEndTime :    [''],        
+    notes :                 [''],
+    isAdded:                [true],
+    guid:                   ['']
+  });
 
 }
 

@@ -22,7 +22,9 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   @Input() existingUsersList: BehaviorSubject<number[]> | undefined;
+  @Input() showLabel: boolean = false;
   @Input() inputControl!: AbstractControl<number | null , number | null> | null;
+  @Input() formField: boolean = true;
   @Output() selectionMade = new EventEmitter<boolean>();
 
   ngUnsubscribe = new Subject();
@@ -121,8 +123,6 @@ setSelectedUsers() : void {
     const searchValue = typeof(value) === "string" ? (value || "") : "";
     
     return this.userList?.value.filter(user => {
-
-      // console.log(this.existingUsersList);
 
       //We may have a list of existing users that we need to exclude from the returned list
       if(this.existingUsersList){

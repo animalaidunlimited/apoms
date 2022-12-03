@@ -1,18 +1,19 @@
 
 <div class="leave-table-container">
 
-  <div class="flex-row flex-wrap" class="flex-start-center">
+  <form [formGroup]="departmentForm" class="flex-row flex-wrap gap-15 flex-start-center request-header-row">
 
     <mat-form-field class="filter-field" appearance="fill">
       <mat-label>Filter</mat-label>
       <input matInput (keyup)="applyFilter($event)" #input autocomplete="off">
     </mat-form-field>
 
+    <!-- (selectionChange)="departmentFilterChanged($event.value)" -->
 
     <mat-form-field appearance="fill" class="department-select">
       <mat-label>Filter departments</mat-label>
       <mat-select multiple
-      (selectionChange)="departmentFilterChanged($event.value)">
+      formControlName="departmentId">
         <mat-option *ngFor="let department of (departments$ | async)" [value]="department.departmentId">{{department.department}}</mat-option>
       </mat-select>
 
@@ -27,7 +28,7 @@
     </button>
 
 
-  </div>
+  </form>
 
 
 

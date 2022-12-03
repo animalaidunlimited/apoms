@@ -35,20 +35,6 @@
     background-color: white;
 }
 
-.single-hour{
-    text-align: center;
-    height: 25px;
-    line-height: 25px;
-
-    border-radius: 2px;
-    border: 1px solid darkgray;
-    background-color: lightgray;
-}
-
-.single-hour:not(:first-child) {
-    border-left: none !important;
-}
-
 .vehicle-shift{
     position: relative;
     min-height: 5rem;

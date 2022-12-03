@@ -3,7 +3,7 @@
 
 <form
 [formGroup]="organisationOptions"
-class="flex-column" class="flex-center-center">
+class="flex-column flex-center-center">
 
     <div class="refresh-text">
     To get the latest version of the app, click the refresh button
@@ -17,7 +17,7 @@ class="flex-column" class="flex-center-center">
 
 
 
-    <mat-accordion class="accordian">
+    <mat-accordion class="accordion">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -27,17 +27,20 @@ class="flex-column" class="flex-center-center">
               Here you can edit the contents of many dropdowns in Apoms.
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <div class="flex-column" class="flex-center-center">
 
-            <fieldset class="form-sub-group" style="width: 90%; margin-bottom: 10px;">
+          
+
+            <fieldset class="form-sub-group flex-column flex-center-center" style="width: 90%; margin-bottom: 10px;">
     
                 <legend class="legend" i18n>Update dropdowns</legend>
+
+                <div class="flex-column flex-center-center">
+                  <aau-organisation-dropdown></aau-organisation-dropdown>
+                </div>
     
-                <aau-organisation-dropdown></aau-organisation-dropdown>
     
             </fieldset>
     
-        </div>
         </mat-expansion-panel>
 
         <mat-expansion-panel>
@@ -50,45 +53,45 @@ class="flex-column" class="flex-center-center">
             </mat-panel-description>
           </mat-expansion-panel-header>
 
-          <div class="flex-column" class="flex-center-center">
+          <div class="flex-column flex-center-center gap-20">
 
-            <div formGroupName="vehicleDefaults" class="flex-row flex-wrap" class="flex-center-center">
+            <div formGroupName="vehicleDefaults" class="vehicle-defaults flex-row flex-wrap gap-20 flex-center-center">
 
                 <div>
                     <mat-form-field>
+                      <mat-label>Shift start time</mat-label>
                         <input
                         formControlName="shiftStartTime" 
-                        type="time" 
-                        placeholder="Shift start time" 
+                        type="time"
                         matInput>
                     </mat-form-field>
                 </div>
     
                 <div>
                     <mat-form-field>
+                        <mat-label>Shift end time</mat-label>
                         <input
                         formControlName="shiftEndTime" 
-                        type="time" 
-                        placeholder="Shift end time" 
+                        type="time"
                         matInput>
                     </mat-form-field>
                 </div>
     
                 <div>
                     <mat-form-field>
+                        <mat-label>Default shift length (in hours)</mat-label>
                         <input
                         formControlName="defaultShiftLength" 
-                        type="number" 
-                        placeholder="Default shift length (in hours)" 
+                        type="number"
                         matInput>
                     </mat-form-field>
                 </div>
     
-                </div>
+              </div>
     
-                <div>
-                    <button mat-raised-button color="primary" (click)="saveOrganisationVehicleDetails();">Save</button>
-                </div>
+              <div style="padding-bottom: 10px;">
+                  <button mat-raised-button color="primary" (click)="saveOrganisationVehicleDetails();">Save</button>
+              </div>
           </div>
           
 

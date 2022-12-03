@@ -1,5 +1,5 @@
 <form [formGroup]="streetTreatForm" >
-	<div class="flex-row flex-wrap" class="flex-start-center" class="patientVisitFrom gap-10">
+	<div class="flex-row flex-wrap flex-start-center patientVisitFrom gap-10">
 
 		<mat-form-field appearance="fill">
 			<mat-label>Assigned date</mat-label>
@@ -59,7 +59,7 @@
 
 	</div>
 	<div class="visitsWrapper" [@listAnimation]="visitsArray.length" formArrayName="visits">
-		<div class="flex-row flex-wrap" class="visitsWrapper-header gap-10">
+		<div class="flex-row flex-wrap visitsWrapper-header gap-10">
 			<h5 mat-dialog-title class="visit-header">Visits</h5>
 
 			<div class="visit-calendar-wrapper" *ngIf="visitDates.length > 0">
@@ -72,7 +72,7 @@
 
 		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
 
-			<div  class="flex-row flex-wrap flex-start-end"class="visit_row_data gap-10"
+			<div  class="flex-row flex-wrap flex-start-end visit_row_data gap-10"
 			[ngClass]=" isToday(item.get('visit_date')?.value) ? 'visit-today' : ''"
 			>
 

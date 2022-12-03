@@ -32,8 +32,6 @@ constructor(
   if (!this.leaveRequestProtocol$) {
       this.leaveRequestProtocol$ = this.getObservable(request).pipe(
           map((response: LeaveRequestProtocol[]) => {
-
-            console.log(response);
             
             return response.sort((a,b) => a.sortOrder - b.sortOrder)}),
       );
@@ -43,10 +41,8 @@ constructor(
 }
 
 getLeaveRequests(startDate?: string, endDate?: string) : Observable<DisplayLeaveRequest[]> {
-
-  console.log(startDate);
   
-    return this.getObservable(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`);
+  return this.getObservable(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`);
 
 }
 

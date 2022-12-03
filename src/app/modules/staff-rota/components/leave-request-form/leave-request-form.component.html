@@ -154,6 +154,9 @@
     </div>
   </fieldset> 
 
-  <button mat-raised-button color="primary" [disabled]="leaveRequestForm.invalid" (click)="saveLeaveRequest()">Save</button>
+  <div class="flex-row flex-center-center save-button">
+    <button mat-raised-button color="primary" [disabled]="leaveRequestForm.invalid" (click)="saveLeaveRequest()">Save</button>
+  </div>
+
 
 </form>

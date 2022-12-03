@@ -1,6 +1,6 @@
-<div class="flex-column" class="flex-center-center">
+<div class="flex-column flex-start-start" style="margin-left:15px;">
 
-  <div class="flex-row flex-center-center" class="table-container">
+  <div class="flex-row flex-center-center table-container">
 
     <form [formGroup]="rotaForm">
 
@@ -16,7 +16,7 @@
           <th mat-header-cell *matHeaderCellDef [attr.colspan]=2>
             <div class="flex-row flex-center-center gap-20">
 
-              <div formGroupName="currentRota" class="flex-column flex-center-center">
+              <div formGroupName="currentRota" class="flex-column flex-center-center" style="margin-top: 10px;">
 
                 <div class="flex-row flex-center-center">
 
@@ -135,7 +135,7 @@
 
                   <ng-template #editRotaVersionSection>
 
-                    <div class="flex-row" class="flex-start-center">
+                    <div class="flex-row flex-start-center">
 
                       <mat-form-field>
                         <input matInput autocomplete="off" formControlName="rotaVersionName" type="string"
@@ -207,8 +207,7 @@
                       [formGroupName]="(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)"
                       class="assigned-staff-wrapper">
       
-                        <mat-form-field class="assigned-user"
-                        *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser'); let assignedUser">                                      
+                        <div *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser'); let assignedUser">                                      
       
                           <input matInput
                           type="text"
@@ -232,7 +231,7 @@
                             + ' (' + leave.granted + ')'"  matSuffix >event_busy</mat-icon>
                           
 
-                        </mat-form-field>
+                        </div>
       
                       </div>            
                   
@@ -277,7 +276,7 @@
   
   </div>
   
-    <div class="flex-row flex-center-center gap-20" class="area-shift">
+    <div class="flex-row flex-center-center gap-20 area-shift">
   
       <button
           type="button"

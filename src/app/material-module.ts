@@ -6,6 +6,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
+import { CdkMenuModule } from '@angular/cdk/menu';
 import { FlexLayoutModule, MediaMarshaller } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -51,6 +52,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         CdkStepperModule,
         CdkTableModule,
         CdkTreeModule,
+        CdkMenuModule,
         DragDropModule,
         FlexLayoutModule,
         FormsModule,
@@ -102,17 +104,14 @@ export class MaterialModule {
     lastValue:any;
 
     public constructor (
-      m: MediaMarshaller,
+      m: MediaMarshaller
     ) {
       // hack until resolve: https://github.com/angular/flex-layout/issues/1201
       // @ts-ignore
       m.subject.subscribe((x) => {
-        // @ts-ignore
         if (m.activatedBreakpoints.filter((b) => b.alias === 'print').length === 0) {
-          // @ts-ignore
           this.lastValue = [...m.activatedBreakpoints];
         } else {
-          // @ts-ignore
           m.activatedBreakpoints = [...this.lastValue];
           // @ts-ignore
           m.hook.collectActivations = () => {};

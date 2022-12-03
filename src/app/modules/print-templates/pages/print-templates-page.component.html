@@ -137,7 +137,7 @@
 
 
 
-				<div cdkDropList [cdkDropListData]="printableElements" class="bottom-list" class="flex-column" >
+				<div cdkDropList [cdkDropListData]="printableElements" class="bottom-list flex-column" >
 
 					<div class="print-element" style="position: relative;" *ngFor="let element of printableElements | async"
 						cdkDrag>{{element.name}}</div>

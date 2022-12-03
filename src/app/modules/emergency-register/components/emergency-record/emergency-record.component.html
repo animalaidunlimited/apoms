@@ -25,7 +25,7 @@
 
     <animal-selection [isDisplayOnly]="false" [incomingPatientArray] = "[]" [outcome]="true" [recordForm]="recordForm"></animal-selection>
 
-    <div class="flex-row flex-wrap" class="gap-20" class="flex-center-center" class="form-sub-group">
+    <div class="flex-row flex-wrap gap-20 flex-center-center form-sub-group">
 
       <div class="emergencySyncIcon">
         <mat-icon *ngIf="recordForm.dirty || (!emergencyCaseId && !syncedToLocalStorage)"

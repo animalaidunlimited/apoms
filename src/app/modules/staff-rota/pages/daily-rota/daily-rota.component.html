@@ -1,7 +1,7 @@
 
-<div class="flex-row" class="flex-space-around-center" [formGroup]="areaForm" style="margin-top: 10px;">
+<div class="flex-row flex-wrap flex-start-start gap-20" [formGroup]="areaForm" style="margin-top: 10px; margin-left:10px;">
 
-  <div>
+  <div class="flex-row flex-start-center gap-10">
 
     <mat-form-field appearance="fill">
       <mat-label>Areas</mat-label>
@@ -17,7 +17,7 @@
 
   </div>
 
-  <div class="flex-row flex-space-between-center">
+  <div class="flex-row flex-space-between-center gap-20">
 
     <div>
 
@@ -41,13 +41,13 @@
 
     </div>
 
-    <div class="flex-column" class="flex-center-center" class="period-dates-wrapper">
+    <div class="flex-column flex-center-center period-dates-wrapper">
 
       <div [hidden]="!startDate">
         {{(startDate | date : "EEE,dd/MMM") + ' - ' + (endDate | date : "EEE,dd/MMM")}}
       </div>
 
-      <div class="flex-row" class="flex-space-around-center" class="direction-container">
+      <div class="flex-row gap-20 flex-space-around-center direction-container">
 
         <button mat-mini-fab color="primary" (click)="shiftRotationPeriod(previous)" [disabled]="leftDisabled" matTooltip="Save areas to preferences">
           <mat-icon>keyboard_arrow_left</mat-icon>
@@ -77,10 +77,10 @@
   <mat-tab *ngFor="let day of rotaDayForm.controls" >
     <ng-template mat-tab-label>
       <span>{{day.get('rotaDayDate')?.value | date : "EEE,dd/MMM"}}</span>
-      <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" style="margin-left: 10px">error</mat-icon>
+      <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" matTooltip="Unsaved changes" style="margin-left: 10px">error</mat-icon>
   </ng-template>    
 
-    <app-daily-rota-day [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-daily-rota-day>
+    <app-daily-rota-day [rotationPeriodId]="rotationPeriodId" [rotaDayDate]="day.get('rotaDayDate')?.value" [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-daily-rota-day>
   
   </mat-tab>
 </mat-tab-group>

@@ -3,14 +3,12 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { RotaService } from '../../services/rota.service';
-import { Rota, RotaDay, RotaDayAssignment, RotaDayAssignmentResponse, RotationArea, RotaVersion } from './../../../../core/models/rota';
+import { Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotaVersion } from './../../../../core/models/rota';
 import { RotaSettingsService } from './../settings/services/rota-settings.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from './../../../../core/services/snackbar/snackbar.service';
-
-
+import { DailyRotaService } from './../../services/daily-rota.service';
 
 
 @Component({
@@ -62,6 +60,7 @@ export class DailyRotaComponent implements OnInit {
     route: ActivatedRoute,
     private fb: FormBuilder,
     private rotaService: RotaService,
+    private dailyRotaService: DailyRotaService,
     private userOptionsService: UserOptionsService,
     private snackbar: SnackbarService,
     private rotaSettings: RotaSettingsService
@@ -95,28 +94,27 @@ export class DailyRotaComponent implements OnInit {
 
   watchRotaSelect() : void
   {
-    this.areaForm.get('rotaId')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(rotaId => {
-
-      this.rotas.pipe(take(1)).subscribe(rotas => {
+    this.areaForm.get('rotaId')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(rotaId => 
+      
+      this.rotas.pipe(take(1)).subscribe(rotas => { 
 
         const foundRotaVersions = rotas?.find(element => element.rotaId === rotaId)?.rotaVersions;
 
         if(foundRotaVersions){
           this.rotaVersions.next(foundRotaVersions);
           this.areaForm.get('rotaVersionId')?.enable();
-
+  
           const defaultRotaVersion = foundRotaVersions.find(element => element.defaultRotaVersion === true);
-
+  
           if(defaultRotaVersion){
             this.areaForm.get('rotaVersionId')?.setValue(defaultRotaVersion.rotaVersionId);
             this.getRotationPeriodForRotaVersion(defaultRotaVersion.rotaVersionId);
           }
         }
-        
 
       })
-
-    })
+      
+    );
     
   }
 
@@ -150,9 +148,40 @@ export class DailyRotaComponent implements OnInit {
 
     this.rotaService.getRotaDayAssignmentsByRotationPeriodId(this.rotationPeriodId).then(rotaDays => {
 
-      if(rotaDays){
-        this.processRotaDays(rotaDays);
+      if(!rotaDays) return;
+
+      if(!this.areaForm.get('rotaId')?.value){
+
+        this.areaForm.get('rotaId')?.setValue(rotaDays.rotaId, {emitEvent: false});
+
+        this.rotas.pipe(take(1)).subscribe(rotas => { 
+
+          const foundRotaVersions = rotas?.find(element => element.rotaId === rotaDays.rotaId)?.rotaVersions;
+  
+          if(foundRotaVersions){
+            this.rotaVersions.next(foundRotaVersions);
+            this.areaForm.get('rotaVersionId')?.enable();
+
+            this.areaForm.get('rotaVersionId')?.setValue(rotaDays.rotaVersionId);
+    
+            
+          }
+  
+        })
+
       }
+
+      
+      // this.hydrateRotas(rotaDays.rotaId);
+      
+      //Let's give this a tick to update the rotaId
+      // setTimeout(() => {
+      //   
+        
+      // },1);
+      
+      this.processRotaDays(rotaDays);
+      
     });
 
   }
@@ -193,39 +222,16 @@ export class DailyRotaComponent implements OnInit {
         continue;        
       }
 
-      let newAssignment: ModelFormGroup<RotaDayAssignment> = this.fb.nonNullable.group({
-        rotaDayId :             [assignment.rotaDayId],
-        areaRowSpan :           [assignment.areaRowSpan],
-        areaShiftId :           [assignment.areaShiftId],
-        userId :                [assignment.userId],
-        rotationUserId :        [assignment.rotationUserId],
-        leaveRequestId :        [assignment.leaveRequestId],
-        leaveGranted :          [assignment.leaveGranted],
-        leaveUser :             [assignment.leaveUser],
-        rotationRole :          [assignment.rotationRole],
-        rotationAreaId :        [assignment.rotationAreaId],
-        rotationArea :          [assignment.rotationArea],
-        rotationAreaColour :    [assignment.rotationAreaColour],
-        rotationAreaSortOrder : [assignment.rotationAreaSortOrder],
-        plannedShiftStartTime : [assignment.plannedShiftStartTime],
-        plannedShiftEndTime :   [assignment.plannedShiftEndTime],
-        actualShiftStartTime :  [assignment.actualShiftStartTime],
-        actualShiftEndTime :    [assignment.actualShiftEndTime],
-        plannedBreakStartTime : [assignment.plannedBreakStartTime],
-        plannedBreakEndTime :   [assignment.plannedBreakEndTime],
-        actualBreakStartTime :  [assignment.actualBreakStartTime],
-        actualBreakEndTime :    [assignment.actualBreakEndTime],        
-        notes :                 [assignment.notes] 
-      });
+      let newAssignment = this.dailyRotaService.generateNewAssignment(assignment);
 
       if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){
-        newAssignment.get('actualShiftStartTime')?.setValidators(Validators.required);
-        newAssignment.get('actualShiftEndTime')?.setValidators(Validators.required);
+        newAssignment.get('actualShiftStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
+        newAssignment.get('actualShiftEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
       }
 
       if(assignment.actualBreakStartTime || assignment.actualBreakEndTime){
-        newAssignment.get('actualBreakStartTime')?.setValidators(Validators.required);
-        newAssignment.get('actualBreakEndTime')?.setValidators(Validators.required);
+        newAssignment.get('actualBreakStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
+        newAssignment.get('actualBreakEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
       }
 
       (rotaGroup.get('rotaDayAssignments') as FormArray)?.push(newAssignment);

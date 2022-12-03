@@ -42,7 +42,7 @@
                     </button>
                 </div>
 
-                <div class="flex-row"  fxLayout.lt-md="row wrap" class="flex-center-center" class="searchbox gap-10">
+                <div class="flex-row flex-center-center searchbox gap-10"  fxLayout.lt-md="row wrap">
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
                             <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)" [errorStateMatcher]="errorMatcher">
