@@ -148,8 +148,6 @@ FROM AAU.EditableDropdown;
 
 END$$
 
-DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetFestivals !!
@@ -996,8 +994,9 @@ FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArr
         
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
+END$$
 
-ENDDELIMITER !!
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertLeaveRequest !!
 
@@ -1097,8 +1096,9 @@ SET vOrganisationId = 0;
     
     SELECT vSuccess AS `success`, vLeaveRequestId AS `leaveRequestId`;
     
+END$$
 
-END$$DELIMITER !!
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
@@ -1426,8 +1426,9 @@ SET vSuccess = 0;
     
     SELECT vSuccess AS `success`, prm_LeaveRequestId AS `leaveRequestId`;
     
+END$$
 
-END$$DELIMITER !!
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateRotaDayAssignment !!
 
@@ -1479,7 +1480,9 @@ SET vSuccess = 0;
     SELECT vSuccess AS `success`;
     
 
-END$$DELIMITER !!
+END$$
+
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
 
@@ -1578,9 +1581,9 @@ END IF;
 
 SELECT vUpdateSuccess;
 
+END$$
 
-
-ENDDELIMITER !!
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertAreaShift!!
 
