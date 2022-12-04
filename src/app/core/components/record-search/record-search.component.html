@@ -17,8 +17,7 @@
             {{searchResultArray.length}} result<span *ngIf="(searchResultArray.length || 0) > 1">s</span>
         </div>
 
-        <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start" fxLayoutAlign.lt-md="center"
-        class="search-results gap-20">
+        <div class="flex-row flex-wrap search-results gap-20">
 
             <div *ngFor="let record of searchResultArray">
 

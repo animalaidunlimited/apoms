@@ -3,8 +3,8 @@
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
         <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
         <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
-            <div class="flex-row gap-5 flex-start-start" fxLayout.lt-md="column">
-                <div class="flex-column gap-15 flex-start-start" fxFlex="1 1 50">
+            <div class="flex-row gap-5 flex-start-start">
+                <div class="flex-column gap-15 flex-start-start" style="flex: 1 1 50;">
 
                     <animal-header
                         [recordForm]="recordForm"
@@ -27,7 +27,7 @@
 
                 </div>
 
-                <div class="flex-column gap-15 flex-start-start" fxFlex="0 1 50">
+                <div class="flex-column gap-15 flex-start-start" style="flex: 0 1 50;">
 
                     <patient-details [recordForm]="recordForm"></patient-details>
 
@@ -50,7 +50,7 @@
 
     <mat-tab label="Emergency details" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-            <div class="emergencyRecordWrapper flex-column gap-15 flex-start-start" fxLayout.lt-md="row wrap">
+            <div class="emergencyRecordWrapper flex-column gap-15 flex-start-start">
 
                 <emergency-details
                     [recordForm]="recordForm"

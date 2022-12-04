@@ -36,13 +36,13 @@
     <div formArrayName="searchRows" *ngFor="let item of searchRows?.controls; let i = index" class="searchRows">
         <div [formGroupName]="i">
             <div class="flex-row flex-start-end">
-                <div fxFlex="7" fxFlexOrder="1" class="delete-search">
+                <div class="delete-search">
                     <button class="delete-search-row" style="cursor: pointer; margin-right:15px; " mat-mini-fab color="warn" aria-label="Delete this search criteria" (click)="removeRow(i)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
 
-                <div class="flex-row flex-center-center searchbox gap-10"  fxLayout.lt-md="row wrap">
+                <div class="flex-row flex-center-center searchbox gap-10">
                         <mat-form-field>
                             <mat-label>Search field</mat-label>
                             <mat-select formControlName="searchField" (selectionChange)="optionSelection($event,item)" [errorStateMatcher]="errorMatcher">

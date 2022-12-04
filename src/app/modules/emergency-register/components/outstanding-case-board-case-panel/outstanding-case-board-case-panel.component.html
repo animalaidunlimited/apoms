@@ -10,17 +10,17 @@
 
       [@rescueMoved]="outstandingCase.moved === true ? 'moved' : 'still'">
 
-          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
+          <div *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
             <mat-icon
               aria-label="Open rescue edit"
               (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
           </div>
 
-          <div fxFlex="15" *ngIf="outstandingCase?.ambulanceAction !== 'Rescue'">
+          <div *ngIf="outstandingCase?.ambulanceAction !== 'Rescue'">
             <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
           </div>
 
-          <div fxFlex="40" style="text-align: center;">
+          <div style="text-align: center;">
             {{outstandingCase.emergencyNumber}}
             <div class="flex-row flex-wrap flex-space-around-center"
               *ngFor="let patient of outstandingCase?.patients">
@@ -28,7 +28,7 @@
             </div>
           </div>
 
-          <div fxFlex="25">
+          <div >
             <mat-icon
               aria-label="Edit record"
               (click)="openCase(outstandingCase)">create</mat-icon>

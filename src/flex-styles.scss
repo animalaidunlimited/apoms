@@ -4,6 +4,10 @@
 .flex-row-reverse { display: flex; flex-direction: row-reverse; }
 .grid { display: grid; }
 
+.flex-1 { flex: 1; }
+.flex-1-1 { flex: 1 1 auto; }
+
+
 // Flex-wrap utils.
 .flex-wrap { flex-wrap: wrap; }  // Mostly used with flex-row, when wrapping is desired.
 .flex-col-xs { @media screen and (max-width: 599px) { flex-direction: column; } }  // Switch from flex-row to flex-col on mobile.

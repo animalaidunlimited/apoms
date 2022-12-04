@@ -12,12 +12,12 @@
 
 
 
-<div class="flex-row" fxLayout.lt-md="column" style="background: #F0F0F0; border-radius: 0.5em;">
+<div class="flex-row" style="background: #F0F0F0; border-radius: 0.5em;">
 
     <div #imgElement
     [style.backgroundImage]="'url('+ imageLocation +')'"
     class="mediaPreviewBackgroundImage"
-    [ngStyle.xs]="'min-height:'+ (imageHeight - 1) +'vh'"
+    [ngStyle]="{'min-height' : (imageHeight - 1) + 'vh'}"
     (swipeleft)="onSwipeLeft($event)"
     (swiperight)="onSwipeRight($event)"
     *ngIf="data?.mediaData?.mediaType?.includes('image') || data.upload"
@@ -68,7 +68,7 @@
 
 
     <div style="padding: 0.5rem;" ngStyle.gt-xs="width: 98%;" [formGroup]="recordForm">
-        <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
+        <div class="imagePreviewSidePanel">
             <mat-form-field class="imageDate flex-column" appearance="fill">
                 <mat-label>Date</mat-label>
                 <input matInput style="width: 100%;" type="datetime-local" name="imageDate"
@@ -81,7 +81,7 @@
             </mat-form-field>
         </div>
 
-        <div class="imagePreviewSidePanel" fxLayout.gt-xs="row" >
+        <div class="imagePreviewSidePanel">
                 <mat-slide-toggle (toggleChange)="toggleIsPrimary()" formControlName="isPrimary" class="primary-image-toggle">Primary Image</mat-slide-toggle>
         </div>
 

@@ -1,14 +1,12 @@
-<div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields flex-column" 
-  fxLayout.gt-xs="row" >
+<div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields flex-column">
 
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
   <!-- patient details-->
-  <div fxFlex.gt-sm="1 1 100%" *ngIf="!outcome" fxLayout.lt-sm="row wrap" class="flex-row gap-20" fxLayoutAlign.gt-sm="end end">
+  <div *ngIf="!outcome" class="flex-row gap-20">
 
     <!-- Animal Dropdown-->
-    <mat-form-field ngClass.lt-sm="full-width" ngStyle.lt-sm="display:inline-block;"
-    fxLayout.gt-sm="row" class="flex-end-end" ngStyle.gt-sm="min-height:5.8em;">
+    <mat-form-field class="flex-end-end">
 
       <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
         [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
@@ -25,7 +23,7 @@
     </mat-form-field>
 
     <!-- Main Problem-->
-    <mat-form-field fxFlex.gt-xs="1 1 100%" ngClass.lt-sm="full-width">
+    <mat-form-field>
 
       <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()" required>
 
@@ -68,7 +66,7 @@
 
 
   <!-- Call Outcome details-->
-  <div *ngIf="outcome && !isDisplayOnly" fxLayout.lt-sm="row wrap" fxFlex.gt-sm="1 1 100%" class="flex-row gap-20 flex-space-between-end">
+  <div *ngIf="outcome && !isDisplayOnly" class="flex-row gap-20 flex-space-between-end">
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 

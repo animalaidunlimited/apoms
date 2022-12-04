@@ -1,9 +1,9 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div class="flex-row flex-start-center" fxLayout.xs="row-reverse wrap" fxLayoutAlign.xs="space-between center" >
+    <div class="flex-row flex-start-center" >
 
-    <div fxShow="recordForm.get('emergencyDetails.code')?.value" class="emergencyDetailsCode" [ngClass]="{
+    <div [hidden]="recordForm.get('emergencyDetails.code')?.value" class="emergencyDetailsCode" [ngClass]="{
         'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
         'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
         'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
@@ -23,7 +23,7 @@
 
     </mat-form-field>
 
-    <mat-form-field fxFlex.gt-sm="1 1 100%">
+    <mat-form-field>
             <input tabindex="2" #callDateTimeField formControlName="callDateTime" name="callDateTime" type="datetime-local"
             [max]="callDateTime"
             [min]="minimumDate"

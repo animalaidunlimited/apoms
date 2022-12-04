@@ -20,7 +20,7 @@
                     </div>
 
                     <button  mat-raised-button color="primary" (click)="logo.click()">Upload logo</button>
-                    <input fxHide type="file" #logo (change)="uploadLogo($event)"/>
+                    <input hidden type="file" #logo (change)="uploadLogo($event)"/>
                 </div>
             </fieldset>
 
@@ -39,7 +39,7 @@
             </fieldset>
         </div>
 
-        <fieldset fxFlex="1 1 auto"  class="form-sub-group flex-column" >
+        <fieldset class="form-sub-group flex-column flex-1-1" >
 
             <legend class="legend" i18n>Address</legend>
 
