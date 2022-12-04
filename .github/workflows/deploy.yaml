@@ -10,6 +10,9 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  id-token: write
+
 jobs:
 
   deploy-develop:
@@ -23,7 +26,20 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+            create_credentials_file: 'true'
+            workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+            service_account: ${{ secrets.DEPLOYMENT_SERVICE_ACCOUNT }}            
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+          gcloud services list
 
       - name: Cache node modules
         uses: actions/cache@v1
@@ -92,7 +108,20 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+            create_credentials_file: 'true'
+            workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+            service_account: ${{ secrets.DEPLOYMENT_SERVICE_ACCOUNT }}            
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+          gcloud services list
 
       - name: Cache node modules
         uses: actions/cache@v1
