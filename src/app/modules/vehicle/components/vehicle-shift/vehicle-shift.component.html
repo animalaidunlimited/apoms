@@ -44,7 +44,7 @@
 
     </div>
 
-    <div fxFlex class="flex-column vehicle-shift-hours">
+    <div class="flex-column vehicle-shift-hours flex-1">
 
         <div class="flex-row flex-space-between-center">
 
@@ -54,7 +54,7 @@
 
         </div>
 
-        <div fxFill class="shift-wrapper">
+        <div class="shift-wrapper flex-1-1">
 
             <div
             class="flex-row flex-wrap flex-start-center gap-10"
@@ -70,7 +70,7 @@
 
                 </div>
 
-                <div fxFlex class="shift-detail">
+                <div class="shift-detail flex-1">
                     {{shift.shiftStartTime | date: 'HH:mm' : '' + (shift.shiftStartTimeDate.getTimezoneOffset() * -1)}} - {{shift.shiftEndTime | date: 'HH:mm' : '' + (shift.shiftEndTimeDate.getTimezoneOffset() * -1)}}
                 </div>
 

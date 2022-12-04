@@ -6,13 +6,9 @@
 
 
          <div [formGroupName]="index"
-          class="unaccepted-item"
-          class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px">
+          class="unaccepted-item flex-row flex-wrap">
 
-        <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
-            class="unaccepted-form-fields">
-
-
+        <div class="unaccepted-form-fields flex-row flex-wrap">
 
             <button mat-button class="action-button"
             [ngStyle]="{ 'border-color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white',
@@ -26,8 +22,7 @@
 
           </div>
 
-            <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="10px"
-            class="unaccepted-form-fields">
+            <div class="unaccepted-form-fieldsflex-row flex-wrap">
 
 
               <mat-form-field >
@@ -45,8 +40,7 @@
 
           </div>
 
-          <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
-          class="button-container">
+          <div class="flex-row flex-wrap button-container">
 
             <button mat-button class="accept-button" [disabled]="moveOut" (click)="acceptMove(item)">
               <mat-icon>check_circle</mat-icon>
@@ -61,8 +55,8 @@
           </div>
 
 
-       <div class="flex-row flex-wrap" fxLayoutAlign.gt-sm="start center" fxLayoutAlign.lt-md="center center" fxLayoutGap.gt-sm="20px" fxLayoutGap.lt-md="15px"
-       class="moved-out" *ngIf="listType === 'rejected from'">
+       <div class="moved-out flex-row flex-wrap"
+       *ngIf="listType === 'rejected from'">
 
         <button mat-button class="moveout-button" (click)="toggleMoveOut(item)">
           <mat-icon>arrow_right_alt</mat-icon>

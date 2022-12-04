@@ -1,5 +1,4 @@
-<div    
-    fxLayoutAlign.gt-md="space-around center"
+<div
     class="info_tiles flex-row"
     *ngIf="(scoreCards$ | async) as scoreCards">
     <div>
@@ -50,19 +49,16 @@
 <div
     class="StreetTreat_Container"
     gdColumns.gt-md="repeat(2, 1fr)"
-    gdGap.gt-md="10"
-    fxLayout.lt-md="column">
+    gdGap.gt-md="10">
 
     <div
         class="StreetTreat_Container_visit_compression"
         gdColumns.gt-md="repeat(3, 1fr)"
         gdColumns.xs="repeat(2, 1fr)"
         >
-        <div class="AssignedVehicle_Compare"
-            class="flex-row flex-wrap"
-            fxLayoutAlign.lt-md="end"
+        <div class="AssignedVehicle_Compare flex-row flex-wrap"
             [formGroup]="assignedVehicleGroup">
-            <div class="AssignedVehicle_Comapre_Visit_btn" fxFlexOrder.lt-md="3">
+            <div class="AssignedVehicle_Comapre_Visit_btn">
                 <button mat-flat-button color="primary" (click)="noVisits($event)">No Visits</button>
             </div>
             <div class="AssignedVehicle_Compare_date">
@@ -80,7 +76,7 @@
                 </mat-form-field>
             </div>
             <!-- *ngIf="!autoRefresh" -->
-            <button style="margin:7px 0 7px 10px" mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()" fxFlexOrder.lt-md="4">
+            <button style="margin:7px 0 7px 10px" mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()">
                 <mat-icon>refresh</mat-icon>
             </button>
         </div>
@@ -116,7 +112,7 @@
                                     {{streetTreatCaseDetails.AnimalDetails.TagNumber}}
                                     ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
                                 </div>
-                                <div fxFlex="25">
+                                <div>
                                     <mat-icon aria-label="Edit record"
                                         (click)="openCase(streetTreatCaseDetails,$event);">create</mat-icon>
                                 </div>
@@ -153,7 +149,7 @@
         </ng-container>
         <ng-template #noResult> No Visits Today</ng-template>
     </div>
-    <div fxFlex class="StreetTreat_Container_map" #googleMap>
+    <div class="StreetTreat_Container_map flex-1" #googleMap>
         <google-map [zoom]="zoom" height="100%" width="100%" [center]="center">
             <map-marker *ngFor="let marker of markers ; trackBy:markersTrack" [options]="marker.options"
                 (mapClick)="markerClick(marker)" (mapMouseover)="markerClick(marker)" (mapMouseout)="markerClean()">

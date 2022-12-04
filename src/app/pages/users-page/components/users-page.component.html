@@ -5,7 +5,7 @@
     <fieldset class="form-sub-group user-details-form">
         <legend class="legend">User details</legend>
 
-        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
+        <div class="flex-row gap-20 flex-start-center">
 
             <mat-form-field appearance="fill">
               <mat-label>Username</mat-label>
@@ -22,7 +22,7 @@
 
         </div>
 
-        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
+        <div class="flex-row gap-20 flex-start-center">
 
           <mat-form-field appearance="fill">
             <mat-label>First name</mat-label>
@@ -41,7 +41,7 @@
 
         </div>
 
-        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
+        <div class="flex-row gap-20 flex-start-center">
 
           <mat-form-field appearance="fill">
             <mat-label>Employee number</mat-label>
@@ -64,7 +64,7 @@
 
         </div>
 
-        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
+        <div class="flex-row gap-20 flex-start-center">
 
           <mat-form-field appearance="fill">
             <mat-label>Initials</mat-label>
@@ -78,7 +78,7 @@
 
         </div>
 
-        <div class="flex-row gap-20 flex-start-center" fxLayout.lt-md="row wrap">
+        <div class="flex-row gap-20 flex-start-center">
             <mat-form-field style="padding-top: 20px;" appearance="fill">
                 <mat-label>User job type</mat-label>
                 <mat-select formControlName= "jobTitleId" multiple>
@@ -109,7 +109,7 @@
               </mat-form-field>
         </div>
 
-        <div class="flex-row flex-center-center gap-20" fxLayout.lt-md="row wrap">
+        <div class="flex-row flex-center-center gap-20">
             <button type="submit" mat-raised-button [disabled]="userDetails.invalid" color="primary">Save</button>
             <button type="button" mat-raised-button color="primary">Delete</button>
             <button type="button" (click)="resetForm()" mat-raised-button color="white">Reset</button>

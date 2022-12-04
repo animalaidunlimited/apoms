@@ -41,12 +41,12 @@
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field appearance="fill" fxFlexOrder.lt-md="5" ngClass.lt-md="full-width" ngStyle.lt-md="margin-right: 4px;" ngStyle.gt-md="flex-grow: 2;">
+		<mat-form-field appearance="fill" ngClass.lt-md="full-width" ngStyle.lt-md="margin-right: 4px;" ngStyle.gt-md="flex-grow: 2;">
 			<mat-label>Admin notes</mat-label>
 			<input type="text" formControlName="adminNotes" matInput [errorStateMatcher]="errorMatcher">
 		</mat-form-field>
 
-		<mat-form-field appearance="fill" fxFlexOrder.lt-md="4">
+		<mat-form-field appearance="fill">
 			<mat-label>Case status</mat-label>
 			<mat-select formControlName="streetTreatCaseStatus" [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">

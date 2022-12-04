@@ -9,11 +9,11 @@
 
         <div class="flex-row flex-wrap vehicle-form">
 
-          <div *ngIf="imgURL" fxFlex.gt-sm="20" fxFlex.lt-md="100"  class="flex-center-center vehicle-image">
+          <div *ngIf="imgURL" class="flex-center-center vehicle-image">
             <img  [src]="imgURL"  />
           </div>
 
-          <div fxFlex="fill">
+          <div>
               <div class="flex-row flex-wrap gap-10 flex-start-end">
                   <mat-form-field appearance="fill">
                       <mat-label>Registration number</mat-label>

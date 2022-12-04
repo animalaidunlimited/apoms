@@ -1,11 +1,9 @@
 <form
     [formGroup]="rescueDetails"
-    fxLayout.gt-sm="column"
-    fxLayoutAlign.gt-sm="center center"
-    class="gap-20"
-    [fxLayout.gt-sm]="selfAdmission ? 'row' : 'column'">
+    class="gap-20 flex-center-center"
+    [ngClass]="selfAdmission ? 'flex-row' : 'flex-column'">
 
-    <div class="flex-row flex-wrap gap-20 flex-start-center" fxLayout.lt-md="row wrap"
+    <div class="flex-row flex-wrap gap-20 flex-start-center"
     [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>

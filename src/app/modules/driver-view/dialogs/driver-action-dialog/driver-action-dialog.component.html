@@ -8,7 +8,7 @@
 
         <div *ngFor="let control of data.formBuilderArray">
 
-           <div fxLayout = "row wrap gap-10 flex-start-end">
+           <div class="flex-row-wrap gap-10 flex-start-end">
 
                 <mat-form-field style="min-width: 50%;" *ngIf="control.type !== 'select'" appearance="fill">
                     <mat-label>{{control.label}}</mat-label>

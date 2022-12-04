@@ -2,7 +2,7 @@
 
   <ng-container *ngIf="(ambulanceCases$ | async)  as ambulanceCase">
     <div *ngIf="ambulanceCase.vehicleDetails as vehicleDetail" class="vehicleWrapper">
-      <div [fxLayout]="inMap ? 'column' : 'row'" fxLayout.lt-sm="column"class="vehicle" >
+      <div [ngClass]="inMap ? 'flex-column' : 'flex-row'" class="vehicle" >
 
         <div class="flex-row">
 
@@ -30,7 +30,7 @@
               <div *ngIf="vehicleStaff.length > 1" class="vehicleStaff">
                   <div *ngFor="let vehicleStaff of vehicleStaff">
 
-                    <div fxFlex="none" class="avatar-circle" [matTooltip]="vehicleStaff.employeeNumber + ' - ' + vehicleStaff.firstName + ' ' + vehicleStaff.surname">
+                    <div style="flex: none;" class="avatar-circle" [matTooltip]="vehicleStaff.employeeNumber + ' - ' + vehicleStaff.firstName + ' ' + vehicleStaff.surname">
                       <span class="initials">{{ vehicleStaff.initials }}</span>
                     </div>
 
@@ -41,7 +41,7 @@
         </div>
 
         <div class="flex-row vehicleType">
-          <div  fxFlex   class="flex-row vehicleTypeIcon" *ngIf="vehicleType$ | async as vehicle">
+          <div class="flex-row vehicleTypeIcon flex-1" *ngIf="vehicleType$ | async as vehicle">
             <img  src="assets/icons/ambulance_van.png" alt="Ambulance filter">
             <p>{{vehicle.VehicleType}}</p>
           </div>
@@ -96,8 +96,8 @@
     </div>
   </ng-container>
 
-  <div fxLayout.lt-sm="column" *ngIf="!inMap">
-    <div *ngFor="let statusId of actionStatusId " fxFlex class="swimlane">
+  <div *ngIf="!inMap">
+    <div *ngFor="let statusId of actionStatusId " class="swimlane flex-1">
 
       <h2>{{getActionStatus(statusId)}}</h2>
 
