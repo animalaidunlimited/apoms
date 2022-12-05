@@ -1,12 +1,11 @@
-<div class="login-page gap-50 flex-row"
-class="flex-center-center">
+<div class="login-page gap-50 flex-row flex-col-xs flex-center-center">
     <div>
 
         <app-logo></app-logo>
     </div>
-    <mat-card>
+    <mat-card style="padding: 16px;">
 
-        <mat-card-title>
+        <mat-card-title class="title">
             Login to Apoms
         </mat-card-title>
         <mat-card-content>
@@ -24,7 +23,7 @@ class="flex-center-center">
             <mat-error [textContent]="errorMessage"></mat-error>
         </mat-card-content>
         <mat-card-actions >
-            <button mat-raised-button color="primary" class="login-field" (click)="login(username, password)" type="submit">
+            <button mat-raised-button color="primary" class="login-field" style="margin-left: 8px;" (click)="login(username, password)" type="submit">
                 Login
             </button>
         </mat-card-actions>

@@ -75,4 +75,5 @@ END IF;
 	SELECT vRotaMatrixItemId AS rotaMatrixItemId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;

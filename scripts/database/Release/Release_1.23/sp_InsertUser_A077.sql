@@ -102,4 +102,5 @@ SELECT vUserId, vSuccess;
 
 
 END$$
+
 DELIMITER ;

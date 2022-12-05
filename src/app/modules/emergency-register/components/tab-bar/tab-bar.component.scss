@@ -1,8 +1,8 @@
-.mat-tab-label {
+.mat-mdc-tab-label {
     z-index: 2;
 }
 
-.mat-tab-label-content {
+.mat-mdc-tab-label-content {
     height: 100%;
     width: 100%;
 }
@@ -11,7 +11,7 @@
         margin-top: 12% !important;
     }
 
-    :host > .mat-tab-group{
+    :host > .mat-mdc-tab-group{
         margin-top:60px;
     }
 
@@ -29,10 +29,10 @@
     z-index: 100;
 }
 
-:host > .mat-tab-group:first-child ::ng-deep .mat-tab-label:last-child{
+:host > .mat-mdc-tab-group:first-child ::ng-deep .mat-mdc-tab-label:last-child{
     margin-left: auto;
 }
 
-::ng-deep .mat-tab-body {
+::ng-deep .mat-mdc-tab-body {
     min-height: 695px;
 }

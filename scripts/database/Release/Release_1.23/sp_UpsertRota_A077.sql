@@ -80,4 +80,5 @@ END IF;
 	SELECT vRotaId AS rotaId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;

@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
 
--- CALL AAU.sp_GetRotationPeriods(2, 3, 0);
+-- CALL AAU.sp_GetRotationPeriods(-1, 4, 0);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT)
@@ -55,7 +55,8 @@ Purpose: Retrieve a list of rotation periods for a rota version.
             JSON_OBJECT("endDate", rp.EndDate)
 			)))) AS `RotationPeriods`
 	FROM rotationPeriodsCTE rp
-    INNER JOIN minMaxCTE mm ON mm.RotaVersionId = rp.RotaVersionId;
+    INNER JOIN minMaxCTE mm ON mm.RotaVersionId = rp.RotaVersionId
+    GROUP BY mm.FirstRotationPeriodGUID, mm.LastRotationPeriodGUID;
     
     
 END$$

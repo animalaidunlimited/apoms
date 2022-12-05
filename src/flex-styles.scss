@@ -7,6 +7,8 @@
 .flex-1 { flex: 1; }
 .flex-1-1 { flex: 1 1 auto; }
 
+.flex-col-xs { @media screen and (max-width: 599px) { flex-direction: column; } }  // Switch from flex-row to flex-col on mobile.
+
 
 // Flex-wrap utils.
 .flex-wrap { flex-wrap: wrap; }  // Mostly used with flex-row, when wrapping is desired.
@@ -26,6 +28,7 @@
 .flex-center-space-between{ justify-content: center; align-items: space-between; }
 .flex-space-around-start{ justify-content: space-around; align-items: start; }
 .flex-space-around-center{ justify-content: space-around; align-items: center; }
+.flex-space-around-stretch{ justify-content: space-around; align-items: stretch; }
 .flex-space-between-end{ justify-content: space-between; align-items: end; }
 .flex-space-between-center{ justify-content: space-between; align-items: center; }
 .flex-space-evenly-center{ justify-content: space-evenly; align-items: center; }

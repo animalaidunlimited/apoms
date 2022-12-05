@@ -86,4 +86,5 @@ END IF ;
 	SELECT vRotaVersionId AS rotaVersionId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;

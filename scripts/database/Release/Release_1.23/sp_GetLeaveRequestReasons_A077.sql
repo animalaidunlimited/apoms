@@ -31,4 +31,5 @@ WHERE OrganisationId = vOrganisationId
 AND IsDeleted = 0;
 
 END$$
+
 DELIMITER ;

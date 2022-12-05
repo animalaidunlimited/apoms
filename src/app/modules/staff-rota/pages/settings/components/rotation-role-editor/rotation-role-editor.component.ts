@@ -49,7 +49,7 @@ export class RotationRoleEditorComponent implements OnInit {
   private loadDropdowns() {
     this.rotationArea$ = this.rotaSettingsService.getRotationAreas(false);
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(true);
-    this.rotationRolesForGenericTable$ = this.rotationRoles$.pipe(map(values => values.map(value => {
+    this.rotationRolesForGenericTable$ = this.rotationRoles$.pipe(map(values => values?.map(value => {
 
       return {
         rotationRoleId: value.rotationRoleId,

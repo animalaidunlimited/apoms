@@ -30,4 +30,5 @@ SELECT
 FROM AAU.EditableDropdown;
 
 END$$
+
 DELIMITER ;

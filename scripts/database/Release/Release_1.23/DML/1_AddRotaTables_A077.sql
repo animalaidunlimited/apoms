@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `AAU`.`RotaMatrixItem`;
 DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;

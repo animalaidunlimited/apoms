@@ -149,7 +149,6 @@ FROM AAU.EditableDropdown;
 END$$
 
 DELIMITER ;
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetFestivals !!
@@ -185,8 +184,6 @@ WHERE f.OrganisationId = vOrganisationId
 AND f.IsDeleted = 0;
 
 END$$
-
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetLeaveRequestProtocol !!
@@ -256,6 +253,7 @@ WHERE OrganisationId = vOrganisationId
 AND IsDeleted = 0;
 
 END$$
+
 DELIMITER ;
 DELIMITER !!
 
@@ -310,7 +308,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetLeaveRequests !!
 
--- CALL AAU.sp_GetLeaveRequests2('Jim',null, null);
+-- CALL AAU.sp_GetLeaveRequests('Jim',null, null);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetLeaveRequests( IN prm_Username VARCHAR(45), IN prm_StartDate DATE, IN prm_EndDate DATE)
@@ -460,7 +458,6 @@ WHERE
 
 END $$
 
-
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetOrganisationDetail !!
@@ -512,15 +509,13 @@ Purpose: Retrieve the rotation period with an array of days, each day containing
 
 */
 
-
-
 With BaseCTE AS 
 (
 SELECT
 	rda.RotationPeriodId,
+    p.RotaVersionId,
 	rda.RotaDayDate,
 	rda.RotaDayId,
-	rda.RotationRoleId,
 	IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, rda.UserId) AS 'UserId',
     IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, CONCAT(u.EmployeeNumber, ' - ', u.FirstName)) AS 'UserCode',
 	rda.RotationUserId,
@@ -567,8 +562,8 @@ UNION ALL
 
 SELECT 
 	rp.RotationPeriodId,
+    rp.RotaVersionId,
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY),
-	-1,
 	-1,
 	lr.UserId,
     '',
@@ -607,8 +602,8 @@ UNION ALL
 -- Let's get all of the fixed off records
 SELECT
 	rp.RotationPeriodId,
+    rp.RotaVersionId,
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY),
-	-1,
 	-1,
 	u.UserId,
     '',
@@ -642,10 +637,13 @@ INNER JOIN AAU.User u ON u.FixedDayOff = WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 
+
+
 ),
 rotaDayAssignmentCTE AS
 (
 SELECT RotationPeriodId,
+RotaVersionId,
 		JSON_MERGE_PRESERVE(
 			JSON_OBJECT("rotaDayDate", RotaDayDate),
 			JSON_OBJECT("rotaDayAssignments", 
@@ -653,7 +651,6 @@ SELECT RotationPeriodId,
 					JSON_MERGE_PRESERVE(
 						JSON_OBJECT("rotaDayId", RotaDayId),
                         JSON_OBJECT("areaRowSpan", AreaRowSpan),
-						JSON_OBJECT("rotationRoleId", RotationRoleId),
 						JSON_OBJECT("userId", UserID),
                         JSON_OBJECT("userCode", UserCode),
 						JSON_OBJECT("rotationUserId", RotationUserId),
@@ -682,20 +679,24 @@ SELECT RotationPeriodId,
 		) AS `RotaDayAssignments`
 FROM BaseCTE
 GROUP BY RotationPeriodId,
+		 RotaVersionId,
 		 RotaDayDate
 )
 
 SELECT
 	JSON_MERGE_PRESERVE(
-		JSON_OBJECT("rotationPeriodId", RotationPeriodId),
+		JSON_OBJECT("rotationPeriodId", rd.RotationPeriodId),
+        JSON_OBJECT("rotaId", rv.RotaId),
+        JSON_OBJECT("rotaVersionId", rv.RotaVersionId),
 		JSON_OBJECT("rotaDays", 
 			JSON_ARRAYAGG(	
-			RotaDayAssignments
+			rd.RotaDayAssignments
 			)
 		)
 	) AS `RotationPeriodAssignments`
-FROM rotaDayAssignmentCTE
-GROUP BY RotationPeriodId;
+FROM rotaDayAssignmentCTE rd
+INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = rd.RotaVersionId
+GROUP BY rd.RotationPeriodId, rv.RotaId, rv.RotaVersionId;
 
 END$$
 
@@ -997,7 +998,8 @@ FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArr
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
 
-ENDDELIMITER !!
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertLeaveRequest !!
 
@@ -1098,7 +1100,8 @@ SET vOrganisationId = 0;
     SELECT vSuccess AS `success`, vLeaveRequestId AS `leaveRequestId`;
     
 
-END$$DELIMITER !!
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
@@ -1355,6 +1358,7 @@ SELECT vUserId, vSuccess;
 
 
 END$$
+
 DELIMITER ;
 DELIMITER !!
 
@@ -1427,7 +1431,8 @@ SET vSuccess = 0;
     SELECT vSuccess AS `success`, prm_LeaveRequestId AS `leaveRequestId`;
     
 
-END$$DELIMITER !!
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateRotaDayAssignment !!
 
@@ -1479,7 +1484,8 @@ SET vSuccess = 0;
     SELECT vSuccess AS `success`;
     
 
-END$$DELIMITER !!
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
 
@@ -1580,7 +1586,8 @@ SELECT vUpdateSuccess;
 
 
 
-ENDDELIMITER !!
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertAreaShift!!
 
@@ -1663,6 +1670,7 @@ END IF;
 	SELECT vAreaShiftId AS areaShiftId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;
 DELIMITER !!
 
@@ -1694,6 +1702,7 @@ VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber, prm_VehicleDe
 	
 	SELECT 1 INTO vSuccess;
 	SELECT vSuccess;
+    
 END$$
 DELIMITER !!
 
@@ -1772,6 +1781,7 @@ END IF;
 	SELECT vRotaMatrixItemId AS rotaMatrixItemId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;
 DELIMITER !!
 
@@ -1941,6 +1951,7 @@ END IF;
 	SELECT vRotationPeriodId AS rotationPeriodId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;
 DELIMITER !!
 
@@ -2135,6 +2146,7 @@ END IF ;
 	SELECT vRotaVersionId AS rotaVersionId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;
 DELIMITER !!
 
@@ -2218,5 +2230,6 @@ END IF;
 	SELECT vRotaId AS rotaId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;
 

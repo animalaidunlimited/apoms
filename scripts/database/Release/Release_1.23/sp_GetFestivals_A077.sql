@@ -33,5 +33,3 @@ WHERE f.OrganisationId = vOrganisationId
 AND f.IsDeleted = 0;
 
 END$$
-
-
