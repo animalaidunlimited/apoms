@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { UserDetails } from 'src/app/core/models/user';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
-import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AbstractControl, FormGroup, FormArray } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
@@ -125,9 +124,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
       return columns;
   }
 
-  ngOnInit(): void {
-
- 
+  ngOnInit(): void { 
 
     this.rotaService.beginningOrEndRotation.pipe(takeUntil(this.ngUnsubscribe)).subscribe(value => {
 

@@ -7,11 +7,10 @@ DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
 DROP TABLE IF EXISTS `AAU`.`RotationArea`;
 DROP TABLE IF EXISTS `AAU`.`RotationPeriod`;
-DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotaVersion`;
 DROP TABLE IF EXISTS `AAU`.`Rota`;
 DROP TABLE IF EXISTS `AAU`.`Festival`;
-DROP TABLE IF EXISTS `AAU.`.`Department`;
+DROP TABLE IF EXISTS `AAU`.`Department`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestProtocol`;
 
 CREATE TABLE `AAU`.`Rota` (
@@ -32,15 +31,15 @@ CREATE TABLE `AAU`.`Rota` (
     
 CREATE TABLE `AAU`.`RotationRole` (
   `RotationRoleId` INT NOT NULL AUTO_INCREMENT,
+  `OrganisationId` INT NOT NULL,
   `RotationRole` VARCHAR(45) NOT NULL,
   `RotationAreaId` INT NOT NULL,
-  `Colour` VARCHAR(16) NOT NULL,
+  `Colour` VARCHAR(20) NOT NULL,
   `StartTime` TIME NOT NULL,
   `EndTime` TIME NOT NULL,
-  `BreakStartTime` TIME NULL,
-  `BreakEndTime` TIME NULL,
-  `SortOrder` INT NULL,
-  `OrganisationId` INT NOT NULL,
+  `BreakStartTime` TIME NOT NULL,
+  `BreakEndTime` TIME NOT NULL,
+  `SortOrder` INT NULL,  
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -103,7 +102,6 @@ INSERT INTO `AAU`.`LeaveRequestReason` (OrganisationId, LeaveRequestReason, Sort
 CREATE TABLE `AAU`.`LeaveRequest` (
 `LeaveRequestId` INTEGER AUTO_INCREMENT NOT NULL,
 `OrganisationId` INT NOT NULL,
-`DepartmentId` INTEGER NOT NULL,
 `UserId` INTEGER NOT NULL,
 `RequestDate` DATE NOT NULL,
 `LeaveRequestReasonId` INTEGER NOT NULL,
@@ -165,7 +163,7 @@ CREATE TABLE `AAU`.`RotationArea` (
   `OrganisationId` INT NOT NULL,
   `RotationArea`  VARCHAR(32) NOT NULL,
   `SortOrder`  INT NOT NULL,
-  `Colour` VARCHAR(10) NOT NULL,
+  `Colour` VARCHAR(20) NOT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -183,7 +181,7 @@ CREATE TABLE `AAU`.`RotaRotationArea` (
   `RotationAreaId`  VARCHAR(32) NOT NULL,
   `RotaVersionId` INT NOT NULL,
   `Sequence`  INT NOT NULL,
-  `Colour` VARCHAR(10) NOT NULL,
+  `Colour` VARCHAR(20) NOT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -202,9 +200,9 @@ CREATE TABLE `AAU`.`AreaShift` (
   `AreaShiftId` INT NOT NULL AUTO_INCREMENT,  
   `RotaVersionId` INT NOT NULL,
   `AreaShiftGUID` VARCHAR(128) NOT NULL,
-  `Sequence` INT NULL,
+  `Sequence` INT NOT NULL,
   `RotationRoleId` INT NULL,
-  `Colour` VARCHAR(10) NULL,
+  `Colour` VARCHAR(20) NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -263,6 +261,7 @@ CREATE TABLE `AAU`.`RotaDayAssignment` (
 `ActualBreakEndTime` TIME NULL,
 `RotationUserId` INTEGER NULL,
 `Notes` VARCHAR(1024) CHARACTER SET UTF8MB4 NULL,
+`Sequence` INTEGER NOT NULL,
 `IsDeleted` TINYINT NOT NULL DEFAULT 0,
 `DeletedDate` DATETIME NULL,
 `CreatedDate` DATETIME NULL,
@@ -297,7 +296,7 @@ CREATE TABLE `AAU`.`Department` (
 `DepartmentId` INTEGER AUTO_INCREMENT NOT NULL,
 `OrganisationId` INTEGER NOT NULL,
 `Department` VARCHAR(64) NOT NULL,
-`Colour` VARCHAR(10) NULL,
+`Colour` VARCHAR(20) NULL,
 `SortOrder` INTEGER NULL,
 `IsDeleted` TINYINT NOT NULL DEFAULT 0,
 `DeletedDate` DATETIME NULL,
@@ -385,12 +384,25 @@ INSERT INTO AAU.LeaveRequestProtocol (OrganisationId, DayRangeStart, DayRangeEnd
 (1,6,999,30,1);
     
 /*
+
+INSERT INTO `AAU`.`RotationArea` (OrganisationId, RotationArea, SortOrder, Colour) VALUES
+(1,'A Kennel', 1, '#ffb6c1'),
+(1,'B Kennel', 2, '#add8e6');
+
+INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, RotationAreaId, startTime, EndTime, BreakStartTime, BreakEndTime) VALUES
+('N01','#90ee90',1,1,'08:00','17:00','13:00','14:00'),
+('N02','#add8e6',1,1,'09:00','18:00','14:00','15:00'),
+('N03','#e0ffff',1,1,'10:00','19:00','15:00','16:00'),
+('HX1','#20b2aa',1,2,'11:00','20:00','16:00','14:00'),
+('HX2','#ffffe0',1,2,'12:00','21:00','17:00','18:00'),
+('HX3','#ffa07a',1,2,'06:00','15:00','11:00','12:00');
+
+
 INSERT INTO `AAU`.`Rota` (`OrganisationId`,`RotaName`,`DefaultRota`) VALUES (1, 'Hospital Staff', 1), (1, 'Desk Staff', 0);
 INSERT INTO `AAU`.`RotaVersion` (`OrganisationId`,`RotaVersionName`,`DefaultRotaVersion`, `RotaId`) VALUES
 (1, 'Version 1', 0, 1), (1, 'Version 2', 1, 1),
 (1, 'Desk Version MkI', 0, 2), (1, 'Desk Version MkII', 1, 2);
-INSERT INTO `AAU`.`RotationRole` (Role, Colour, OrganisationId) VALUES ('N01','lightgreen',1),('N02','lightblue',1),('N03','lightcyan',1),
-('HX1','lightpurple',1),('HX2','lightyellow',1),('HX3','lightsalmon',1);
+
 
 INSERT INTO `AAU`.`LeaveRequest` (`DepartmentId`, `UserId`, `RequestDate`, `RequestReason`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES ('1', '1', '2022-01-10', 'Family Trip', '2022-10-01', '2022-10-03', '1');
 INSERT INTO `AAU`.`LeaveRequest` (`DepartmentId`, `UserId`, `RequestDate`, `RequestReason`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES ('1', '4', '2022-10-03', 'Wedding', '2022-10-05', '2022-10-06', '1');

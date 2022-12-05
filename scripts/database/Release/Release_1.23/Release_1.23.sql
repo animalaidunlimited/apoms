@@ -1130,7 +1130,7 @@ IF vRotationPeriodExists = 0 THEN
 
 UPDATE AAU.RotationPeriod SET `Locked` = 1 WHERE RotationPeriodId = prm_RotationPeriodId;
 
-INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleId, UserId, RotationUserId, LeaveRequestId)
+INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleId, UserId, RotationUserId)
 SELECT DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
 p.RotationPeriodId,
 a.RotationRoleId,

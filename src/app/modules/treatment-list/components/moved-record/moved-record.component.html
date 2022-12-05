@@ -5,13 +5,15 @@
        <div *ngFor="let item of movedRecords.controls; let index = index" formArrayName="movedList">
 
 
-         <div [formGroupName]="index"
-          class="unaccepted-item flex-row flex-wrap">
+         <div [formGroupName]="index" class="unaccepted-item flex-row flex-wrap flex-center-center">
 
         <div class="unaccepted-form-fields flex-row flex-wrap">
 
             <button mat-button class="action-button"
-            [ngStyle]="{ 'border-color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white',
+            [ngStyle]="{ 'border-color' :
+                                listType === 'admissions' ? 'green' :
+                                listType === 'rejected from' ? 'red' :
+                                listType === 'moved in from' ? '#f0ca00' : 'white',
             'color' : listType === 'admissions' ? 'green' : listType === 'rejected from' ? 'red' : listType === 'moved in from' ? '#f0ca00' : 'white'}"
             >
               {{item.get('Actioned by area')?.value || 'Admission'}}
@@ -22,15 +24,18 @@
 
           </div>
 
-            <div class="unaccepted-form-fieldsflex-row flex-wrap">
+            <div class="unaccepted-form-fields flex-row flex-wrap">
 
 
-              <mat-form-field >
-                <input matInput disabled="true" placeholder="Tag number" [value]="item.get('Tag number')?.value">
+              <mat-form-field class="moved-field">
+                <mat-label>Tag number</mat-label>
+
+                <input matInput disabled="true" [value]="item.get('Tag number')?.value">
               </mat-form-field>
 
-              <mat-form-field >
-                <mat-select disabled="true" [value]="item.get('Treatment priority')?.value"  placeholder="Treatment priority">
+              <mat-form-field class="moved-field">
+                <mat-label>Treatment priority</mat-label>
+                <mat-select disabled="true" [value]="item.get('Treatment priority')?.value">
                   <mat-option>N/A</mat-option>
                   <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">{{priority.Priority}}</mat-option>
                 </mat-select>
@@ -40,7 +45,7 @@
 
           </div>
 
-          <div class="flex-row flex-wrap button-container">
+          <div class="flex-row flex-wrap button-container gap-20">
 
             <button mat-button class="accept-button" [disabled]="moveOut" (click)="acceptMove(item)">
               <mat-icon>check_circle</mat-icon>

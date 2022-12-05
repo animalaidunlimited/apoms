@@ -8,7 +8,7 @@
 
 	<div class="flex-row flex-start-center gap-20">
 
-		<mat-icon style="color:gold; font-size:34px; height: 34px; width: 34px;">warning</mat-icon>
+		<mat-icon style="color:gold; font-size:34px; height: 34px; width: 34px; overflow: unset;">warning</mat-icon>
 		<div >
 			<p *ngFor="let messagePart of messageValues">
 				{{messagePart}}
@@ -22,7 +22,7 @@
 
 
 
-<div mat-dialog-actions class="flex-center-center">
+<div mat-dialog-actions style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
 	<button mat-raised-button color="primary" (click)="onConfirmClick()" tabindex="1">{{confirmButtonText}}</button>
 	<button mat-raised-button *ngIf="cancelButtonText !== 'hide-cancel'" mat-dialog-close  (click)="onCancel()" tabindex="-1">{{cancelButtonText}}</button>
 </div>

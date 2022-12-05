@@ -1,10 +1,17 @@
 
-.accordian{
+.accordion{
     margin-top: 20px;
+    width: 75vw;
 }
 
 .add-records{
     width: 100%; 
     margin-bottom: 16px;
     margin-right: 16px
+}
+
+@media (max-width:600px){
+    .accordion{
+        width: 98vw;
+    }
 }

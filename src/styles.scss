@@ -15,20 +15,20 @@ $colour-border:#a9abad;
 $primary-font-colour: #626262;
 $standard-width: 180px;
 
-.mat-focused {
+.mat-mdc-focused {
   border:1.5px dashed #607d8b99;
   border-radius: 4px;
 }
 
-.mat-form-field{
+.mat-mdc-form-field{
   padding: 3px;
 }
 
-.mat-form-field-infix{
+.mat-mdc-form-field-infix{
   width: 183px;
 }
 
-.mat-chip-list-wrapper{
+.mat-mdc-chip-list-wrapper{
   margin: 16px 4px 16px 4px !important;
 }
 
@@ -47,7 +47,7 @@ $standard-width: 180px;
   margin-bottom: 10px !important;
 }
 
-.mat-radio-group{
+.mat-mdc-radio-group{
   display:flex;
   color: $primary-font-colour;
   justify-content: start center;
@@ -59,7 +59,7 @@ $standard-width: 180px;
   display: flex !important;
 }
 
-mat-radio-button{
+.mat-mdc-radio-button{
   margin-right: 15px;
 }
 
@@ -92,11 +92,11 @@ mat-radio-button{
 .wide{
   width: $standard-width * 1.5;
 }
-.mat-sidenav-container, .mat-sidenav-content, .mat-mdc-tab-body-content {
+.mat-mdc-sidenav-container, .mat-mdc-sidenav-content, .mat-mdc-tab-body-content {
   transform: none !important;
 }
 
-.media-capture-dialog .mat-dialog-container{
+.media-capture-dialog .mat-mdc-dialog-container{
   padding: 0px !important;
   height: 98vh;
   width: 98vw;
@@ -228,7 +228,11 @@ mat-radio-button{
 
 @media(max-width: 600px) {
 
-  .mat-cell {
+  .mat-mdc-dialog-actions{
+    justify-content: center !important;;
+  }
+
+  .mat-mdc-cell {
     font-size: 13px;
     width: 100%;
   }
@@ -237,10 +241,6 @@ mat-radio-button{
     width: auto;
     display: inline-block;
     font-weight: bold;
-  }
-
-  .mat-form-field{
-    max-width: 41.9%;
   }
 
   .form-sub-group
@@ -280,7 +280,7 @@ mat-radio-button{
     }
   }
 
-  .mat-chip {
+  .mat-mdc-chip {
     font-size: 13px;
   }
 
@@ -288,15 +288,15 @@ mat-radio-button{
     font-size: 13px;
   }
 
-  .mat-cell {
+  .mat-mdc-cell {
     font-size: 13px;
   }
 
-  .mat-expansion-panel-header {
+  .mat-mdc-expansion-panel-header {
     font-size: 13px;
   }
 
-  .mat-expansion-panel-content {
+  .mat-mdc-expansion-panel-content {
     font-size: 13px;
   }
 
@@ -308,7 +308,7 @@ mat-radio-button{
     font-size: 110%;
   }
 
-  .mat-input-element {
+  .mat-mdc-input-element {
     font-size: 13px !important;
   }
 
@@ -322,7 +322,7 @@ mat-radio-button{
     color: $primary-font-colour !important;
   }
 
-  .media-capture-dialog .mat-dialog-container{
+  .media-capture-dialog .mat-mdc-dialog-container{
     padding: 0px !important;
     height: 90vh;
     width: 90vw;
@@ -330,7 +330,7 @@ mat-radio-button{
     overflow: visible;
   }
 
-  .outstanding-case-board-vehicle-map .mat-dialog-container{
+  .outstanding-case-board-vehicle-map .mat-mdc-dialog-container{
     min-width: 90vw;
   }
 
@@ -341,6 +341,6 @@ mat-radio-button{
 * Dialogs
 */
 
-.outstanding-case-board-vehicle-map .mat-dialog-container{
+.outstanding-case-board-vehicle-map .mat-mdc-dialog-container{
   padding: 0;
 }

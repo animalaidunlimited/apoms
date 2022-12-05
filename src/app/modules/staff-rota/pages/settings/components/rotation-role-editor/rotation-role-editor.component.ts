@@ -16,6 +16,8 @@ export class RotationRoleEditorComponent implements OnInit {
 
   errorMatcher = new CrossFieldErrorMatcher();
 
+  resizeObservable$!: Observable<Event>;
+
   rotationRoleForm = this.fb.group({
     rotationRoleId: [],
     rotationAreaId: ["", Validators.required],

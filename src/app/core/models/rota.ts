@@ -190,16 +190,16 @@ export interface LastFestivalDetails {
 export interface LeaveRequest {
   leaveRequestId: number | null;  
   userId: number | null;
-  requestDate: string | Date | null;
+  requestDate: Date | null;
   leaveRequestReasonId: number | null;
   leaveRequestReason: string;
   additionalInformation: string;
-  leaveStartDate: string | Date | null;
-  leaveEndDate: string | Date | null;
+  leaveStartDate: Date | null;
+  leaveEndDate: Date | null;
   numberOfDays: number;
   granted: number | null;
   commentReasonManagementOnly: string;
-  dateApprovedRejected: string | Date | null;
+  dateApprovedRejected: Date | null;
   recordedOnNoticeBoard: boolean | null;
   withinProtocol: boolean | null;
   festivalId: number | null;

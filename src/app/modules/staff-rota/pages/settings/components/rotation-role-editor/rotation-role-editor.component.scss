@@ -6,3 +6,9 @@
 .save-button{
     margin-top: 15px;
 }
+
+@media (max-width:600px){
+    .rotation-tole-form{
+        overflow: scroll;
+    }
+}

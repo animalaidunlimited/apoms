@@ -1,8 +1,8 @@
 <form autocomplete="off" [formGroup]="patientStatusForm">
 
-      <div class="flex-row flex-wrap gap-20 flex-space-around-center">
+      <div class="flex-row flex-wrap flex-space-around-center">
 
-      <mat-form-field>
+      <mat-form-field style="max-width: 48%;">
         <mat-label>Status</mat-label>
         <mat-select formControlName="patientStatusId" [errorStateMatcher]="errorMatcher"
         (selectionChange)="onStatusChange()">
@@ -12,7 +12,8 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field style="max-width: 48%;">
+        <mat-label>Date</mat-label>
         <input formControlName="patientStatusDate" type="date" (click)="setDate()"
         name="patientStatusDate" min="{{createdDate | date:'yyyy-MM-dd'}}" max="{{currentTime | date:'yyyy-MM-dd'}}"
         placeholder="Date" [errorStateMatcher]="errorMatcher" matInput>
@@ -24,9 +25,9 @@
 
     </div>
 
-    <div class="flex-row flex-wrap gap-20 flex-space-around-center">
+    <div class="flex-row flex-wrap flex-space-around-center">
 
-      <mat-form-field *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
+      <mat-form-field style="max-width: 48%;" *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
         <mat-label>P/N</mat-label>
         <mat-select formControlName="PN" [errorStateMatcher]="errorMatcher">
             <mat-option value="P">P</mat-option>
@@ -34,7 +35,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-checkbox *ngIf="patientStatusForm.get('patientStatusId')?.value == 3" name="check" formControlName="suspectedRabies">Suspected Rabies</mat-checkbox>
+    <mat-checkbox style="max-width: 48%;" *ngIf="patientStatusForm.get('patientStatusId')?.value == 3" name="check" formControlName="suspectedRabies">Suspected Rabies</mat-checkbox>
 
 
     </div>

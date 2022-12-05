@@ -48,7 +48,7 @@ SELECT
 	TIME_FORMAT(rda.ActualBreakStartTime, '%h:%i') AS ActualBreakStartTime,
 	TIME_FORMAT(rda.ActualBreakEndTime, '%h:%i') AS ActualBreakEndTime,
     rda.Notes,
-	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY rda.RotaDayDate, ra.SortOrder) = 1,  
+	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY rda.RotaDayDate, rda.Sequence) = 1,  
 					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY ra.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
 					0) AS `AreaRowSpan`
 	FROM AAU.RotaDayAssignment rda

@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { RotationPeriodResponse, RotationPeriodSaveResponse } from 'src/app/core/models/rota';
+import { RotationPeriodSaveResponse } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from '../../services/rota.service';
@@ -145,7 +145,6 @@ export class RotationPeriodComponent implements OnInit {
     this.confirm("Are you sure you want to generate the rota days for this period?").subscribe(response => {
 
       if(response){
-        period.get('locked')?.setValue(true);
         this.insertRotaDayAssignments(period);
       }
 
@@ -166,7 +165,8 @@ export class RotationPeriodComponent implements OnInit {
     this.rotaService.insertRotaDayAssignments(period).then((result:SuccessOnlyResponse) => {
 
       if(result.success === 1){
-        this.snackbarService.successSnackBar("Rota created for all days in the period", "OK");
+        this.snackbarService.successSnackBar("Rota created for all days in the period", "OK");        
+        this.rotaService.updateRotationPeriodLocked(period.get('rotationPeriodId')?.value, true);
       }
       else {
         this.snackbarService.errorSnackBar("ERR: RPC-163: Error generating rota day assignments, please see administrator", "OK");

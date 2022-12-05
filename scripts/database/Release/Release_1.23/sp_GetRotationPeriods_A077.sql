@@ -31,7 +31,8 @@ Purpose: Retrieve a list of rotation periods for a rota version.
         rp.RotationPeriodGUID,
         rp.RotaVersionId,
         rp.StartDate,
-        rp.EndDate
+        rp.EndDate,
+        IF(rp.locked = 1, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS `Locked`
     FROM AAU.RotationPeriod rp
     WHERE rp.RotaVersionId = prm_RotaVersionId
     AND rp.IsDeleted = 0
@@ -52,7 +53,8 @@ Purpose: Retrieve a list of rotation periods for a rota version.
 			JSON_OBJECT("rotationPeriodGUID", rp.RotationPeriodGUID),
             JSON_OBJECT("rotaVersionId", rp.RotaVersionId),
             JSON_OBJECT("startDate", rp.StartDate),
-            JSON_OBJECT("endDate", rp.EndDate)
+            JSON_OBJECT("endDate", rp.EndDate),
+            JSON_OBJECT("locked", rp.`Locked`)
 			)))) AS `RotationPeriods`
 	FROM rotationPeriodsCTE rp
     INNER JOIN minMaxCTE mm ON mm.RotaVersionId = rp.RotaVersionId
