@@ -1,17 +1,17 @@
 <div class="wrapper">
 <form [formGroup]="areas" class="area-wrapper">
 
-    <div class="flex-row flex-wrap flex-center-center gap-20">
+    <div class="flex-row flex-wrap flex-center-center dropdown-wrapper">
 
         <mat-form-field>
-            <mat-label>Treatment area</mat-label>
-            <mat-select
-            [compareWith]="compareAreas"
-            formControlName="area">
+        <mat-label>Treatment area</mat-label>
+        <mat-select
+        [compareWith]="compareAreas"
+        formControlName="area">
 
-                <mat-option>N/A</mat-option>
-                <mat-option [value]="area" *ngFor="let area of (treatmentAreas | async)" >{{ area.areaName }}</mat-option>
-            </mat-select>
+            <mat-option>N/A</mat-option>
+            <mat-option [value]="area" *ngFor="let area of (treatmentAreas | async)" >{{ area.areaName }}</mat-option>
+        </mat-select>
         </mat-form-field>
 
 

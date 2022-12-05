@@ -833,7 +833,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           areaShiftId: null,
                           areaShiftGUID: generateUUID(),
                           rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value || -1,
-                          sortOrder: (this.getAreaShiftArray?.length) + 1,
+                          sequence: (this.getAreaShiftArray?.length) + 1,
                           rotationRoleId: [, Validators.required],
                           roleName: "",
                           colour: "#ffffff",
@@ -1092,6 +1092,22 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     this.rotaForm.reset();  
 
     this.initialiseArrays();
+
+  }
+
+  public updateRotationPeriodLocked(rotationPeriodId: number, locked: boolean) : void {
+
+    this.getRotationPeriodArray.controls.some(element => {
+
+      if(element.get('rotationPeriodId')?.value === rotationPeriodId){
+        element.get('locked')?.setValue(locked);
+        this.generateTableDataSource();
+        return true;
+      }
+
+      return false;
+
+    });    
 
   }
 

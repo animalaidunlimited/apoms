@@ -9,7 +9,7 @@
 
             <mat-form-field appearance="fill">
               <mat-label>Username</mat-label>
-                <input type="text" formControlName="userName" matInput required>
+                <input type="text" formControlName="userName" matInput [errorStateMatcher]="errorMatcher">
             </mat-form-field>
 
             <mat-form-field appearance="fill" style="width: 212px;">
@@ -26,17 +26,17 @@
 
           <mat-form-field appearance="fill">
             <mat-label>First name</mat-label>
-            <input type= "text" formControlName="firstName" matInput required>
+            <input type= "text" formControlName="firstName" matInput [errorStateMatcher]="errorMatcher">
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Last name</mat-label>
-            <input type= "text" formControlName="surname" matInput required>
+            <input type= "text" formControlName="surname" matInput [errorStateMatcher]="errorMatcher">
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Local name</mat-label>
-            <input type= "text" formControlName="localName" matInput required>
+            <input type= "text" formControlName="localName" matInput [errorStateMatcher]="errorMatcher">
           </mat-form-field>
 
         </div>
@@ -45,7 +45,7 @@
 
           <mat-form-field appearance="fill">
             <mat-label>Employee number</mat-label>
-              <input type= "text" placeholder="Employee number" formControlName="employeeNumber" matInput required>
+              <input type= "text" placeholder="Employee number" formControlName="employeeNumber" matInput [errorStateMatcher]="errorMatcher">
           </mat-form-field>
 
           <mat-form-field appearance="fill">

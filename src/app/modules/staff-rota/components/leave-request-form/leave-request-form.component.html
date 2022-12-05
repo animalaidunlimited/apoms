@@ -25,8 +25,11 @@
     
       <mat-form-field appearance="fill">
         <mat-label>Date of request</mat-label>
-        <input matInput type="date" placeholder="Date of request" [errorStateMatcher]="errorMatcher"
+        <input matInput type="date" [errorStateMatcher]="errorMatcher"
+          [matDatepicker]="requestPicker"
           formControlName="requestDate"  />
+          <mat-datepicker-toggle matIconSuffix [for]="requestPicker"></mat-datepicker-toggle>
+          <mat-datepicker #requestPicker></mat-datepicker>
       </mat-form-field>
 
       <div>
@@ -63,10 +66,13 @@
         <mat-form-field appearance="fill">
           <mat-label>Leave requested from</mat-label>
           <input matInput type="date"
+            [matDatepicker]="fromPicker"
             [min]="leaveRequestForm.get('requestDate')?.value"
             [max]="leaveRequestForm.get('leaveEndDate')?.value"
             [errorStateMatcher]="errorMatcher"
             formControlName="leaveStartDate"  />
+            <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromPicker></mat-datepicker>
 
             <mat-error *ngIf="leaveRequestForm.get('leaveStartDate')?.errors?.invalidDate_Min">
               Date must be on or after {{(leaveRequestForm.get('requestDate')?.value | date : "EEE,dd/MMM")}}
@@ -80,8 +86,11 @@
         <mat-form-field appearance="fill">
           <mat-label>to</mat-label>
           <input matInput type="date" [errorStateMatcher]="errorMatcher"
+          [matDatepicker]="toPicker"
           [min]="leaveRequestForm.get('leaveStartDate')?.value"
             formControlName="leaveEndDate"  />
+            <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+            <mat-datepicker #toPicker></mat-datepicker>
 
             <mat-error *ngIf="leaveRequestForm.get('leaveEndDate')?.errors?.invalidDate_Min">
               Date must be on or before {{(leaveRequestForm.get('leaveStartDate')?.value | date : "EEE,dd/MMM")}}

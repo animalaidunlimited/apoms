@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LeaveRequestService } from './../../services/leave-request.service';
 import { Department, DisplayLeaveRequest, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
-import { Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestFormComponent } from '../../components/leave-request-form/leave-request-form.component';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -41,7 +41,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
   
   displayColumns: Observable<string[]>;
   
-  leaveRequests: Observable<DisplayLeaveRequest[]>;
+  leaveRequests: BehaviorSubject<DisplayLeaveRequest[]>;
 
   requests!: DisplayLeaveRequest[];
 
@@ -58,9 +58,10 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
     private snackbar: SnackbarService
   ) {
 
-    this.leaveRequests = this.requestService.getLeaveRequests();
+    this.leaveRequests = this.requestService.leaveRequests;
+    this.leaveRequests.pipe(takeUntil(this.ngUnsubscribe)).subscribe(requests => {
 
-    this.leaveRequests.pipe(take(1), takeUntil(this.ngUnsubscribe)).subscribe(requests => {
+      if(!requests) return;
 
         this.dataSource = new MatTableDataSource(requests);
         this.dataSource.sort = this.sort;
@@ -72,10 +73,6 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
     "additionalInformation","leaveStartDate","leaveEndDate","numberOfDays","granted","commentReasonManagementOnly",
     "dateApprovedRejected","recordedOnNoticeBoard","delete"
     ]);
-
-    this.requestService.leavesUpdated.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() =>    
-        this.leaveRequests = this.requestService.getLeaveRequests()    
-    )
 
     this.departments$ = this.dropdown.getDepartments();
 

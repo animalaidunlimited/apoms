@@ -47,7 +47,7 @@ JSON_OBJECT("fixedDayOff",UserDetails.FixedDayOff),
 JSON_OBJECT("departmentId",UserDetails.DepartmentId),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted)
 ))  AS userDetails
-FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, u.Colour, u.Telephone,
+FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle,
             u.FixedDayOff, u.DepartmentId,
             IF(u.IsDeleted, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS IsDeleted
@@ -69,4 +69,4 @@ FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArr
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
 
 
-END
+END$$

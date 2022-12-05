@@ -14,6 +14,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { maxDateTodayValidator, maxDateValidator, minDateValidator } from 'src/app/core/validators/date-validators';
+import { DateAdapter } from '@angular/material/core';
 
 interface DialogData {
   leaveRequestId: number;
@@ -35,22 +36,24 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
   leaveRequestForm: ModelFormGroup<LeaveRequest> = this.fb.nonNullable.group({
     leaveRequestId: new FormControl<number | null>(null),
     userId: new FormControl<number | null>(null, Validators.required),
-    requestDate: new FormControl<string | Date | null>(getCurrentDateString(), [Validators.required, maxDateTodayValidator()]),
+    requestDate: new FormControl< Date | null>(new Date(getCurrentDateString()), [Validators.required, maxDateTodayValidator()]),
     leaveRequestReasonId: new FormControl<any | null>(null, Validators.required),
     leaveRequestReason: [''],
-    leaveStartDate: new FormControl<string | Date | null>(null, Validators.required),
-    leaveEndDate: new FormControl<string | Date | null>(null, Validators.required),    
+    leaveStartDate: new FormControl< Date | null>(null, Validators.required ),
+    leaveEndDate: new FormControl< Date | null>(null, Validators.required ),    
     additionalInformation: [''],
     numberOfDays: [-1],
     granted: new FormControl<number | null>(null),
     commentReasonManagementOnly: [''],
-    dateApprovedRejected: new FormControl<string | Date | null>(null),
+    dateApprovedRejected: new FormControl< Date | null>(null),
     recordedOnNoticeBoard: new FormControl<boolean | null>(null),
     withinProtocol: new FormControl<boolean | null>(null),
     festivalId: new FormControl<number | null>(null),
     lastFestivalDetails: new FormControl<any | null>(null),
     isDeleted: [false]
   });
+
+  
 
   leaveRequestId = 0;
 
@@ -85,8 +88,12 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     private snackbar: SnackbarService,
     private dropdown: DropdownService,
     private userDetailsService: UserDetailsService,
-    private dailyRotaService: DailyRotaService,
+    private dateAdapter: DateAdapter<Date>,
+
     private MatDialogRef: MatDialogRef<boolean>) {
+
+      //We need to set this in order for the date picker to work with a date input
+        this.dateAdapter.setLocale('fr-CA'); // yyyy-MM-dd
 
         this.userList = this.userDetailsService.getUserList();
         this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
@@ -113,7 +120,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
   loadLeaveRequest(loadLeaveRequest: number) : void {
 
-    this.requestService.getLeaveRequests()
+    this.requestService.leaveRequests
     .pipe(takeUntil(this.ngUnsubscribe)).subscribe(requests => {
 
       let foundRequest = requests.find(element => element.leaveRequestId === loadLeaveRequest);
@@ -240,7 +247,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
       switch(response.success){
         case 1 : {
-          this.requestService.markLeavesUpdated();
+          this.requestService.getLeaveRequests();
           this.leaveRequestForm.get('leaveRequestId')?.setValue(response.leaveRequestId);
           this.snackbar.successSnackBar("Leave request saved successfully", "OK");
           break;

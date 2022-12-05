@@ -3,9 +3,9 @@
   <fieldset class="form-sub-group">
     <legend class="legend" i18n>Add new rotation area</legend>
 
-    <div class="flex-column flex-start-start">
+    <div class="flex-column flex-start-center rotation-form-container">
 
-      <div class="form-row flex-row gap-20 flex-center-center">
+      <div class="form-row flex-row gap-20 flex-center-center flex-wrap">
 
         <mat-form-field>
           <mat-label>Rotation area name</mat-label>
@@ -19,7 +19,7 @@
 
       </div>
 
-      <div class="form-row flex-row gap-20 flex-center-center">
+      <div class="form-row flex-row gap-20 flex-center-center flex-wrap">
 
         <mat-form-field>
           <mat-label>Colour</mat-label>
@@ -27,7 +27,7 @@
         </mat-form-field>
     
         <mat-checkbox
-          style="align-self: center; width: 212px"
+          class="deleted-checkbox"
           matTooltip="Deleted"
           formControlName="isDeleted">Deleted
         </mat-checkbox>
@@ -35,7 +35,8 @@
 
       </div>
 
-      <div class="form-row save-button flex-row flex-space-evenly-center gap-20">
+      <div class="form-row save-button flex-row flex-space-evenly-center gap-20"
+      style="width: 100%;">
 
         <button
           type="button"

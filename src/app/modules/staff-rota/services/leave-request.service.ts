@@ -12,16 +12,15 @@ export class LeaveRequestService extends APIService {
 
   endpoint = 'Rota';
 
-  leaveRequests!: Observable<DisplayLeaveRequest[]>;
+  leaveRequests = new BehaviorSubject<DisplayLeaveRequest[]>([]);
 
   leaveRequestProtocol$! : Observable<LeaveRequestProtocol[]>;
-
-  public leavesUpdated = new BehaviorSubject<boolean>(false);
 
 constructor(
   http: HttpClient
 ) {
   super(http);
+  this.getLeaveRequests();
  }
 
  // API Calls
@@ -40,9 +39,13 @@ constructor(
   return this.leaveRequestProtocol$;
 }
 
-getLeaveRequests(startDate?: string, endDate?: string) : Observable<DisplayLeaveRequest[]> {
+
+getLeaveRequests(startDate?: string, endDate?: string) : void {
   
-  return this.getObservable(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`);
+  this.get(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`).then(requests => {
+    this.leaveRequests.next(requests as DisplayLeaveRequest[])
+  }
+  )
 
 }
 
@@ -62,10 +65,6 @@ deleteLeaveRequest(leaveRequest: LeaveRequest) : Promise<LeaveRequestSaveRespons
 
   return this.putSubEndpoint("/LeaveRequest", leaveRequest)
 
-}
-
-markLeavesUpdated() : void {
-  this.leavesUpdated.next(true);
 }
 
 }

@@ -6,14 +6,16 @@
             {{navigationItem.group || '' | titlecase}}
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <div>
+    <div >
         <a *ngFor="let item of navigationItem.groupedNavRoutes" mat-list-item class="sidenav-item"
             data-toggle="collapse"
             [routerLink]="[item.path]"
             [ngClass]=" isSelected(item)? 'selected' : ''">
-            <div class="item-selector"></div>
-            <div class="flex-1"> {{item.data?.title}} </div>
-            <mat-icon>{{item.icon}}</mat-icon>
+            <div style="display: flex">
+                <div class="item-selector" style="display: flex !important"></div>
+                <div class="flex-1" style="display: flex !important"> {{item.data?.title}} </div>
+                <mat-icon >{{item.icon}}</mat-icon>            
+            </div>
         </a>
     </div>
 </mat-expansion-panel>
@@ -22,7 +24,9 @@
     data-toggle="collapse"
     [routerLink]="[navigationItem.path]"
     [ngClass]=" isSelected(navigationItem)? 'selected' : ''">
-    <div class="item-selector"></div>
-    <div class="flex-1"> {{navigationItem.data?.title}} </div>
-    <mat-icon>{{navigationItem.icon}}</mat-icon>
+    <div style="display: flex">
+        <div class="item-selector"></div>
+        <div class="flex-1"> {{navigationItem.data?.title}} </div>
+        <mat-icon matSuffix>{{navigationItem.icon}}</mat-icon>
+    </div>
 </a>

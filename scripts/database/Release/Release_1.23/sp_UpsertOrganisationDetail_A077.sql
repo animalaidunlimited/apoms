@@ -28,4 +28,5 @@ VALUES (prm_Address, prm_OrganisationId, prm_DriverViewDeskNumber, prm_VehicleDe
 	
 	SELECT 1 INTO vSuccess;
 	SELECT vSuccess;
+    
 END$$

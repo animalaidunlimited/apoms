@@ -197,7 +197,9 @@ export class DailyRotaComponent implements OnInit {
   }
 
   processRotaDays(rotaDays: RotaDayAssignmentResponse) : void { 
-    
+
+    if(!rotaDays) return;
+
     this.rotaDays.next(rotaDays.rotaDays);
 
     this.rotaDayForm.clear();

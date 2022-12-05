@@ -30,7 +30,7 @@ export class RotaSettingsService extends APIService {
     if(!this.rotationRoles$){
       const request = `/GetRotationRoles?includeDeleted=${includeDeleted}`;
 
-      this.rotationRoles$ = this.getObservable(request).pipe(map((response: RotationRole[]) => response.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a,b))));
+      this.rotationRoles$ = this.getObservable(request).pipe(map((response: RotationRole[]) => response?.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a,b))));
       
     }
     

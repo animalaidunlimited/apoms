@@ -31,6 +31,9 @@
       </button>
 
     </div>
+
+    {{period.get('locked')?.value}}
+
     <div class="flex-row flex-center-center">
       <button mat-icon-button (click)="generateRotationPeriodDays(period)"
       *ngIf="!period.get('locked')?.value" [disabled]="!period.get('rotationPeriodId')?.value || period.dirty">        
@@ -39,8 +42,7 @@
 
       <button mat-icon-button class="close-button"
       *ngIf="period.get('locked')?.value"
-      (click)="navigateToRotationPeriod(period)"
-      >        
+      (click)="navigateToRotationPeriod(period)">        
         <mat-icon matTooltip="go to period rota" class="close-icon lock">lock</mat-icon>
       </button>      
 

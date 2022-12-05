@@ -81,4 +81,5 @@ END IF;
 	SELECT vAreaShiftId AS areaShiftId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;

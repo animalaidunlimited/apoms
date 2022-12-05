@@ -1,6 +1,6 @@
 <form [formGroup]="treatmentListForm" autocomplete="off">
 
-<fieldset class="form-sub-group">
+<fieldset class="form-sub-group" class="area-fieldset">
 
       <!--<mat-spinner class="mat-spinner" *ngIf="(refreshing | async)" style="margin:0 auto;"></mat-spinner>-->
 
@@ -20,7 +20,7 @@
       <div class="flex-row flex-start-center gap-15" style="margin-top: 15px" *ngIf="!isPrinting">
 
         <mat-form-field >
-          <mat-label>Filter by tag number</mat-label>
+          <mat-label>Filter by tag no.</mat-label>
           <input matInput (keyup)="applyFilter()" formControlName="filterValue" placeholder="E.g. A378" #input>
         </mat-form-field>
 
@@ -233,15 +233,14 @@
 
         <div class="select-width flex-row flex-space-between-center">
 
-          <mat-form-field>
             <mat-select
+            class="flex-1 area-select"
             (selectionChange)="areaChanged($event.value, index)"
             formControlName="Moved to">
 
               <mat-option>N/A</mat-option>
               <mat-option [value]="area.areaId" *ngFor="let area of otherAreas">{{ area.areaName }}</mat-option>
             </mat-select>
-          </mat-form-field>
 
           <mat-spinner *ngIf="row.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
           <mat-icon [@fadeSavedIcon]="row.get('saved')?.value" *ngIf="row.get('saved')?.value" class="saved-icon">check_circle</mat-icon>

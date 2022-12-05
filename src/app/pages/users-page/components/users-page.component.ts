@@ -15,6 +15,7 @@ import { UserOptionsService } from 'src/app/core/services/user-option/user-optio
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { Department } from 'src/app/core/models/rota';
 import { MatOptionSelectionChange } from '@angular/material/core';
+import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 
 
 interface StreetTreatRole {
@@ -101,6 +102,8 @@ export class UsersPageComponent implements OnInit {
       'jobTitle'
     ];
 
+    errorMatcher = new CrossFieldErrorMatcher();
+
     isChecked = true;
 
     jobTypes!: UserJobType[];
@@ -163,7 +166,7 @@ export class UsersPageComponent implements OnInit {
           firstName: '',
           surname: '',
           initials: '',
-          colour: '',
+          colour: '#ffffff',
           telephone: 0,
           userName: '',
           roleId: 0,

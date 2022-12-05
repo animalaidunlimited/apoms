@@ -81,4 +81,5 @@ END IF;
 	SELECT vRotationPeriodId AS rotationPeriodId, vSuccess AS success;
     
 END $$
+
 DELIMITER ;
