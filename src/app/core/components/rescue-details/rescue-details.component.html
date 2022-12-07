@@ -1,9 +1,9 @@
 <form
     [formGroup]="rescueDetails"
-    class="gap-20 flex-center-center"
+    class="gap-10 flex-center-center"
     [ngClass]="selfAdmission ? 'flex-row' : 'flex-column'">
 
-    <div class="flex-row flex-wrap gap-20 flex-start-center"
+    <div class="flex-row flex-wrap gap-10 flex-start-center"
     [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>
@@ -40,7 +40,7 @@
 
     </div>
 
-    <div class="flex-row flex-wrap gap-20 flex-start-center">
+    <div class="flex-row flex-wrap gap-10 flex-start-center">
 
         <ng-container *ngIf="!selfAdmission && !streetTreat">
 
@@ -96,12 +96,13 @@
 
     </div>
 
-    <div class="flex-row flex-wrap gap-20 flex-start-center">
+    <div class="flex-row flex-wrap gap-10 flex-start-center">
 
 
         <ng-container *ngIf="!selfAdmission">
 
             <mat-form-field>
+                <mat-label>Ambulance arrival time</mat-label>
                 <input tabindex="15" #ambulanceArrivalTimeField
                 formControlName="ambulanceArrivalTime"
                 type="datetime-local"
@@ -110,7 +111,6 @@
                 [max]="rescueTime?.value || currentTime"
                 (focus)="setInitialTime($event)"
                 (blur)="updateTimes()"
-                placeholder="Ambulance arrival time"
                 [errorStateMatcher]="errorMatcher" matInput>
                     <mat-error *ngIf="ambulanceArrivalTime?.hasError('ambulanceArrivalBeforeCallDatetime')">
                     Ambulance arrival before call!
@@ -121,29 +121,31 @@
             </mat-form-field>
 
             <mat-form-field>
-                        <input tabindex="16" #rescueTimeField
-                        formControlName="rescueTime" type="datetime-local" name="rescueTime"
-                        [min]="callDateTime?.value || currentTime" [max]="admissionTime?.value || currentTime"
-                        (focus)="setInitialTime($event)" (blur)="updateTimes()" placeholder="Rescue time" [errorStateMatcher]="errorMatcher"
-                         matInput>
-                            <mat-error *ngIf="rescueTime?.hasError('rescueBeforeCallDatetime')">
-                            Rescue before call!
-                            </mat-error>
-                            <mat-error *ngIf="rescueTime?.hasError('rescueAfterAdmission')">
-                                Rescue after admission!
-                            </mat-error>
+                <mat-label>Rescue time</mat-label>
+                    <input tabindex="16" #rescueTimeField
+                    formControlName="rescueTime" type="datetime-local" name="rescueTime"
+                    [min]="callDateTime?.value || currentTime" [max]="admissionTime?.value || currentTime"
+                    (focus)="setInitialTime($event)" (blur)="updateTimes()" [errorStateMatcher]="errorMatcher"
+                        matInput>
+                        <mat-error *ngIf="rescueTime?.hasError('rescueBeforeCallDatetime')">
+                        Rescue before call!
+                        </mat-error>
+                        <mat-error *ngIf="rescueTime?.hasError('rescueAfterAdmission')">
+                            Rescue after admission!
+                        </mat-error>
             </mat-form-field>
 
         </ng-container>
 
 
         <mat-form-field>
+            <mat-label>Admission time</mat-label>
                 <input tabindex="17" formControlName="admissionTime"
                 name="admissionTime"
                 type="datetime-local"
                 [min]="rescueTime?.value || callDateTime?.value" [max]="currentTime"
                 (focus)="setInitialTime($event)" (blur)="updateTimes()" 
-                placeholder="Admission time" [errorStateMatcher]="errorMatcher" matInput>
+                [errorStateMatcher]="errorMatcher" matInput>
 
                 <mat-error *ngIf="admissionTime?.hasError('admissionBeforeCallDatetime')">
                     Admission before call!

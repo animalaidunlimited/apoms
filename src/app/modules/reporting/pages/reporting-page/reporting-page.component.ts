@@ -24,8 +24,21 @@ import { Router } from '@angular/router';
 })
 export class ReportingPageComponent implements OnInit {
 
-    currentAreaName = '';
     private ngUnsubscribe = new Subject();
+    
+    countColumns = ["area","count","priority","total"]
+    currentAreaName = '';
+
+    emergencyCaseCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    emergencyCases!: Observable<EmergencyRecordTable[] | null>;
+    errorMatcher = new CrossFieldErrorMatcher();
+    isAdmissionChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isStreetTreatChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    patientCountData : PatientCountInArea[] | null = null;
+    reportingDetails!: FormGroup;
+    surgeries!: Observable<SurgeryRecord[]>;
+    surgeryCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    totalPatientCount = 0;
 
     constructor(
         private fb: UntypedFormBuilder,
@@ -34,17 +47,6 @@ export class ReportingPageComponent implements OnInit {
         private router: Router,
         private surgeryService: SurgeryService,
         private reportingService : ReportingService) {}
-
-    errorMatcher = new CrossFieldErrorMatcher();
-    patientCountData : PatientCountInArea[] | null = null;
-    surgeries!: Observable<SurgeryRecord[]>;
-    surgeryCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-    reportingDetails!: FormGroup;
-    emergencyCases!: Observable<EmergencyRecordTable[] | null>;
-    emergencyCaseCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-    totalPatientCount = 0;
-    isAdmissionChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    isStreetTreatChecked : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     ngOnInit() {
         this.initialiseReporting();

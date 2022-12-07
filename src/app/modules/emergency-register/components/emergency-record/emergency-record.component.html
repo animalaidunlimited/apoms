@@ -1,8 +1,10 @@
-<form class="flex-center-center" [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
+<form class="flex-column flex-center-center" [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
 
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-  <div class="flex-column" >
+  <div class="flex-column">
+
+    {{recordForm.get('emergencyDetails')?.get('guId')?.value}}
 
     <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true"
       (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>

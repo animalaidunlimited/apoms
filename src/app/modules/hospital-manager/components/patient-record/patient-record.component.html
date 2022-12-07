@@ -3,7 +3,7 @@
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
         <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
         <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
-            <div class="flex-row gap-5 flex-start-start">
+            <div class="flex-row flex-wrap gap-5 flex-start-start">
                 <div class="flex-column gap-15 flex-start-start" style="flex: 1 1 50;">
 
                     <animal-header

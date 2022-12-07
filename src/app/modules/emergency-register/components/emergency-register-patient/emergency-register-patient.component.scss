@@ -5,7 +5,7 @@
     }
 }
 .patients_icons{
-    height: 3em;
+    height: 2em;
     min-width:3.6em;
     .mat-icon:not(:last-child){
         margin: 0 0.3rem;
@@ -56,18 +56,23 @@
     height: 30px;
     .mat-icon{
         font-size:1rem;
+        line-height: 1.5;
     }
 }
 
 
 
 .patientOutcomeWrapper {
-    width: 33.3%;
+    flex: 1;
+    max-width: 50%;
+    min-width: 33%;
 }
+
 .admissionAreaDivWrapper {
     width: 33.3%;
 
 }
+
 .admissionAreaWrapper.mat-form-field{
     width:100%;
 }
@@ -104,6 +109,7 @@
             top: 4px;
             left: 1px;
             font-size: 1rem;
+            line-height: 1.5;
         }
     }
 }

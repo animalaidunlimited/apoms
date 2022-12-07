@@ -1,7 +1,64 @@
 <div class="emergencyWrapper">
 
+        <nav mat-tab-nav-bar [mat-stretch-tabs]="false" [tabPanel]="tabPanel">
+                <div *ngFor="let tab of tabs; let index = index" class="flex-row flex-start-start" style="position: relative">
 
-                <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="tabChanged($event)">
+                        <a mat-tab-link
+                           (click)="activeIndex = index"
+                           [active]="activeIndex == index"
+                           [cdkContextMenuTriggerFor]="context_menu">
+        
+                                
+
+        
+                                <ng-template #context_menu>
+                                        <div class="department-menu" cdkMenu>
+                                          <button class="department-menu-item" (click)="removeTab(index)" cdkMenuItem>Close</button>
+                                        </div>
+                                </ng-template>
+        
+                                {{tab.value}}
+        
+                            </a>
+
+                                                       
+                        <button *ngIf="index > 1" mat-icon-button (click)="removeTab(index)" style="position: absolute; right: -15px; z-index: 101;">
+                                <mat-icon *ngIf="index > 1">{{tab.icon}}</mat-icon>
+                        </button>
+                        
+                </div>
+                   
+                      
+                  
+                
+
+                <a mat-tab-link
+                (click)="addTab(0,'New Case*')"> 
+                        <mat-icon color="primary">add_circle</mat-icon>
+                </a>
+              </nav>
+              <mat-tab-nav-panel #tabPanel>
+
+                {{tabs[activeIndex].GUID.value}}
+                {{activeIndex}}
+
+                        <outstanding-case-board *ngIf="activeIndex == 0 && loadBoard"  class="tab-icon"></outstanding-case-board>
+
+                        <record-search *ngIf="activeIndex == 1" source="emergencyRegister" class="tab-icon"></record-search>
+
+                        <emergency-record *ngIf="activeIndex > 1" [guId]= "tabs[activeIndex].GUID" [emergencyCaseId]="tabs[activeIndex].emergencyCaseId"
+                        (loadEmergencyNumber)="updateEmergencyNumber($event)"
+                         class="tab-icon">
+                        </emergency-record>
+
+                        
+
+              </mat-tab-nav-panel>
+              
+          
+
+
+                <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="selected.value" (selectedIndexChange)="tabChanged($event)">
 
                         <mat-tab *ngFor="let tab of tabs; let index = index"
                         class="emergency-tab"
@@ -10,7 +67,9 @@
         
                                 <ng-template mat-tab-label>
                                 {{tab.value}}
-                                <mat-icon *ngIf="index > 1" (click)="removeTab(index)">{{tab.icon}}</mat-icon>
+                                <button mat-icon-button (click)="removeTab(index)">
+                                        <mat-icon *ngIf="index > 1">{{tab.icon}}</mat-icon>
+                                </button>
                                 </ng-template>
         
                                 <outstanding-case-board *ngIf="index == 0 && loadBoard"  class="tab-icon"></outstanding-case-board>
@@ -24,18 +83,25 @@
         
                         </mat-tab>
         
-                        <!-- TODO: Fix the positioning of the icon to the middle of the tab. It's off to the right at the moment -->
-                        <mat-tab>
-                        <ng-template mat-tab-label>
-                                <button style="background: none; border: none; cursor: pointer;" mat-icon-button (click)="addTab(0,'New Case*')" >
+                        <mat-tab (click)="addTab(0,'New Case*')">
+                        <ng-template mat-tab-label >
+                                <button style="background: none; border: none; cursor: pointer;" mat-icon-button >
                                 <mat-icon color="primary">add_circle</mat-icon>
                                 </button>
                         </ng-template>
                         </mat-tab>
+
+
+
+                        <div role="tab">
+                                <button style="background: none; border: none; cursor: pointer;" mat-icon-button  (click)="addTab(0,'New Case*')">
+                                <mat-icon color="primary">add_circle</mat-icon>
+                                </button>  
+                        </div>
         
         
         
-                </mat-tab-group>
+                </mat-tab-group> -->
         
 
                 

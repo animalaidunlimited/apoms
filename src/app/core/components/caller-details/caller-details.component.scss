@@ -11,12 +11,13 @@
     padding:5px 10px 5px;
 }
 
-.addCallerButton{
+.add-caller-button{
     margin-top: -7px;
     width: 30px;
     height: 30px;
     .mat-icon{
         font-size:1rem;
+        line-height: 1.5;
     }
 }
 .callerArray {
@@ -26,12 +27,13 @@
     }
 }
 @media (max-width:600px){
-    .addCallerButton{
+    .add-caller-button{
         margin-top: -7px;
         width: 30px;
         height: 30px;
         .mat-icon{
             font-size:1rem;
+            line-height: 1.5;
         }
     }
 }

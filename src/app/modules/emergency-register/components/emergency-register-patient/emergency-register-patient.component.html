@@ -3,7 +3,7 @@
   <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
 
   <!-- patient details-->
-  <div *ngIf="!outcome" class="flex-row gap-20">
+  <div *ngIf="!outcome" class="flex-row gap-10">
 
     <!-- Animal Dropdown-->
     <mat-form-field class="flex-end-end">
@@ -66,11 +66,13 @@
 
 
   <!-- Call Outcome details-->
-  <div *ngIf="outcome && !isDisplayOnly" class="flex-row gap-20 flex-space-between-end">
+  <div *ngIf="outcome && !isDisplayOnly" class="flex-row gap-10 flex-start-center">
 
     <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
+    <mat-form-field style="width: 150px;" *ngIf="patientForm.get('isAdmission')?.value || 
+    patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ||
+     patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
 
       <mat-label>Tag number</mat-label>
 
@@ -101,7 +103,7 @@
     </div>
     <div class="patients_icons">
       <!-- <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon> -->
-      <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
+      <mat-icon style="cursor:pointer; margin-bottom: 17px;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>
   </div>
 

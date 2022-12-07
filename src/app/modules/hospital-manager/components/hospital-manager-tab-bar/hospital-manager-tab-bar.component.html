@@ -1,14 +1,15 @@
 <div class="tab-container">
 
     <div>
-        <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="tabChanged($event)">
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="selected.value" (selectedIndexChange)="tabChanged($event)">
 
             <mat-tab *ngFor="let tab of tabs; let i = index" label="{{tab}}">
 
                 <ng-template mat-tab-label>
                     {{tab.value}}
-
-                    <mat-icon class="tab-icon" (click)="removeTab(i)">{{tab.icon}}</mat-icon>
+                        <button mat-icon-button (click)="removeTab(i)">
+                            <mat-icon class="tab-icon">{{tab.icon}}</mat-icon>
+                        </button>
                 </ng-template>
 
                 <record-search *ngIf="i == 0" source="hospitalManager" class="tab-icon"></record-search>
