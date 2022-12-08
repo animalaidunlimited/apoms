@@ -230,6 +230,10 @@ $standard-width: 180px;
     justify-content: center !important;;
   }
 
+  .mat-mdc-form-field {
+    max-width: 47%;
+  }
+
   .mat-mdc-cell {
     font-size: 13px;
     width: 100%;
@@ -271,7 +275,7 @@ $standard-width: 180px;
     font-family: Roboto, Arial, sans-serif;
     font-size: 13px;
     // margin-top: calc(100vh/13);
-    margin-left: 0;
+    margin: 0;
 
     .body:nth-child(1) {
       font-size: 13px;

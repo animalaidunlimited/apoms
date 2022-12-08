@@ -108,6 +108,9 @@ updateValidators() {
   }
 
   checkBox(callerIndex: number) {
+    const current = this.callerForm.get('primaryCaller')?.value;
+    this.callerForm.get('primaryCaller')?.setValue(!current);
+
     this.isPrimary.emit(callerIndex);
   }
   

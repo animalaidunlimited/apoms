@@ -1,14 +1,18 @@
 <fieldset [formGroup]="emergencyDetails" class="form-sub-group" autocomplete="off">
 
     <legend class="legend">Emergency details</legend>
-    <div class="flex-row flex-center-center gap-10" >
+    <div class="flex-row flex-start-center gap-10" >
 
-    <div [hidden]="recordForm.get('emergencyDetails.code')?.value" class="emergencyDetailsCode" [ngClass]="{
-        'grey' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4,
-        'red' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1,
-        'green' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2,
-        'yellow' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3}">
-    </div>
+        <button type="button" 
+        matTooltip="Primary caller"
+        [ngStyle]="{ 'color' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4 ? 'grey' : 
+        recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1 ? 'red' :
+        recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2 ? 'green' :
+        recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3 ? 'yellow' : 'white'
+        }"
+        mat-icon-button >
+            <mat-icon>traffic_light</mat-icon>
+        </button>
 
     <mat-form-field>
         <mat-label>Em no.</mat-label>

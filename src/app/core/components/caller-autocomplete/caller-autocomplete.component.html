@@ -1,5 +1,11 @@
 <div [formGroup]="callerForm" class="callerForm flex-wrap-gap">
 
+    <button type="button" (click)="checkBox(callerIndex)"
+    matTooltip="Primary caller"
+    [ngStyle]="{ 'color' : callerForm.get('primaryCaller')?.value ? 'green' : 'lightgrey' }" mat-icon-button >
+        <mat-icon>star</mat-icon>
+    </button>
+
     <mat-form-field>
         <mat-label>Number</mat-label>
         <input tabindex="3" type="tel" #callerNumberRef formControlName="callerNumber" [matAutocomplete]="auto" matInput [errorStateMatcher]="errorMatcher">
@@ -26,10 +32,7 @@
         <mat-label>Alt. Number</mat-label>
         <input tabindex="5" formControlName="callerAlternativeNumber" type="tel" matInput  [errorStateMatcher]="errorMatcher">
     </mat-form-field>
-
-    <mat-checkbox class="checkBox" [checked]= "true" (change)="checkBox(callerIndex)" formControlName="primaryCaller">primary</mat-checkbox>
-
-    <!-- class="deleteCallerButton" -->
+    
     <button type="button" class="delete-caller-button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
         <mat-icon>delete</mat-icon>
     </button>

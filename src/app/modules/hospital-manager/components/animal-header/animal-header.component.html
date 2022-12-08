@@ -1,7 +1,7 @@
 
 <fieldset [formGroup]="patientDetailsFormGroup" class="form-sub-group">
 
-<div class="flex-row gap-5 flex-start-start">
+<div class="flex-row gap-5 flex-cente-center">
 
     <div style="flex: 1 1 50;" class="flex-column gap-15 flex-start-start">
 
@@ -11,30 +11,30 @@
 
     </div>
 
-    <div class="flex-column gap-15 flex-space-around-center" style="flex: 0 1 50;">
+    <div class="flex-column gap-15 flex-space-around-center">
 
-        <div class="flex-column flex-center-center" *ngIf="recordForm.get('patientDetails.knownAsName')?.value" style="flex: 0 1 60;" >
+        <div class="flex-column flex-center-center" *ngIf="recordForm.get('patientDetails.knownAsName')?.value">
             <div class="tag-number">
                 <label >{{recordForm.get('patientDetails.knownAsName')?.value}}</label>
             </div>
             <div class="primary-font-color">Known as</div>
         </div>
 
-        <div class="flex-column flex-center-center" style="flex: 0 1 60;">
+        <div class="flex-column flex-center-center">
             <div class="tag-number">
                 <label >{{recordForm.get('patientDetails.tagNumber')?.value}}</label>
             </div>
             <div class="primary-font-color">Tag number</div>
         </div>
 
-        <div class="flex-column flex-center-center" style="flex: 0 1 60;">
+        <div class="flex-column flex-center-center">
             <div>
                 <label class="current-area">{{recordForm.get('patientDetails.currentLocation')?.value}}</label>
             </div>
             <div class="primary-font-color">Current area</div>
         </div>
 
-</div>
+    </div>
 
 </div>
 

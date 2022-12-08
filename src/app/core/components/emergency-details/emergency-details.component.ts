@@ -38,7 +38,11 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
     hasEmergencyCaseId: number | undefined = undefined;
 
-    emergencyDetails!: FormGroup;
+    get emergencyDetails() : FormGroup {
+
+        return this.recordForm.get('emergencyDetails') as FormGroup;
+
+    }
 
     constructor(
         private dropdowns: DropdownService,
@@ -72,10 +76,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
                 'yyyy-MM-ddTHH:mm:ss.ms',
             ) || '';
 
-        this.emergencyDetails = this.recordForm.get(
-            'emergencyDetails',
-        ) as FormGroup;
-
         const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
 
         this.addFormControls();
@@ -101,6 +101,16 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
 
         //         this.recordForm.patchValue(result);
         //     });
+
+        this.recordForm.valueChanges
+            .pipe(
+                takeUntil(this.ngUnsubscribe)
+            )
+            .subscribe(val => {
+
+                console.log(val)
+
+            });
 
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges

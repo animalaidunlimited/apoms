@@ -37,4 +37,9 @@ mat-radio-button {
     .save-icon {
         left: 86%;
     }
+
+    .full-width-form-field{
+        max-width: unset !important;
+        width: 92vw;
+    }
 }

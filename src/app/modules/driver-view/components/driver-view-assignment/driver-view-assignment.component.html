@@ -8,14 +8,14 @@
 
                 <div style="margin-bottom: -1em; padding-top: 1em;" class="flex-row flex-wrap gap-20 flex-start-end">
 
-                    <div *ngIf="assignments.ambulanceAction === 'Rescue'" class="emergencyDetailsCode" [ngClass]="{
+                    <div *ngIf="assignments.ambulanceAction === 'Rescue'" class="emergency-details-code" [ngClass]="{
                         'grey' : assignments.emergencyCodeId == 4,
                         'red' : assignments.emergencyCodeId == 1,
                         'green' : assignments.emergencyCodeId == 2,
                         'yellow' : assignments.emergencyCodeId == 3}">
                     </div>
 
-                    <div *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction === 'StreetTreat'" class="emergencyDetailsCode" [ngClass]="{
+                    <div *ngIf="assignments.ambulanceAction === 'STRelease' || assignments.ambulanceAction === 'StreetTreat'" class="emergency-details-code" [ngClass]="{
                         'grey' : assignments.streetTreatPriorityId == 4,
                         'red' : assignments.streetTreatPriorityId == 1,
                         'green' : assignments.streetTreatPriorityId == 2,
