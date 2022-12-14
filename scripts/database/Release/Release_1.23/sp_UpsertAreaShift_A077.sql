@@ -60,7 +60,7 @@ VALUES(
 ELSEIF vAreaShiftExists = 1 THEN
 
 	UPDATE AAU.AreaShift SET
-		Sequence = prm_Sequence,
+		Sequence = IF(prm_Deleted = 0, prm_Sequence, -1),
         Colour = prm_Colour,
 		RotationRoleId = prm_RotationRoleId,
 		IsDeleted = prm_Deleted,

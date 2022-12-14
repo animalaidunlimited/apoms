@@ -32,8 +32,6 @@
 
     </div>
 
-    {{period.get('locked')?.value}}
-
     <div class="flex-row flex-center-center">
       <button mat-icon-button (click)="generateRotationPeriodDays(period)"
       *ngIf="!period.get('locked')?.value" [disabled]="!period.get('rotationPeriodId')?.value || period.dirty">        

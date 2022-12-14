@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { Observable, Subject } from 'rxjs';
-import { map, skip, takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { RotationRole, AreaShiftResponse } from 'src/app/core/models/rota';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -22,7 +22,6 @@ export class AreaShiftComponent implements OnInit, OnChanges {
   @Input() inputAreaShift!: AbstractControl;
 
   private ngUnsubscribe = new Subject();
-  private groupSelectedUnsubscribe = new Subject();  
 
   areaShift!: FormGroup;
 
@@ -45,24 +44,15 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
 
-    // this.rotaSettingsService.getRotationRoles(false).subscribe(values => {
-    //     // this.rotationRoles$ = values;
-    //     console.log(values)
-    //   });
+    this.rotationRoles$.subscribe(vals => {
+      if(vals.length === -200) {
+        console.log(vals)}
+      });
 
-    // skip(1), 
-    // this.areaShift.get('colour')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-
-    //   //This takes a tick to update, so let's wait
-    //   setTimeout(() => this.saveAreaShift(this.areaShift), 1);
-      
-    // });
   }
 
   ngOnDestroy() : void {
     this.ngUnsubscribe.next();
-    this.groupSelectedUnsubscribe.next();
-    
   }
 
   ngOnChanges(change: SimpleChanges) {    
@@ -71,19 +61,15 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
   groupSelected($event: MatSelectChange, areaShift: AbstractControl) : void {
 
-    this.groupSelectedUnsubscribe.next();
-
-    // let role = this.rotationRoles$.find(element => element.rotationRoleId === $event.value);
-
-    //   areaShift.patchValue(role);   
-      
-    //   this.saveAreaShift(areaShift);
-
-    this.rotationRoles$.pipe(takeUntil(this.groupSelectedUnsubscribe)).subscribe(roles => {
+    this.rotationRoles$.pipe(take(1)).subscribe(roles => {
 
       let role = roles.find(element => element.rotationRoleId === $event.value);
 
-      areaShift.patchValue(role);   
+      if(!role) return;
+
+      role.sortOrder = areaShift.get('sortOrder')?.value;
+
+      areaShift.patchValue(role);
       
       this.saveAreaShift(areaShift);
 
@@ -97,7 +83,10 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
       if (result.success !== 1)  {
         this.snackbarService.errorSnackBar("ERR: RS-90: Error adding area shift, please see administrator", "OK");
+        return;
       }
+
+      this.rotaService.sortAreaShifts();
 
     });
   }
