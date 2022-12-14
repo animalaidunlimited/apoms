@@ -87,7 +87,9 @@
 
 
         <div class="imagePreviewSidePanel imageTagsSidePanel flex-column" >
-            <mat-form-field appearance="fill" class="flex-column imageTags">
+
+            <!-- TODO - CHIPS -->
+            <!-- <mat-form-field appearance="fill" class="flex-column imageTags">
                 <mat-label>Tags</mat-label>
                 <input matInput style="width: 100%;" type="text"
                 autocomplete="off"
@@ -107,7 +109,7 @@
                             {{tag}}
                   <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                 </mat-chip>
-              </mat-chip-list>
+              </mat-chip-list> -->
         </div>
         <div class="imagePreviewSidePanel chatSidePanel flex-column" >
             <app-comment style="width:100%" [parentRecordId]="data.mediaData?.patientMediaItemId || -1" [parentRecordType]="data.mediaData?.mediaType?.includes('image') ? 'image' : 'video'"></app-comment>

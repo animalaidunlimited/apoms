@@ -51,6 +51,24 @@
 
 @media(max-width: 600px) {
 
+    .delete-caller-button {
+        margin-top: 0;
+    }
+
+    .flex-wrap-gap{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+    }
+
+    .primary-caller-button-wrapper{
+        width: 175px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-bottom: 15px;
+    }
+
     .callerForm {
         border-radius: 0.5rem;
         box-shadow: 6px 6px 16px 0 rgb(0 0 0 / 20%), -6px -6px 16px 0 white;
@@ -58,7 +76,8 @@
         position: relative;
         padding: 5px;
     }
-    button.mat-focus-indicator.deleteCallerButton {
+
+    button.mat-focus-indicator.delete-caller-button {
         width: 25px;
         height: 25px;
         position: absolute;
@@ -77,10 +96,13 @@
     }
 
     .imageIcons {
-        width: 3em !important;
         position: relative;
-        margin-left: 25%;
-        margin-bottom: -1em;
+        height: 45px;
+    }
+
+    .caller-button-wrapper{
+        width: 100%;
+        margin-bottom: 10px;
     }
 
 }

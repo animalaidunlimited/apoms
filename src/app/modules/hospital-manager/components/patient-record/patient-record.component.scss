@@ -49,6 +49,8 @@ mat-mdc-tab-body {
 .toggle {
     cursor: pointer;
     color: $primary-font-colour;
+    padding-left: 5px;
+    padding-top: 5px;
 }
 
 .mat-spinner {
@@ -63,6 +65,13 @@ mat-mdc-tab-body {
 .emergencyRecordWrapper {
     width: 70%;
     padding-bottom: 20px;
+}
+
+.save-row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 

@@ -72,8 +72,6 @@ export class ReportingPageComponent implements OnInit {
 
         this.reportingDetails.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val)=> {
 
-
-
             this.surgeries = this.surgeryService.getSurgeryBySurgeryDate(val.surgeryDate);
             this.surgeries.pipe(takeUntil(this.ngUnsubscribe)).subscribe(surgeries => this.surgeryCount.next(surgeries.length || 0));
 

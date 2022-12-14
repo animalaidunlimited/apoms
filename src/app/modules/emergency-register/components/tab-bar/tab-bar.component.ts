@@ -202,7 +202,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
         dialog.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(()=> this.selected.setValue(tabIndex));
     }
 
-    tabChanged($event:number){
+    tabChanged($event:any){
 
         if($event === 0){
             this.loadBoard = true;

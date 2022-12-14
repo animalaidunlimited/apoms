@@ -6,15 +6,19 @@
     <div class="flex-row flex-wrap gap-15 flex-start-start">
 
     <mat-form-field>
-        <input formControlName="megavac1Date" name="megavac1Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 1 date" matInput>
+        <mat-label>Megavac 1 date</mat-label>
+        <input formControlName="megavac1Date" name="megavac1Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" matInput>
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="megavac2Date" name="megavac2Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Megavac 2 date" matInput>
+        <mat-label>Megavac 2 date</mat-label>
+        <input formControlName="megavac2Date" name="megavac2Date" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" matInput>
     </mat-form-field>
 
     <mat-form-field>
-        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="date" (click)="setInitialDate($event)" [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Rabies vaccination date" matInput>
+        <mat-label>Rabies vaccination date</mat-label>
+        <input formControlName="rabiesVaccinationDate" name="rabiesVaccinationDate" type="date" (click)="setInitialDate($event)"
+        [max]="maxDate" [errorStateMatcher]="errorMatcher" matInput>
     </mat-form-field>
 
     </div>
@@ -30,31 +34,27 @@
 
     <label class="label">Antibiotic 1</label>
 
-
-    <mat-chip-list #antibiotic1Chips aria-label="Antibiotic 1" selectable>
-            <mat-chip
-            (click)="toggleAntibioticChip('antibiotics1', antibiotic, antibiotic1)"
-            #antibiotic1="matChip"
-            *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
-    </mat-chip-list>
+      
+    <mat-chip-listbox #antibiotic1Chips aria-label="Antibiotic 1" selectable formControlName="antibiotics1">
+            <mat-chip-option
+            *ngFor="let antibiotic of antibiotics" [value]="antibiotic.antibioticId">{{antibiotic.antibiotic}}</mat-chip-option>
+    </mat-chip-listbox>
 
     <label class="label">Antibiotic 2</label>
 
-    <mat-chip-list #antibiotic2Chips aria-label="Antibiotic 2" selectable>
-        <mat-chip
-        (click)="toggleAntibioticChip('antibiotics2', antibiotic, antibiotic2)"
-        #antibiotic2="matChip"
-        *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
-</mat-chip-list>
+    <mat-chip-listbox #antibiotic2Chips aria-label="Antibiotic 2" selectable formControlName="antibiotics2">
+        <mat-chip-option
+        *ngFor="let antibiotic of antibiotics" [value]="antibiotic.antibioticId">{{antibiotic.antibiotic}}
+        </mat-chip-option>
+    </mat-chip-listbox>
 
-<label class="label">Antibiotic 3</label>
+    <label class="label">Antibiotic 3</label>
 
-<mat-chip-list #antibiotic3Chips aria-label="Antibiotic 3" selectable>
-        <mat-chip
-        (click)="toggleAntibioticChip('antibiotics3', antibiotic, antibiotic3)"
-        #antibiotic3="matChip"
-        *ngFor="let antibiotic of antibiotics">{{antibiotic.antibiotic}}</mat-chip>
-</mat-chip-list>
+    <mat-chip-listbox #antibiotic3Chips aria-label="Antibiotic 3" selectable formControlName="antibiotics3">
+            <mat-chip-option
+            *ngFor="let antibiotic of antibiotics" [value]="antibiotic.antibioticId">{{antibiotic.antibiotic}}
+            </mat-chip-option>
+    </mat-chip-listbox>
 
     </div>
 

@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatLegacyChip as MatChip, MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -27,9 +26,6 @@ interface DialogData{
 export class TreatmentRecordComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
-
-  @ViewChild('edChips', { static: true }) edChips!: MatChipList;
-  @ViewChild('ndChips', { static: true }) ndChips!: MatChipList;
 
   currentTime = getCurrentTimeString();
 
@@ -59,9 +55,6 @@ export class TreatmentRecordComponent implements OnInit, OnDestroy {
     private datepipe: DatePipe
   ) { }
 
-
-
-
   ngOnInit(): void {
 
     this.initialiseTreatmentDetails();
@@ -90,12 +83,6 @@ export class TreatmentRecordComponent implements OnInit, OnDestroy {
 
       this.treatmentDetails.patchValue(treatmentDetails);
 
-      const edValue = this.eyeDischarge.find(elem => elem.key === treatmentDetails.eyeDischarge);
-      const ndValue = this.nasalDischarge.find(elem => elem.key === treatmentDetails.nasalDischarge);
-
-      this.edChips.chips.find(chip => chip.value.trim() === edValue?.value)?.select();
-      this.ndChips.chips.find(chip => chip.value.trim() === ndValue?.value)?.select();
-
     }
 
   }
@@ -108,28 +95,6 @@ export class TreatmentRecordComponent implements OnInit, OnDestroy {
     if (!currentTime) {
         this.treatmentDetails.get((event.target as HTMLInputElement).name)?.setValue(getCurrentTimeString());
     }
-}
-
-edChipSelected(chip: MatChip){
-
-  if(chip.selected){
-
-      const eyeDischarge = this.eyeDischarge.find(elem => elem.value === chip.value.trim());
-
-      this.treatmentDetails.get('eyeDischarge')?.setValue(eyeDischarge?.key);
-  }
-
-}
-
-ndChipSelected(chip: MatChip){
-
-  if(chip.selected){
-
-    const nasalDischarge = this.nasalDischarge.find(elem => elem.value === chip.value.trim());
-
-    this.treatmentDetails.get('nasalDischarge')?.setValue(nasalDischarge?.key);
-  }
-
 }
 
 deleteTreatment(){
@@ -173,9 +138,14 @@ saveTreatment(treated: boolean){
         this.snackbar.successSnackBar('Treatment saved successfully', 'OK'),
         this.MatDialogRef.close(this.treatmentDetails.value)
        ) :
-      this.snackbar.errorSnackBar('An error occured when saving treatment', 'OK');
+      this.snackbar.errorSnackBar('An error occurred when saving treatment', 'OK');
 
   });
+
+}
+
+close() {
+  this.MatDialogRef.close("cancelled");
 
 }
 

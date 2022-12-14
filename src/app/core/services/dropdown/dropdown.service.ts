@@ -22,11 +22,11 @@ import { SurgerySite, SurgeryType } from '../../models/surgery-details';
 import { Status } from '../../models/status';
 import { VisitType } from '../../models/visit-type';
 import { Priority } from '../../models/priority';
-import { KeyValuePair } from '../../models/generic';
 import { TreatmentArea } from '../../models/treatment-lists';
 import { EditableDropdown, EditableDropdownElement } from '../../models/dropdown';
 import { VehicleType, Vehicle } from '../../models/vehicle';
 import { Department, Festival, LeaveRequestReason } from '../../models/rota';
+import { KeyValue } from '@angular/common';
 
 
 
@@ -50,11 +50,11 @@ export class DropdownService extends APIService {
     editableDropdowns$!: Observable<EditableDropdown[]>;
     emergencyCodes$!: Observable<EmergencyCode[]>;
     exclusions$!: Exclusions[];
-    eyeDischarge$!: any[];
+    eyeDischarge$!: KeyValue<number, string>[];
     festivals$!: Observable<Festival[]>;
     isoReasons$!: any[];
     jobTypes$!: Observable<UserJobType[]>;
-    nasalDischarge$!: any[];
+    nasalDischarge$!: KeyValue<number, string>[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
     patientCallOutcome$!: Observable<PatientCallerInteractionOutcome[]>;
@@ -754,9 +754,9 @@ export class DropdownService extends APIService {
         return this.visitTypes$;
     }
 
-    getYesNo() : Observable<KeyValuePair[]> {
+    getYesNo() : Observable<KeyValue<string, string>[]> {
 
-        const yesNo:KeyValuePair[] = [
+        const yesNo:KeyValue<string, string>[] = [
             {key: '1', value: 'Yes'},
             {key: '2', value: 'No'}
         ];

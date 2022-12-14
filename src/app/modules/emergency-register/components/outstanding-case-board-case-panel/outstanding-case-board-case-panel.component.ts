@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaDialogComponent } from 'src/app/core/components/media/media-dialog/media-dialog.component';
 import { ReleaseAssignDialogComponent } from 'src/app/core/components/release-assign-dialog/release-assign-dialog.component';
@@ -38,14 +38,14 @@ import { CaseService } from '../../services/case.service';
 })
 export class OutstandingCaseBoardCasePanelComponent {
 
-    @Input() outstandingCase!: OutstandingAssignment | DriverAssignment;
+    @Input() outstandingCase!: OutstandingAssignment | DriverAssignment;    
 
     constructor (
       public releaseAssignDialog: MatDialog,
       public rescueDialog: MatDialog,
       public dialog: MatDialog,
       public caseService: CaseService
-      ) {}
+      ) { }
 
     openRescueEdit(outstandingCase:OutstandingAssignment | DriverAssignment){
       const rescueDialog = this.rescueDialog.open(RescueDetailsDialogComponent, {

@@ -25,7 +25,30 @@
     <!-- Main Problem-->
     <mat-form-field>
 
-      <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()" required>
+      <mat-label>Main problem(s)</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Fruit selection" [errorStateMatcher]="errorMatcher">
+        <mat-chip-row *ngFor="let problem of problemsArray?.value" (removed)="remove(problem.problemId)">
+          {{problem.problem}}
+          <button matChipRemove [attr.aria-label]="'remove ' + problem.problem">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-grid>
+      <input placeholder="New problem..." #mainProblemInput [formControl]="problemInput"
+        [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+        (focusout)="checkMainProblem()"
+        (keydown.Shift.Tab)="focusAnimalType($event)"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="problemTabPressed($event)"/>
+
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="updatePatientProblemArray($event)">
+        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
+          {{problem.Problem}}
+        </mat-option>
+      </mat-autocomplete>
+
+      <!-- TODO CHIPS -->
+      <!-- <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()" required>
 
         <mat-chip *ngFor="let problem of problemsArray?.value" style="margin-right: 5px" [selectable]="selectable"
           [removable]="removable" (removed)="remove(problem.problemId)">
@@ -44,7 +67,7 @@
         <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
           {{problem.Problem}}
         </mat-option>
-      </mat-autocomplete>
+      </mat-autocomplete> -->
 
     </mat-form-field>
 
@@ -66,9 +89,9 @@
 
 
   <!-- Call Outcome details-->
-  <div *ngIf="outcome && !isDisplayOnly" class="flex-row gap-10 flex-start-center">
+  <div *ngIf="outcome && !isDisplayOnly" class="flex-row flex-wrap gap-20-10 flex-start-center">
 
-    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
+    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patient-outcome-wrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
     <mat-form-field style="width: 150px;" *ngIf="patientForm.get('isAdmission')?.value || 
     patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ||

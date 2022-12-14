@@ -760,7 +760,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     if(this.getRotationPeriodArray.controls.length > 0){
       lastRecord = this.getRotationPeriodArray.controls.reduce((a,b) => a.value.endDate < b.value.endDate ? b : a);
-      maxSequence = lastRecord?.value?.sequence + 1;
+      maxSequence = lastRecord?.value?.sortOrder + 1;
 
       //We need to make the start date of the new period 1 day after the end date of the previous period
       nextStartDate = new Date(lastRecord.get('endDate')?.value);
@@ -776,7 +776,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       rotationPeriodId: [],
       rotationPeriodGUID: periodGUID,
       rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value,
-      sequence: maxSequence,
+      sortOrder: maxSequence,
       isDeleted: false,
       name: "",
       startDate: nextStartDate.toISOString().slice(0, 10),
@@ -833,7 +833,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           areaShiftId: null,
                           areaShiftGUID: generateUUID(),
                           rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value || -1,
-                          sequence: (this.getAreaShiftArray?.length) + 1,
+                          sortOrder: (this.getAreaShiftArray?.length) + 1,
                           rotationRoleId: [, Validators.required],
                           roleName: "",
                           colour: "#ffffff",
@@ -842,7 +842,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           areaRowSpan: 1,
                           rotationArea: "",
                           rotationAreaColour: "#ffffff",
-                          rotationAreaId: "",
+                          rotationAreaId: ""
                         });
   }
 
@@ -1131,7 +1131,9 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.getAreaShiftArray.controls.forEach((element, index) => {
 
-      element.get("sequence")?.setValue(index);
+      console.log(element.value);
+
+      element.get("sortOrder")?.setValue(index);
 
       this.upsertAreaShift(element?.value).then(result => {
 

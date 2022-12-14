@@ -13,6 +13,14 @@
     }
 }
 
+.details-wrapper{
+    gap: 10px;
+}
+
+.code-wrapper{
+    width: 50px;
+}
+
 
 // TODO FIX THIS SO IT'S THE SAME HEIGHT AS EVERYTHING ELSE
 .mat-select-trigger{
@@ -41,6 +49,19 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
     .dispatcherWrapper {
         position: relative;
     }
+
+    .code-wrapper{
+        width: 175px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-bottom: 15px;
+    }
+
+    .details-wrapper{
+        gap: 0;
+    }
+    
 }
 
 @media(max-width: 1024px) {

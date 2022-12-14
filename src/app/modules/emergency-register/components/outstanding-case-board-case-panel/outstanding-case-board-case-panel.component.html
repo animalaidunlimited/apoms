@@ -7,34 +7,38 @@
       [ngClass]="{'border-red' : outstandingCase.emergencyCodeId == 1,
                   'border-green' : outstandingCase.emergencyCodeId == 2,
                   'border-yellow' : outstandingCase.emergencyCodeId == 3}"
-
+      class="card-header"
       [@rescueMoved]="outstandingCase.moved === true ? 'moved' : 'still'">
 
-          <div *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
-            <mat-icon
-              aria-label="Open rescue edit"
-              (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
-          </div>
 
-          <div *ngIf="outstandingCase?.ambulanceAction !== 'Rescue'">
-            <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
-          </div>
+        <div *ngIf="outstandingCase?.ambulanceAction !== 'Release'">
+          <mat-icon
+            aria-label="Open rescue edit"
+            (click)="openRescueEdit(outstandingCase)">departure_board</mat-icon>
+        </div>
 
-          <div style="text-align: center;">
-            {{outstandingCase.emergencyNumber}}
-            <div class="flex-row flex-wrap flex-space-around-center"
-              *ngFor="let patient of outstandingCase?.patients">
-              ({{outstandingCase.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
-            </div>
-          </div>
+        <div *ngIf="outstandingCase?.ambulanceAction !== 'Rescue'">
+          <mat-icon aria-label="Release Details" (click)="openReleaseAssignDialog(outstandingCase)">airport_shuttle</mat-icon>
+        </div>
 
-          <div >
-            <mat-icon
-              aria-label="Edit record"
-              (click)="openCase(outstandingCase)">create</mat-icon>
+        <div style="text-align: center;">
+          {{outstandingCase.emergencyNumber}}
+          <div class="flex-row flex-wrap flex-space-around-center"
+            *ngFor="let patient of outstandingCase?.patients">
+            ({{outstandingCase.ambulanceAction !== 'Rescue' ? patient.tagNumber + ' - ' : ''}}{{patient.animalType}})
           </div>
+        </div>
 
-          <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
+        <div >
+          <mat-icon
+            aria-label="Edit record"
+            (click)="openCase(outstandingCase)">create</mat-icon>
+        </div>
+
+        <div flFlex="none">{{outstandingCase.callDateTime | timeAgo}}</div>
+
+
+
 
         </mat-expansion-panel-header>
 

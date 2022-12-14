@@ -3,20 +3,23 @@
 
     <legend class="legend">Cruelty details</legend>
 
-    <div class="flex-column" class="gap-20 flex-space-between-start">
+    <div class="flex-column gap-20 flex-space-between-start">
 
         <mat-form-field class="extra-wide">
-            <textarea formControlName="crueltyReport" rows="3" placeholder="Cruelty report" [errorStateMatcher]="errorMatcher" matInput></textarea>
+            <mat-label>Cruelty report</mat-label>
+            <textarea formControlName="crueltyReport" rows="3" [errorStateMatcher]="errorMatcher" matInput></textarea>
         </mat-form-field>
 
         <mat-form-field class="extra-wide">
-            <textarea formControlName="postCrueltyReport" rows="3" placeholder="Post cruelty report" matInput></textarea>
+            <mat-label>Post cruelty report</mat-label>
+            <textarea formControlName="postCrueltyReport" rows="3" matInput></textarea>
         </mat-form-field>
 
         <mat-form-field>
+            <mat-label>Call time</mat-label>
             <input formControlName="crueltyDate" type="date"
             (focus)="setInitialTime($event)"
-            [max]="maxDate" [errorStateMatcher]="errorMatcher" placeholder="Call time" matInput>
+            [max]="maxDate" [errorStateMatcher]="errorMatcher" matInput>
         </mat-form-field>
 
         <mat-form-field>
@@ -29,51 +32,63 @@
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="crueltyCode"  placeholder="Cruelty code" matInput>
+            <mat-label>Cruelty code</mat-label>
+            <input type="text" formControlName="crueltyCode" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="animalCondition"  placeholder="Animal condition" matInput>
+            <mat-label>Animal condition</mat-label>
+            <input type="text" formControlName="animalCondition" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="nameOfAccused"  placeholder="Name of accused" matInput>
+            <mat-label>Name of accused</mat-label>
+            <input type="text" formControlName="nameOfAccused" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="mobileNumberOfAccused"  placeholder="Mobile number of accused" matInput>
+            <mat-label>Mobile number of accused</mat-label>
+            <input type="text" formControlName="mobileNumberOfAccused" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="firNumber"  placeholder="FIR/Report/Parivaad No" matInput>
+            <mat-label>FIR/Report/Parivaad No</mat-label>
+            <input type="text" formControlName="firNumber" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="act"  placeholder="Act" matInput>
+            <mat-label>Act</mat-label>
+            <input type="text" formControlName="act" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="policeStation"  placeholder="Police station" matInput>
+            <mat-label>Police station</mat-label>
+            <input type="text" formControlName="policeStation" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="policeOfficerName"  placeholder="Police officer name" matInput>
+            <mat-label>Police officer name</mat-label>
+            <input type="text" formControlName="policeOfficerName" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="policeOfficerNumber"  placeholder="Police officer number" matInput>
+            <mat-label>Police officer number</mat-label>
+            <input type="text" formControlName="policeOfficerNumber" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="policeOfficerDesignation"  placeholder="Police officer designation" matInput>
+            <mat-label>Police officer designation</mat-label>
+            <input type="text" formControlName="policeOfficerDesignation" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="actionTaken"  placeholder="Action taken" matInput>
+            <mat-label>Action taken</mat-label>
+            <input type="text" formControlName="actionTaken" matInput>
         </mat-form-field>
 
         <mat-form-field class="wide">
-            <input type="text" formControlName="animalLocationAfterAction"  placeholder="Animal location after action" matInput>
+            <mat-label>Animal location after action</mat-label>
+            <input type="text" formControlName="animalLocationAfterAction" matInput>
         </mat-form-field>
 
         <button mat-raised-button color="primary" (click)="saveForm()" [disabled]="crueltyDetails.invalid">Save</button>

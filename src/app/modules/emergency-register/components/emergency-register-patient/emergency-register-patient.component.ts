@@ -17,6 +17,8 @@ import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-erro
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { TreatmentListService } from 'src/app/modules/treatment-list/services/treatment-list.service';
 import { animalTypeValidator } from '../../validators/animal-type.validator';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 
 interface Problem {
@@ -73,6 +75,8 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   removable = true;
   selectable = true;
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
 
   sortedAnimalTypes!: AnimalType[];
 
@@ -205,9 +209,9 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   ngAfterViewInit(): void{
 
     this.patientForm?.get('problems')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((problems:Problem[]) => {
-      if(this.chipList?.errorState){
-        this.chipList.errorState = this.problemsArray.length === 0;
-      }
+      // if(this.chipList?.errorState){
+      //   this.chipList.errorState = this.problemsArray.length === 0;
+      // }
       this.patientFormProblemSetError();
     });
 
@@ -278,7 +282,8 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     this.hideIrrelevantProblems($event.option.viewValue);
 
-    this.problemsArray.length === 0 ? this.chipList.errorState = true : this.chipList.errorState = false;
+    //CHIPS
+    // this.problemsArray.length === 0 ? this.chipList.errorState = true : this.chipList.errorState = false;
     this.patientFormProblemSetError();
   }
 
@@ -387,7 +392,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     if(this.problemsArray.length === 0){
 
       problemRefElement.value = '';
-      this.chipList.errorState = true;
+      // this.chipList.errorState = true;
 
       this.patientFormProblemSetError();
 
@@ -406,14 +411,15 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   }
 
   private patientFormProblemSetError() {
-    if (this.chipList?.errorState === true) {
-      this.patientForm?.setErrors({
-        problemsRequired: true
-      });
-    }
-    else {
-      this.patientForm?.setErrors(null);
-    }
+    //CHIPS
+    // if (this.chipList?.errorState === true) {
+    //   this.patientForm?.setErrors({
+    //     problemsRequired: true
+    //   });
+    // }
+    // else {
+    //   this.patientForm?.setErrors(null);
+    // }
   }
 
   openMediaDialog(patientForm:FormGroup){
@@ -472,8 +478,8 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   }
 
-  problemTabPressed($event:Event){
-    $event.preventDefault();
+  problemTabPressed($event:MatChipInputEvent){
+    // $event.preventDefault();
 
     this.problemTab.emit(true);
 

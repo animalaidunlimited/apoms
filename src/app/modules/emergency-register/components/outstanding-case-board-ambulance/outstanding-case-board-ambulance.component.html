@@ -96,20 +96,21 @@
     </div>
   </ng-container>
 
-  <div *ngIf="!inMap">
-    <div *ngFor="let statusId of actionStatusId " class="swimlane flex-1">
+  <div *ngIf="!inMap" class="flex-row flex-start-space-between">
+    <div *ngFor="let status of actionStatus" class="swimlane">
 
-      <h2>{{getActionStatus(statusId)}}</h2>
+      <h2 >{{(status.status)}}</h2>
 
-      <ng-container *ngIf="getOutstandingCasesByStatusId(statusId) | async as AmbulanceAssignmentCases">
-        <ng-container *ngIf="AmbulanceAssignmentCases.length > 0">
-          <div *ngFor="let outstandingCase of AmbulanceAssignmentCases">
+      <ng-container *ngIf="(casesByStatusMap.get(status.statusId) | async) as ambulanceAssignmentCases">
+
+          <div *ngFor="let outstandingCase of ambulanceAssignmentCases">           
 
             <app-outstanding-case-board-case-panel [outstandingCase]="outstandingCase"></app-outstanding-case-board-case-panel>
           </div>
-        </ng-container>
+
       </ng-container>
     </div>
   </div>
 
 </div>
+

@@ -12,9 +12,11 @@
     padding: 0.5em;
     height: auto;
     min-height: 45px;
-    span.mat-content {
+
+    ::ng-deep span.mat-content {
         display: flex;
         align-items: center;
+        justify-content: space-around;
     }
 }
 .mat-release-panel.mat-expanded {

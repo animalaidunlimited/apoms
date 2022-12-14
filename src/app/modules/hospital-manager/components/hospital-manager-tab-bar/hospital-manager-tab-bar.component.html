@@ -6,9 +6,10 @@
 
                 <ng-template mat-tab-label>
                     {{tab.value}}
-                        <button mat-icon-button (click)="removeTab(i)">
-                            <mat-icon class="tab-icon">{{tab.icon}}</mat-icon>
-                        </button>
+                        <!-- <button mat-icon-button (click)="removeTab(i)"> -->
+                            <!-- <mat-icon class="tab-icon">{{tab.icon}}</mat-icon> -->
+                            <mat-icon class="tab-icon" (click)="removeTab(i)">{{tab.icon}}</mat-icon>
+                        <!-- </button> -->
                 </ng-template>
 
                 <record-search *ngIf="i == 0" source="hospitalManager" class="tab-icon"></record-search>

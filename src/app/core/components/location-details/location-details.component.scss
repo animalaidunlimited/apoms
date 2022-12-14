@@ -2,7 +2,18 @@
     width: 100%;
 }
 
+@media(max-width: 600px) {
+
+    .location-wrapper{
+        max-width: unset;
+    }
+}
+
 @media(min-width: 600px) {
+
+    .location-wrapper{
+        max-width: unset;
+    }
 
     ::ng-deep google-map#googlemap .map-container{
         height: 7rem !important;

@@ -1,9 +1,9 @@
 <form
     [formGroup]="rescueDetails"
-    class="gap-10 flex-center-center"
+    class="gap-10-0 flex-center-center"
     [ngClass]="selfAdmission ? 'flex-row' : 'flex-column'">
 
-    <div class="flex-row flex-wrap gap-10 flex-start-center"
+    <div class="flex-row flex-wrap gap-10-0 flex-start-center"
     [ngStyle]="{'margin-right ' : selfAdmission ? '20px': '0px' }">
 
         <mat-form-field>
@@ -40,7 +40,7 @@
 
     </div>
 
-    <div class="flex-row flex-wrap gap-10 flex-start-center">
+    <div class="flex-row flex-wrap gap-10-0 flex-start-center">
 
         <ng-container *ngIf="!selfAdmission && !streetTreat">
 
@@ -96,7 +96,7 @@
 
     </div>
 
-    <div class="flex-row flex-wrap gap-10 flex-start-center">
+    <div class="flex-row flex-wrap gap-10-0 flex-start-center">
 
 
         <ng-container *ngIf="!selfAdmission">

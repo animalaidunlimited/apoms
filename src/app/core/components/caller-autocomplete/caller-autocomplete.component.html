@@ -1,10 +1,15 @@
 <div [formGroup]="callerForm" class="callerForm flex-wrap-gap">
 
-    <button type="button" (click)="checkBox(callerIndex)"
-    matTooltip="Primary caller"
-    [ngStyle]="{ 'color' : callerForm.get('primaryCaller')?.value ? 'green' : 'lightgrey' }" mat-icon-button >
-        <mat-icon>star</mat-icon>
-    </button>
+    <div class="primary-caller-button-wrapper">
+
+        <button type="button" (click)="checkBox(callerIndex)"
+        matTooltip="Primary caller"
+        [ngStyle]="{ 'color' : callerForm.get('primaryCaller')?.value ? 'green' : 'lightgrey' }" mat-icon-button >
+            <mat-icon>star</mat-icon>
+        </button>
+    
+
+    </div>
 
     <mat-form-field>
         <mat-label>Number</mat-label>
@@ -32,12 +37,18 @@
         <mat-label>Alt. Number</mat-label>
         <input tabindex="5" formControlName="callerAlternativeNumber" type="tel" matInput  [errorStateMatcher]="errorMatcher">
     </mat-form-field>
-    
-    <button type="button" class="delete-caller-button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
-        <mat-icon>delete</mat-icon>
-    </button>
 
-    <div href="caller.callerNumber">
-        <img src="../../../../assets/icons/callButton.svg" class="imageIcons" alt="call_Button">
+    <div class="flex-row flex-center-center caller-button-wrapper">
+
+        <button type="button" class="delete-caller-button" (click)="removeCaller($event, callerIndex)" mat-mini-fab color="warn">
+            <mat-icon>delete</mat-icon>
+        </button>        
+    
+        <div href="caller.callerNumber">
+            <img src="../../../../assets/icons/callButton.svg" class="imageIcons" alt="call_Button">
+        </div>
+
     </div>
+    
+
 </div>

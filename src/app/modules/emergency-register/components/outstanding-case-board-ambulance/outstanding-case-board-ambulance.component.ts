@@ -15,7 +15,7 @@ import { DriverAssignment } from 'src/app/core/models/driver-view';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { OutstandingCaseMapComponent } from '../outstanding-case-map/outstanding-case-map.component';
 import { FilterKeys } from '../outstanding-case-board/outstanding-case-board.component';
-import {trigger, transition, style, animate, state} from '@angular/animations';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { OutstandingAssignment } from 'src/app/core/models/outstanding-case';
 import { OutstandingCaseService } from '../../services/outstanding-case.service';
 import { VehicleType } from 'src/app/core/models/vehicle';
@@ -57,11 +57,13 @@ transition('still => moved', [
     selector: 'outstanding-case-board-ambulance',
     templateUrl: './outstanding-case-board-ambulance.component.html',
     styleUrls: ['./outstanding-case-board-ambulance.component.scss'],
-    animations: [fadeAnimation,rescueMoved]
+    // animations: [fadeAnimation,rescueMoved],
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy {
 
     // Input's
+
 
     // Static Input's
     @Input() vehicleId!: number;
@@ -70,15 +72,17 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
     // Dynamic Input's
     @Input() searchChange$!:Observable<string>;
-    @Input() matChipObs!: BehaviorSubject<any>;
-    @Input() outstandingCases$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
-
 
     // Properties
 
     // Static
-    actionStatusId = [2, 3, 4, 5];
+    actionStatus = [
+        {statusId: 2, status: "Assigned"}, {statusId: 3, status: "Arrived/Picked"}, {statusId: 4, status: "Rescued/Released"}, {statusId: 5, status: "Admitted"}
+    ];
+
     showPlate = false;
+
+    casesByStatusMap = new Map<number, Observable<(OutstandingAssignment | DriverAssignment)[]>>();
 
     // Dynamic
     vehicleAssignmentList$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
@@ -100,7 +104,6 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
     ) {}
 
     ngOnInit(): void {
-
 
         this.locationService.getActiveVehicleLocations();
 
@@ -125,6 +128,11 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
 
 
         this.vehicleAssignmentList$ = this.outstandingCaseService.getOutstandingCasesByVehicleId(this.vehicleId);
+
+        for(let status of this.actionStatus){
+            this.casesByStatusMap.set(status.statusId, this.getOutstandingCasesByStatusId(status.statusId))
+        }
+
 
         this.vehicleType$ = this.dropdown.getVehicleType().pipe(
             takeUntil(this.ngUnsubscribe),
@@ -159,8 +167,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
                 return {
                     capacity: {
                         small: smallPatientCount,
-                        large: largePatientCount,
-                    },
+                        large: largePatientCount
+                    }
                 };
             }),
         );
@@ -168,7 +176,6 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         this.timer$ = this.outstandingCaseService.getTimer(this.vehicleId);
 
     }
-
 
     getOutstandingCasesByStatusId(statusId: number) {
         return this.vehicleAssignmentList$?.pipe(
@@ -181,22 +188,8 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         );
     }
 
-    getActionStatus(statusId: number) {
-        switch (statusId) {
-            case 1:
-                return 'Received';
-            case 2:
-                return 'Assigned';
-            case 3:
-                return 'Arrived/Picked';
-            case 4:
-                return 'Rescued/Released';
-            case 5:
-                return 'Admitted';
-            default:
-                return '';
-        }
-    }
+
+
 
 
     openMap($event:any){
@@ -216,4 +209,6 @@ export class OutstandingCaseBoardAmbulanceComponent implements OnInit, OnDestroy
         this.ngUnsubscribe.complete();
 
     }
+
+
 }
