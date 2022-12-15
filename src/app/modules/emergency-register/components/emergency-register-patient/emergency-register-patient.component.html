@@ -1,6 +1,6 @@
 <div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields flex-column">
 
-  <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
+  <div class="elevatedFormsIndex" (click)="problems()">{{patientIndex + 1}}</div>
 
   <!-- patient details-->
   <div *ngIf="!outcome" class="flex-row gap-10">
@@ -23,10 +23,10 @@
     </mat-form-field>
 
     <!-- Main Problem-->
-    <mat-form-field>
+    <mat-form-field [matTooltip]="problemTooltip" matTooltipPosition="above">
 
       <mat-label>Main problem(s)</mat-label>
-      <mat-chip-grid #chipGrid aria-label="Fruit selection" [errorStateMatcher]="errorMatcher">
+      <mat-chip-grid #chipGrid aria-label="Problem selection" [errorStateMatcher]="errorMatcher">
         <mat-chip-row *ngFor="let problem of problemsArray?.value" (removed)="remove(problem.problemId)">
           {{problem.problem}}
           <button matChipRemove [attr.aria-label]="'remove ' + problem.problem">
@@ -34,15 +34,17 @@
           </button>
         </mat-chip-row>
       </mat-chip-grid>
-      <input placeholder="New problem..." #mainProblemInput [formControl]="problemInput"
-        [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+      <input tabindex="9" #problemRef
+        [formControl]="problemInput"        
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="mainProblemAuto"
         (focusout)="checkMainProblem()"
         (keydown.Shift.Tab)="focusAnimalType($event)"
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="problemTabPressed($event)"/>
+        (matChipInputTokenEnd)="problemInputTokenEnd($event)"/>
 
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="updatePatientProblemArray($event)">
-        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
+      <mat-autocomplete #mainProblemAuto="matAutocomplete" (optionSelected)="updatePatientProblemArray($event)">
+        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem">
           {{problem.Problem}}
         </mat-option>
       </mat-autocomplete>

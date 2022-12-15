@@ -102,16 +102,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         //         this.recordForm.patchValue(result);
         //     });
 
-        this.recordForm.valueChanges
-            .pipe(
-                takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(val => {
-
-                console.log(val)
-
-            });
-
         this.recordForm
             .get('emergencyDetails.emergencyNumber')?.valueChanges
             .pipe(
