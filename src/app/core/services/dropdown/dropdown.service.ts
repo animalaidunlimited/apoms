@@ -569,23 +569,25 @@ export class DropdownService extends APIService {
     }
 
     getProblems(): Observable<ProblemDropdownResponse[]> {
-        const request = '/Problems';
+
         if (!this.problems$) {
+            const request = '/Problems';
             this.problems$ = this.getObservable(request).pipe(
                 map((response: ProblemDropdownResponse[]) => {
-                    return response;
+                    return response.sort((a,b) => a.SortOrder - b.SortOrder);
                 }),
             );
         }
+
         return this.problems$.pipe(
             map(problems => problems.filter((problem:any) => problem.IsDeleted === 0))
         );
     }
 
     getRescuers(): Observable<User[]> {
-        const request = '/Rescuers';
-
+        
         if (!this.rescuers$) {
+            const request = '/Rescuers';
             this.rescuers$ = this.getObservable(request).pipe(
                 map((response: User[]) => {
                     return response;

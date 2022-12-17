@@ -129,11 +129,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
     }
 
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
-
-        console.log('adding');
-
-        
-
+      
         const guIdVal = new BehaviorSubject<string>(generateUUID());
 
         this.tabs.push({

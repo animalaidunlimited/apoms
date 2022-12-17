@@ -6,7 +6,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ReactiveFormsModule, UntypedFormBuilder, FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material-module';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -21,7 +20,6 @@ describe('OutcomeComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 MaterialModule,
-                MatChipsModule,
                 BrowserAnimationsModule,
             ],
             declarations: [OutcomeComponent],
