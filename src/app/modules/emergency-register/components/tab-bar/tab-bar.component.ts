@@ -213,7 +213,4 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     }
 
-    print(val: any) : void {
-        console.log(val);
-    }
 }

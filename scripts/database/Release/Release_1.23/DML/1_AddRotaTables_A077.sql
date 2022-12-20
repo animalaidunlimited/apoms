@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS `AAU`.`RotaMatrixItem`;
 DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
+DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
@@ -27,18 +28,15 @@ CREATE TABLE `AAU`.`Rota` (
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);   
+    ON UPDATE NO ACTION);
     
+   
 CREATE TABLE `AAU`.`RotationRole` (
   `RotationRoleId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `RotationRole` VARCHAR(45) NOT NULL,
   `RotationAreaId` INT NOT NULL,
-  `Colour` VARCHAR(20) NOT NULL,
-  `StartTime` TIME NOT NULL,
-  `EndTime` TIME NOT NULL,
-  `BreakStartTime` TIME NOT NULL,
-  `BreakEndTime` TIME NOT NULL,
+  `Colour` VARCHAR(20) NOT NULL,  
   `SortOrder` INT NULL,  
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
@@ -50,6 +48,51 @@ CREATE TABLE `AAU`.`RotationRole` (
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+    
+CREATE TABLE `AAU`.`ShiftSegmentType` (
+	`ShiftSegmentTypeId` INT NOT NULL AUTO_INCREMENT,
+    `OrganisationId` INT NOT NULL,
+    `ShiftSegmentType` VARCHAR(256),
+	`SortOrder` INT NULL,  
+	`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+	`DeletedDate` DATETIME NULL,
+	`CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`ShiftSegmentTypeId`),
+	INDEX `FK_ShiftSegmentType_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+	CONSTRAINT `FK_ShiftSegmentType_Organisation_OrganisationId`
+	FOREIGN KEY (`OrganisationId`)
+	REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION);
+    
+INSERT INTO `AAU`.`ShiftSegmentType` (OrganisationId, ShiftSegmentType, SortOrder) VALUES
+(1,'Working time',1),
+(1,'Lunch break',2),
+(1,'Tea break',3);
+    
+CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
+	`RotationRoleShiftSegmentId` INT NOT NULL AUTO_INCREMENT,
+	`RotationRoleId` INT NOT NULL,    
+	`StartTime` TIME NOT NULL,
+	`EndTime` TIME NOT NULL,
+	`SameDay` TINYINT NULL,
+    `ShiftSegmentTypeId` INT NOT NULL,
+	`IsDeleted` TINYINT NOT NULL DEFAULT 0,
+	`DeletedDate` DATETIME NULL,
+	`CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`RotationRoleShiftSegmentId`),
+    INDEX `FK_RotationRoleShiftSegment_RotationRole_RotationRoleId_idx` (`RotationRoleId` ASC) VISIBLE,
+	  CONSTRAINT `FK_RotationRoleShiftSegment_RotationRole_RotationRoleId`
+		FOREIGN KEY (`RotationRoleId`)
+		REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION,
+    INDEX `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
+	  CONSTRAINT `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentType`
+		FOREIGN KEY (`ShiftSegmentTypeId`)
+		REFERENCES `AAU`.`ShiftSegmentType` (`ShiftSegmentTypeId`)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION);
     
 CREATE TABLE `AAU`.`RotaVersion` (
   `RotaVersionId` INT NOT NULL AUTO_INCREMENT,
@@ -137,12 +180,13 @@ INDEX `FK_LeaveRequest_Organisation_OrganisationId_idx` (`OrganisationId` ASC) V
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-);    
+);
       
 CREATE TABLE `AAU`.`RotationPeriod` (
   `RotationPeriodId` INT NOT NULL AUTO_INCREMENT,
   `RotationPeriodGUID` VARCHAR(128) NOT NULL,
   `RotaVersionId` INT NOT NULL,
+  `Name` VARCHAR(128) NULL,
   `StartDate` DATE NOT NULL,
   `EndDate` DATE NOT NULL,
   `Locked` TINYINT NOT NULL DEFAULT 0,
@@ -174,7 +218,7 @@ CREATE TABLE `AAU`.`RotationArea` (
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-    
+        
 CREATE TABLE `AAU`.`RotaRotationArea` (
   `RotaRotationAreaId` INT NOT NULL AUTO_INCREMENT,  
   `RotaRotationAreaGUID` VARCHAR(128) NOT NULL,

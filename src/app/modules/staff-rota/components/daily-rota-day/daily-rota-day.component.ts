@@ -396,10 +396,10 @@ roleSelected(role: RotationRole, shift: AbstractControl) : void {
 
   shift.patchValue(role);
 
-  shift.get('plannedShiftStartTime')?.setValue(role.startTime);
-  shift.get('plannedShiftEndTime')?.setValue(role.endTime);
-  shift.get('plannedBreakStartTime')?.setValue(role.breakStartTime);
-  shift.get('plannedBreakEndTime')?.setValue(role.breakEndTime);
+  // shift.get('plannedShiftStartTime')?.setValue(role.startTime);
+  // shift.get('plannedShiftEndTime')?.setValue(role.endTime);
+  // shift.get('plannedBreakStartTime')?.setValue(role.breakStartTime);
+  // shift.get('plannedBreakEndTime')?.setValue(role.breakEndTime);
   
 }
 

@@ -146,7 +146,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        console.log('destroying')
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }

@@ -68,7 +68,17 @@ export class RotationAreaEditorComponent implements OnInit {
         this.loadRotationAreas();
       }
       else {
-        this.snackbar.errorSnackBar('An error occurred when attempting to save the rotation area: error RAE-53', 'OK');
+
+        let message = "An error occurred when attempting to save the rotation area: error RAE-74";
+
+        if(response.success === 2){
+
+          message = "Area name already exists";
+          this.rotationAreaForm.get("rotationArea")?.setErrors({duplicateAreaName: true})
+
+        }        
+
+        this.snackbar.errorSnackBar(message, 'OK');
       }
 
     });

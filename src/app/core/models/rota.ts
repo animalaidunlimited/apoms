@@ -4,14 +4,28 @@ export interface RotationRoleResponse{
     success: number;
   }
 
+  export interface ShiftSegmentType {
+    segmentTypeId: number;
+    segmentType: string;
+  }
+
+
+  export interface ShiftSegment {
+    rotationRoleShiftSegmentUUID: string;
+    rotationRoleShiftSegmentId: number;
+    shiftSegmentTypeId: number;
+    shiftSegmentType: string;
+    startTime: string;
+    endTime: string;
+    sameDay: boolean;
+    isDeleted: boolean;
+  }
+
   export interface BaseRotationRole{
     rotationRoleId: number | undefined;
     rotationRole: string;
     rotationAreaId: number;
-    startTime: string;
-    endTime: string;
-    breakStartTime: string;
-    breakEndTime: string;
+    shiftSegments: ShiftSegment[],
     colour: string;
     isDeleted: boolean;
     sortOrder: number;
@@ -77,6 +91,7 @@ export interface RotationPeriod{
   rotaVersionId: number;
   startDate: Date | string;
   endDate: Date | string;
+  name: string;
   locked: boolean;
 }
 
@@ -107,9 +122,21 @@ export interface AreaShift{
     rotationAreaColour: string;    
   }
 
-  export interface RotationRoleResponse{
+  export interface RotationAreaResponse{
     rotationAreaId: number;
     success: number;
+  }
+
+  export interface RotationRoleResponse{
+    rotationRoleId: number;
+    rotationRoleSuccess: number;
+    shiftSegments: RotationRoleShiftSegmentResponse[]
+  }
+
+  export interface RotationRoleShiftSegmentResponse {
+    rotationRoleShiftSegmentUUID: string;
+    rotationRoleShiftSegmentId: number;
+    success: number
   }
 
 

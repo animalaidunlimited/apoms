@@ -13,6 +13,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   @Input() data!: Observable<any[]>;
   @Input() dataName!: string;
+  @Input() excludeColumns: string[] | undefined;
 
   @Output() clickedRow: EventEmitter<FormGroup> = new EventEmitter();
 
@@ -47,14 +48,29 @@ export class GenericTableComponent implements OnInit, OnChanges {
   generateDisplayedColumns() : Observable<string[]> {
 
     return this.dataColumns.pipe(map(values => values
-                                              .filter(item => !item.includes("Id"))));
+                                              .filter(item => !item.includes("Id"))
+                                              .filter(item => !this.excludeColumns?.includes(item))));
 
   }
 
   createForm() : void {
 
     //Turn the incoming array into a AbstractControl[]
-    this.dataSourceForm = this.data.pipe(map(dataRows => dataRows.map(row => this.fb.group(row))));
+    this.dataSourceForm = this.data.pipe(map(dataRows => dataRows.map(row => {
+
+      //We need to handle arrays correctly so we store the array object. Otherwise directly turning
+      //and object with an array "arrayVal: ['elem1','elem2','elem3']" the FormBuilder mistakes 'elem2'
+      //for the syncValidators and 'elem3' for the asyncValidators
+      Object.entries(row).forEach((element) => {
+
+          if(typeof element === "object" && element?.length > 0){
+
+              row[element[0]] = [element[1],];
+          }
+
+      });
+      
+      return this.fb.group(row)})));
 
   }
 

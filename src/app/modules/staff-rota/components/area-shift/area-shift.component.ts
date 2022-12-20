@@ -41,13 +41,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
 
     this.areaShift = this.inputAreaShift as FormGroup;
 
-
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
-
-    this.rotationRoles$.subscribe(vals => {
-      if(vals.length === -200) {
-        console.log(vals)}
-      });
 
   }
 

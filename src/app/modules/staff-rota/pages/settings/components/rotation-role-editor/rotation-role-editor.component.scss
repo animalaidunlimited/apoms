@@ -1,14 +1,54 @@
 .form-row{
     width: 100%;
-    padding-bottom: 10px;
 }
 
 .save-button{
     margin-top: 15px;
 }
 
+.same-day-select{
+    width: 212px;
+    text-align: center;
+}
+
+.role-table{
+    display: block;
+    overflow: auto;
+}
+
+.shift-segment-container{
+    margin-bottom: 20px;    
+    padding: 10px;
+}
+
+.segment-error{
+    border: 0.1rem solid red;
+    border-radius: 4px;
+}
+
+@media (min-width:1310px){
+    .same-day-select{
+        padding-bottom:20px;
+    }
+}
+
+
+@media (min-width:958px){
+    .same-day-select{
+        padding-bottom:40px;
+    }    
+
+    .last-same-day-select{
+        padding-bottom: 0;
+    }
+}
+
 @media (max-width:600px){
     .rotation-tole-form{
         overflow: scroll;
+    }
+
+    .same-day-select{
+        padding-bottom:15px;
     }
 }

@@ -74,7 +74,6 @@ export class VehicleShiftDialogComponent implements OnInit {
       this.minEndTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftStartTime;
       this.maxDate = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;
       this.maxStartTime = this.data.currentDate + "T" + defaults.vehicleDefaults.shiftEndTime;
-
     
     });
 
@@ -96,7 +95,6 @@ export class VehicleShiftDialogComponent implements OnInit {
         this.addShiftFormGroup.get('shiftUUID')?.value,
         this.data.vehicle?.vehicleId)
     ]);
-
 
     this.addShiftFormGroup.get('shiftEndTime')?.clearValidators();
 

@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormArray, UntypedFormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject} from 'rxjs';
-import { skip, takeUntil } from 'rxjs/operators';
-import { fnSortBySortOrderAndRotationPeriodSortOrder, generateUUID } from 'src/app/core/helpers/utils';
-import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
-  RotationPeriodLeave, RotationPeriodResponse, RotationPeriodSaveResponse, RotaVersion } from 'src/app/core/models/rota';
+import { takeUntil } from 'rxjs/operators';
+import { generateUUID } from 'src/app/core/helpers/utils';
+import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser,
+         CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
+         RotationPeriodLeave, RotationPeriodResponse, RotationPeriodSaveResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
@@ -1131,13 +1132,9 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   public moveAreaShift(from: number, to:number) : void {
 
-    console.log(this.getAreaShiftArray.controls);
-
     moveItemInArray(this.getAreaShiftArray.controls, from, to);
 
     this.getAreaShiftArray.controls.forEach((element, index) => {
-
-      console.log(element.value);
 
       element.get("sortOrder")?.setValue(index + 1);
 

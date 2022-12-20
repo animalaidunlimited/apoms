@@ -88,17 +88,10 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   sortedProblems = this.dropdown.getProblems().pipe(
     map( problems =>
       {
-        console.log(problems)
-
-
         const selectedProblems = this.problemsArray?.value as Problem[];
         const problemsArray = selectedProblems.map((problemOption:Problem) => problemOption.problem?.trim());
 
-        let p = problems.filter(problem => !problemsArray.includes(problem.Problem.trim()) && !(this.problemsExclusions$.value).includes(problem.Problem.trim()));
-
-        console.log(p);
-
-        return p;
+        return problems.filter(problem => !problemsArray.includes(problem.Problem.trim()) && !(this.problemsExclusions$.value).includes(problem.Problem.trim()));
       }
     ),
     map(problems => problems.sort((a,b) => a.SortOrder - b.SortOrder))
@@ -190,8 +183,6 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
       .subscribe(animalType => {
 
         this.filteredAnimalTypes$ = animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes;
-
-        // console.log(this.animalType);
 
         if(this.animalType.invalid){
           this.problemInput.disable({ emitEvent: false });

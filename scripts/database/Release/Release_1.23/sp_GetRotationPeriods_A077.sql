@@ -30,6 +30,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
 		rp.RotationPeriodId,
         rp.RotationPeriodGUID,
         rp.RotaVersionId,
+        rp.`Name`,
         rp.StartDate,
         rp.EndDate,
         IF(rp.locked = 1, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS `Locked`
@@ -52,6 +53,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
 			JSON_OBJECT("rotationPeriodId", rp.RotationPeriodId),
 			JSON_OBJECT("rotationPeriodGUID", rp.RotationPeriodGUID),
             JSON_OBJECT("rotaVersionId", rp.RotaVersionId),
+            JSON_OBJECT("name", rp.`Name`),
             JSON_OBJECT("startDate", rp.StartDate),
             JSON_OBJECT("endDate", rp.EndDate),
             JSON_OBJECT("locked", rp.`Locked`)
