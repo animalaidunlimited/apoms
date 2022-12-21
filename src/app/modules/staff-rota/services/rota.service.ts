@@ -834,7 +834,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           areaShiftId: null,
                           areaShiftGUID: generateUUID(),
                           rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value || -1,
-                          sortOrder: (this.getAreaShiftArray?.length) + 1,
+                          sequence: (this.getAreaShiftArray?.length) + 1,
                           rotationRoleId: [, Validators.required],
                           roleName: "",
                           colour: "#ffffff",

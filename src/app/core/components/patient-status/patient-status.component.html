@@ -27,7 +27,7 @@
 
     <div class="flex-row flex-wrap gap-20-10 flex-space-around-center">
 
-      <mat-form-field *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
+      <mat-form-field style="max-width: 48%;" *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
         <mat-label>P/N</mat-label>
         <mat-select formControlName="PN" [errorStateMatcher]="errorMatcher">
             <mat-option value="P">P</mat-option>
@@ -35,7 +35,7 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-checkbox *ngIf="patientStatusForm.get('patientStatusId')?.value == 3" name="check" formControlName="suspectedRabies">Suspected Rabies</mat-checkbox>
+    <mat-checkbox style="max-width: 48%;" *ngIf="patientStatusForm.get('patientStatusId')?.value == 3" name="check" formControlName="suspectedRabies">Suspected Rabies</mat-checkbox>
 
 
     </div>
