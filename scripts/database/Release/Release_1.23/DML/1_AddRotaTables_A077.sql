@@ -442,7 +442,6 @@ INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, Rotation
 ('HX2','#ffffe0',1,2,'12:00','21:00','17:00','18:00',5),
 ('HX3','#ffa07a',1,2,'06:00','15:00','11:00','12:00',6);
 
-
 INSERT INTO `AAU`.`Rota` (`OrganisationId`,`RotaName`,`DefaultRota`) VALUES (1, 'Hospital Staff', 1), (1, 'Desk Staff', 0);
 INSERT INTO `AAU`.`RotaVersion` (`OrganisationId`,`RotaVersionName`,`DefaultRotaVersion`, `RotaId`) VALUES
 (1, 'Version 1', 0, 1), (1, 'Version 2', 1, 1),
