@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
 DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
+DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
@@ -87,7 +88,7 @@ CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 		REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION,
-    INDEX `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
+    INDEX `FK_ShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
 	  CONSTRAINT `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentType`
 		FOREIGN KEY (`ShiftSegmentTypeId`)
 		REFERENCES `AAU`.`ShiftSegmentType` (`ShiftSegmentTypeId`)
@@ -432,7 +433,6 @@ INSERT INTO AAU.LeaveRequestProtocol (OrganisationId, DayRangeStart, DayRangeEnd
 INSERT INTO `AAU`.`RotationArea` (OrganisationId, RotationArea, SortOrder, Colour) VALUES
 (1,'A Kennel', 1, '#ffb6c1'),
 (1,'B Kennel', 2, '#add8e6');
-
 
 INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, RotationAreaId, startTime, EndTime, BreakStartTime, BreakEndTime, SortOrder) VALUES
 ('N01','#90ee90',1,1,'08:00','17:00','13:00','14:00',1),
