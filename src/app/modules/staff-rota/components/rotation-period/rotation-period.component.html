@@ -51,7 +51,8 @@
         <mat-icon matTooltip="go to period rota" class="close-icon lock">lock</mat-icon>
       </button>      
 
-      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">        
+      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)"
+      [disabled]="period.get('locked')?.value">        
         <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
       </button>
 

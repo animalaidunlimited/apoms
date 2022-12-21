@@ -226,15 +226,16 @@ export class DailyRotaComponent implements OnInit {
 
       let newAssignment = this.dailyRotaService.generateNewAssignment(assignment);
 
-      if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){
-        newAssignment.get('actualShiftStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-        newAssignment.get('actualShiftEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-      }
+      //TODO - FIX THIS AFTER INTRODUCTION OF SHIFT SEGMENTS
+      // if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){
+      //   newAssignment.get('actualShiftStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
+      //   newAssignment.get('actualShiftEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
+      // }
 
-      if(assignment.actualBreakStartTime || assignment.actualBreakEndTime){
-        newAssignment.get('actualBreakStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-        newAssignment.get('actualBreakEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-      }
+      // if(assignment.actualBreakStartTime || assignment.actualBreakEndTime){
+      //   newAssignment.get('actualBreakStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
+      //   newAssignment.get('actualBreakEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
+      // }
 
       (rotaGroup.get('rotaDayAssignments') as FormArray)?.push(newAssignment);
 

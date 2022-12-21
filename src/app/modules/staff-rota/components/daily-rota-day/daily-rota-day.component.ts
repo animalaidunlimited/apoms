@@ -43,9 +43,10 @@ export class DailyRotaDayComponent implements OnInit, OnDestroy {
 
   dataSource: BehaviorSubject<AbstractControl[]> = new BehaviorSubject<AbstractControl[]>([this.fb.group({})]);
 
-  displayedColumns = ["rotationArea", "rotationRole", "userId", "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime",
-  "plannedBreakStartTime", "plannedBreakEndTime", "actualBreakStartTime", "actualBreakEndTime",
-  "notes"];
+
+  // "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime",
+  // "plannedBreakStartTime", "plannedBreakEndTime", "actualBreakStartTime", "actualBreakEndTime",
+  displayedColumns = ["rotationArea", "rotationRole", "userId", "notes"];
   
   errorMatcher = new CrossFieldErrorMatcher();
 

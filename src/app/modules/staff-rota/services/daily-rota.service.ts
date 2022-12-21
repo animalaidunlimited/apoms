@@ -5,6 +5,7 @@ import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { RotaDayAssignment } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { BaseShiftSegment } from './../../../core/models/rota';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,14 @@ public generateNewAssignment(assignment: RotaDayAssignment) : ModelFormGroup<Rot
 
 public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
 
+  const blankSegment:BaseShiftSegment[] = [{
+    rotationRoleShiftSegmentId: -1,
+    shiftSegmentTypeId: -1,
+    startTime: "",
+    endTime: "",
+    sameDay: false
+  }];
+
   return this.fb.nonNullable.group({
     rotaDayId :             [0],
     areaRowSpan :           [1],
@@ -67,14 +76,7 @@ public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
     rotationArea :          [''],
     rotationAreaColour :    [''],
     rotationAreaSortOrder : [0],
-    plannedShiftStartTime : [''],
-    plannedShiftEndTime :   [''],
-    actualShiftStartTime :  [''],
-    actualShiftEndTime :    [''],
-    plannedBreakStartTime : [''],
-    plannedBreakEndTime :   [''],
-    actualBreakStartTime :  [''],
-    actualBreakEndTime :    [''],        
+    rotationShiftSegments : [blankSegment],       
     notes :                 [''],
     isAdded:                [true],
     guid:                   ['']

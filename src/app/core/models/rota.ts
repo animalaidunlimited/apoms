@@ -9,15 +9,18 @@ export interface RotationRoleResponse{
     segmentType: string;
   }
 
-
-  export interface ShiftSegment {
-    rotationRoleShiftSegmentUUID: string;
+  export interface BaseShiftSegment{
     rotationRoleShiftSegmentId: number;
-    shiftSegmentTypeId: number;
-    shiftSegmentType: string;
+    shiftSegmentTypeId: number;    
     startTime: string;
     endTime: string;
     sameDay: boolean;
+  }
+
+
+  export interface ShiftSegment extends BaseShiftSegment{
+    rotationRoleShiftSegmentUUID: string;
+    shiftSegmentType: string;
     isDeleted: boolean;
   }
 
@@ -182,14 +185,7 @@ export interface RotaDayAssignment{
   rotationArea: string;  
   rotationAreaColour: string;
   rotationAreaSortOrder: number;
-  plannedShiftStartTime: string;
-  plannedShiftEndTime: string;
-  actualShiftStartTime: string;
-  actualShiftEndTime: string;
-  plannedBreakStartTime: string;
-  plannedBreakEndTime: string;
-  actualBreakStartTime: string;
-  actualBreakEndTime: string;
+  rotationShiftSegments: BaseShiftSegment[];
   notes: string;
   isAdded: boolean;
   guid: string;
