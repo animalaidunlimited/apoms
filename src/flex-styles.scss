@@ -24,6 +24,7 @@
 .flex-start-end{ justify-content: start; align-items: end; }
 .flex-start-start{ justify-content: start; align-items: start; }
 .flex-start-center{ justify-content: start; align-items: center; }
+.flex-start-stretch{ justify-content: start; align-items: stretch; }
 .flex-center-center{ justify-content: center; align-items: center; }
 .flex-center-space-between{ justify-content: center; align-items: space-between; }
 .flex-space-around-start{ justify-content: space-around; align-items: start; }
@@ -45,3 +46,13 @@
 .gap-22 { gap: 22px; }
 .gap-30 { gap: 30px; }
 .gap-50 { gap: 50px; }
+
+.gap-20-10 { gap: 20px; }
+.gap-10-0 { gap: 10px; }
+
+
+@media(max-width: 600px) {
+
+    .gap-20-10 { gap: 10px; }
+    .gap-10-0 { gap: 0; }
+}

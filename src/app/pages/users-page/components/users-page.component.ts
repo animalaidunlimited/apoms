@@ -140,7 +140,7 @@ export class UsersPageComponent implements OnInit {
       password: [''],
       isStreetTreatUser:[false],
       permissionArray:[[0]],
-      fixedDayOff: [0],
+      fixedDayOff: [[0]],
       departmentId: [0],
       localName: ['']
     });
@@ -174,7 +174,7 @@ export class UsersPageComponent implements OnInit {
           jobTitleId: 0,
           jobTitle: '',
           permissionArray: [],
-          fixedDayOff: 0,
+          fixedDayOff: [0],
           departmentId: 0,
           localName: '',
           isDeleted: false

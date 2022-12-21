@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormArray, UntypedFormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject} from 'rxjs';
-import { skip, takeUntil } from 'rxjs/operators';
-import { fnSortBySortOrderAndRotationPeriodSortOrder, generateUUID } from 'src/app/core/helpers/utils';
-import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser, CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
-  RotationPeriodLeave, RotationPeriodResponse, RotationPeriodSaveResponse, RotaVersion } from 'src/app/core/models/rota';
+import { takeUntil } from 'rxjs/operators';
+import { generateUUID } from 'src/app/core/helpers/utils';
+import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser,
+         CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
+         RotationPeriodLeave, RotationPeriodResponse, RotationPeriodSaveResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
@@ -175,13 +176,14 @@ public async initialiseArrays() {
 
   //Set up some defaults so we're not empty
   await this.getAreaShifts().then(areaShifts => {
-                                      areaShifts?.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a, b))
+                                      areaShifts?.sort((a,b) => a.sortOrder - b.sortOrder)
                                                  .forEach(areaShift => this.addAreaShift(areaShift, false))
   });                                                 
   
   await this.initialiseRotationPeriods(this.periodsToShow);
 
-  this.generateTableDataSource();
+  this.sortAreaShifts();
+  // this.generateTableDataSource();
 
 }
 
@@ -393,8 +395,9 @@ shiftRightRotation() : void {
 upsertAreaShift(areaShift: AreaShift) : Promise<AreaShiftResponse> {
 
   //See if we have any other shifts in the same area
-  let sameArea = this.getAreaShiftArray.controls.filter(element => element.get('rotationAreaId')?.value === areaShift.rotationAreaId);
-  areaShift.sortOrder = sameArea.length || 1;
+  // let sameArea = this.getAreaShiftArray.controls.filter(element => element.get('rotationAreaId')?.value === areaShift.rotationAreaId);
+
+  // areaShift.rotationAreaSortOrder = sameArea.length || 1;
 
   let areaShiftUpsert = areaShift.areaShiftId ? this.putSubEndpoint("AreaShift", areaShift) : this.postSubEndpoint("AreaShift", areaShift);
 
@@ -408,9 +411,7 @@ upsertAreaShift(areaShift: AreaShift) : Promise<AreaShiftResponse> {
 
       item?.patchValue(areaShift);
 
-      this.getAreaShiftArray.updateValueAndValidity();
-
-      this.sortAreaShifts();
+      this.getAreaShiftArray.updateValueAndValidity();      
     }
 
   });
@@ -760,7 +761,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     if(this.getRotationPeriodArray.controls.length > 0){
       lastRecord = this.getRotationPeriodArray.controls.reduce((a,b) => a.value.endDate < b.value.endDate ? b : a);
-      maxSequence = lastRecord?.value?.sequence + 1;
+      maxSequence = lastRecord?.value?.sortOrder + 1;
 
       //We need to make the start date of the new period 1 day after the end date of the previous period
       nextStartDate = new Date(lastRecord.get('endDate')?.value);
@@ -776,7 +777,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       rotationPeriodId: [],
       rotationPeriodGUID: periodGUID,
       rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value,
-      sequence: maxSequence,
+      sortOrder: maxSequence,
       isDeleted: false,
       name: "",
       startDate: nextStartDate.toISOString().slice(0, 10),
@@ -842,7 +843,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
                           areaRowSpan: 1,
                           rotationArea: "",
                           rotationAreaColour: "#ffffff",
-                          rotationAreaId: "",
+                          rotationAreaId: ""
                         });
   }
 
@@ -1003,7 +1004,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   public sortAreaShifts() : void {
 
-    this.getAreaShiftArray.controls.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a.value, b.value));
+    this.getAreaShiftArray.controls.sort((a,b) => (a.get('sortOrder')?.value || 0) - (b.get('sortOrder')?.value || 0));
 
     this.resequenceAreaShifts();
 
@@ -1015,53 +1016,57 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   resequenceAreaShifts() : void {
 
-    let areaMap = this.getAreaCounts();
+    // let areaMap = this.getAreaCounts();
 
-    let currentAreaMap = new Map<string, boolean>();
+    // let currentAreaMap = new Map<string, boolean>();
 
-    this.getAreaShiftArray.controls.forEach((element, index) => {
+    const controls = this.getAreaShiftArray.controls;
 
-      const currentArea = element.get('rotationArea')?.value || "";
+    if(controls?.length === 0) return;
 
-      //If we're at the first index then we need to set this row to the current area's count
-      if(index === 0 && areaMap.has(currentArea)) {
-        element.get('areaRowSpan')?.setValue(areaMap.get(currentArea));
-        currentAreaMap.set(currentArea, true);
+    if(controls?.length === 1){
+      controls.at(0)?.get('areaRowSpan')?.setValue(1);
+      return;
+    }
+
+    let currentSpan = 1;
+    let currentControl = controls.at(0);
+
+
+    //We're not 0 or 1 length, so we actually have to figure out the row spans.
+    //First we start by keeping a record of the first row (currentControl) in the table.
+    //Then we check the 2nd row to see if the area matches the first. If it
+    //does, we set the areaRowSpan of the second row to 0 and check the next row.
+    //When the area changes we set the areaRowSpan of currentControl to the current rowspan count
+    //and reset the rowspan counter.
+
+    //We want the rowspan of the first row in the run to be the count of the matching rows below,
+    //and the rest to be 0. Then the table will know how many cells in the Area Name column need to merge together
+
+    /**
+     * A - 3
+     * A - 0
+     * A - 0
+     * B - 2
+     * B - 0
+     * C - 1
+     * D - 2
+     * D - 0 
+     */
+    for(let i = 1; i <= controls?.length; i++){
+
+      if(currentControl?.get('rotationAreaId')?.value === controls.at(i)?.get('rotationAreaId')?.value){
+        controls.at(i)?.get('areaRowSpan')?.setValue(0);  
+        currentSpan++;
       }
-
-
       else {
-        
-        if(this.getAreaShiftArray.at(index - 1).get('rotationArea')?.value === element.get('rotationArea')?.value){
-          element.get('areaRowSpan')?.setValue(0);
-        }
-        else if(!currentAreaMap.has(currentArea)){
-          element.get('areaRowSpan')?.setValue((areaMap.get(currentArea) || 0));
-          currentAreaMap.set(currentArea, true);
-        }
-        else {
-          element.get('areaRowSpan')?.setValue(0);
-        }
-
+        currentControl?.get('areaRowSpan')?.setValue(currentSpan);        
+        currentSpan = 1;
+        currentControl = controls.at(i);
       }
 
-      //if we're at the last row, then we need to either set 1 or 0
-      // else if (index === (this.getAreaShiftArray.controls.length - 1) && areaMap.has(currentArea)){
-      //   element.get('areaRowSpan')?.setValue((areaMap.get(currentArea) || 0) > 0 ? 0 : 1)
-      // }
 
-      // else {
-        
-      //   if(this.getAreaShiftArray.at(index - 1).get('rotationArea')?.value === element.get('rotationArea')?.value){
-      //     element.get('areaRowSpan')?.setValue(0);
-      //   }
-      //   else {
-      //     element.get('areaRowSpan')?.setValue((areaMap.get(currentArea) || 0));
-      //   }
-
-      // }
-
-    });
+    }
 
   }
 
@@ -1131,7 +1136,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.getAreaShiftArray.controls.forEach((element, index) => {
 
-      element.get("sequence")?.setValue(index);
+      element.get("sortOrder")?.setValue(index + 1);
 
       this.upsertAreaShift(element?.value).then(result => {
 
@@ -1143,7 +1148,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     });
 
-    this.generateTableDataSource();
+
+    this.sortAreaShifts();
   }
 
 }

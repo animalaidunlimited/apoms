@@ -85,9 +85,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
       this.dataSource = this.rotaService.dataSource;
 
-      this.rotationPeriods = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 2)));
+      this.rotationPeriods = this.dataSource.pipe(skip(1), takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 2)));
 
-      this.displayColumns = this.dataSource.pipe(skip(1),takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
+      this.displayColumns = this.dataSource.pipe(skip(1), takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
 
       this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));      
       
@@ -404,7 +404,6 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     if(droppedRow.currentIndex === droppedRow.previousIndex){
       return;
     }
-
     
     this.rotaService.moveAreaShift(droppedRow.previousIndex, droppedRow.currentIndex);
   }

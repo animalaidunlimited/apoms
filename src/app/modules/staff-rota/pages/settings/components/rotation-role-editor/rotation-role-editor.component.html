@@ -3,19 +3,21 @@
   <fieldset class="form-sub-group">
     <legend class="legend" i18n>Add new rotation area</legend>
 
-    <div class="flex-column flex-start-start">
+    <div class="flex-column flex-start-start gap-20">
 
-      <div class="form-row flex-row gap-20 flex-center-center">
+      <div class="form-row flex-row flex-wrap gap-10-0 flex-center-center">
 
         <mat-form-field>
           <mat-label>Rotation role name</mat-label>
           <input matInput type="string" formControlName="rotationRole" [errorStateMatcher]="errorMatcher"/>
+          <mat-error *ngIf="rotationRoleForm.get('rotationRole')?.errors?.duplicateRoleName">
+            Role name already exists
+          </mat-error>
         </mat-form-field>
     
         <mat-form-field>
           <mat-label>Area</mat-label>
           <mat-select
-            style="text-align: center;"
             formControlName="rotationAreaId"
             [errorStateMatcher]="errorMatcher">
             <mat-option>N/A</mat-option>
@@ -25,37 +27,10 @@
           </mat-select>
         </mat-form-field>
 
-      </div>
-
-      <div class="form-row flex-row gap-20 flex-center-center">
-
-        <mat-form-field>
-          <mat-label>Shift start time</mat-label>
-          <input matInput type="time" formControlName="startTime" [errorStateMatcher]="errorMatcher"/>
-        </mat-form-field>
-    
-        <mat-form-field>
-          <mat-label>Shift end time</mat-label>
-          <input matInput type="time" formControlName="endTime" [errorStateMatcher]="errorMatcher"/>
-        </mat-form-field>
 
       </div>
 
-      <div class="form-row flex-row gap-20 flex-center-center">
-
-        <mat-form-field>
-          <mat-label>Break start time</mat-label>
-          <input matInput type="time" formControlName="breakStartTime" [errorStateMatcher]="errorMatcher"/>
-        </mat-form-field>
-    
-        <mat-form-field>
-          <mat-label>Break end time</mat-label>
-          <input matInput type="time" formControlName="breakEndTime" [errorStateMatcher]="errorMatcher"/>
-        </mat-form-field>
-
-      </div>
-
-      <div class="form-row flex-row gap-20 flex-center-center">
+      <div class="form-row flex-row flex-wrap gap-10-0 flex-center-center">
 
         <mat-form-field>
           <mat-label>Sort order</mat-label>
@@ -66,9 +41,59 @@
           <mat-label>Colour</mat-label>
           <input matInput type="color" formControlName="colour" [errorStateMatcher]="errorMatcher"/>
         </mat-form-field>
+
+        
       </div>
 
-        <div class="form-row flex-row flex-space-evenly-center">
+      <div class="form-row flex-column flex-center-center">
+
+          <div formArrayName="shiftSegments"          
+          *ngFor="let segment of shiftSegments.controls; let i = index; let isLast = last">
+
+              <div [formGroupName]="i"
+              class="flex-row flex-wrap gap-10-0 flex-center-center shift-segment-container"
+              [ngClass]="shiftSegments.controls[i].hasError('updateError') ? 'segment-error' : ''">
+
+                  <mat-form-field>
+                    <mat-label>Shift segment type</mat-label>
+                    <mat-select formControlName="shiftSegmentTypeId"
+                    [errorStateMatcher]="errorMatcher">
+                      <mat-option>N/A</mat-option>
+                      <mat-option *ngFor="let segmentType of shiftSegmentTypes" [value]="segmentType.segmentTypeId">
+                        {{segmentType.segmentType}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>Start time</mat-label>
+                    <input matInput type="time" formControlName="startTime" [errorStateMatcher]="errorMatcher"/>
+                  </mat-form-field>
+
+                  <mat-form-field>
+                    <mat-label>End time</mat-label>
+                    <input matInput type="time" formControlName="endTime" [errorStateMatcher]="errorMatcher"/>
+                  </mat-form-field>
+
+                  <!-- [ngClass]="isLast ? 'last-same-day-select' : 'same-day-select'" -->
+                  <mat-slide-toggle formControlName="sameDay" >Same day</mat-slide-toggle>
+
+                </div>
+
+          </div>
+
+          <button
+            type="button"
+            (click)="addShiftSegment()"
+            mat-mini-fab
+            style="margin-top: 20px; margin-bottom: 20px;"
+            matTooltip="Add new shift segment"
+            color="primary">
+            <mat-icon>add</mat-icon>
+          </button>
+
+      </div>
+
+        <div class="form-row flex-row flex-center-center">
     
         <mat-checkbox
           style="align-self: center;"
@@ -78,7 +103,26 @@
 
       </div>
 
-      <div class="form-row save-button flex-row gap-20 flex-space-evenly-center">
+      <div class="form-row save-button flex-row gap-20 flex-center-center">
+
+        <button
+          type="button"
+          (click)="clearRotationRole()"
+          mat-mini-fab
+          matTooltip="Add new"
+          color="primary">
+          <mat-icon>add</mat-icon>
+        </button>
+
+        <button
+          type="button"
+          (click)="duplicateRotationRole()"
+          mat-mini-fab
+          matTooltip="Copy"
+          [disabled]="rotationRoleForm.invalid"
+          color="primary">
+          <mat-icon>content_copy</mat-icon>
+        </button>
 
         <button
           type="button"
@@ -90,22 +134,20 @@
           <mat-icon>save</mat-icon>
         </button>
 
-        <button
-        type="button"
-        (click)="clearRotationRole()"
-        mat-mini-fab
-        matTooltip="Add new"
-        color="primary">
-        <mat-icon>add</mat-icon>
-      </button>
-
       </div>
 
     </div>
 
   </fieldset>
 
-  <app-generic-table [data]="rotationRolesForGenericTable$" dataName="rotationRoles"  (clickedRow)="hydrateRotationRoleForEdit($event)"></app-generic-table>
-
 </form>
+
+  <app-generic-table
+  [data]="rotationRolesForGenericTable$"
+  class="role-table"
+  dataName="rotationRoles"
+  [excludeColumns]="['shiftSegments']"
+  (clickedRow)="hydrateRotationRoleForEdit($event)"></app-generic-table>
+
+
 

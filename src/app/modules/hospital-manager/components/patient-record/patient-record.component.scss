@@ -20,7 +20,8 @@ $standard-width: 175px;
     flex-direction: column;
 }
 
-mat-mdc-tab-group {
+
+.mat-mdc-tab-group {
     flex-grow: 1;
     display: flex;
     flex-direction: row;
@@ -49,6 +50,8 @@ mat-mdc-tab-body {
 .toggle {
     cursor: pointer;
     color: $primary-font-colour;
+    padding-left: 5px;
+    padding-top: 5px;
 }
 
 .mat-spinner {
@@ -63,6 +66,13 @@ mat-mdc-tab-body {
 .emergencyRecordWrapper {
     width: 70%;
     padding-bottom: 20px;
+}
+
+.save-row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 

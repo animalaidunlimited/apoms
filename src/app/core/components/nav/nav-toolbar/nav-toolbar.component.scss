@@ -1,3 +1,13 @@
 .user-preferences-wrapper{
     z-index: 99;
 }
+
+.toolbar{
+    gap: 16px;
+}
+
+@media(max-width: 600px) {
+    .toolbar{
+        gap: 0;
+    }
+}

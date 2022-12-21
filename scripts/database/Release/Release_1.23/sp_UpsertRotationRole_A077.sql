@@ -9,10 +9,6 @@ CREATE PROCEDURE AAU.sp_UpsertRotationRole(
         IN prm_RotationAreaId INT,
         IN prm_RotationRole VARCHAR(45),
         IN prm_Colour VARCHAR(10),
-        IN prm_StartTime TIME,
-        IN prm_Endtime TIME,
-        IN prm_BreakStartTime TIME,
-        IN prm_BreakEndtime TIME,
 		IN prm_SortOrder INT,        
         IN prm_Deleted TINYINT
 )
@@ -36,7 +32,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT COUNT(1) INTO vRotationRoleIdExists FROM AAU.RotationRole WHERE RotationRoleId = prm_RotationRoleId;
+SELECT COUNT(1) INTO vRotationRoleIdExists FROM AAU.RotationRole WHERE RotationRole = prm_RotationRole AND OrganisationId = vOrganisationId AND IsDeleted = 0;
 
 IF ( vRotationRoleIdExists = 0 ) THEN
 
@@ -45,10 +41,6 @@ INSERT INTO AAU.RotationRole(
 	RotationRole,
     RotationAreaId,
 	Colour,
-	StartTime,
-	EndTime,
-	BreakStartTime,
-	BreakEndTime,
 	SortOrder,
 	IsDeleted
 )
@@ -57,10 +49,6 @@ VALUES(
 	prm_RotationRole,
     prm_RotationAreaId,
     prm_Colour,
-    prm_StartTime,
-    prm_EndTime,
-	prm_BreakStartTime,
-	prm_BreakEndTime,
 	prm_SortOrder,
     prm_Deleted
 );
@@ -71,30 +59,30 @@ VALUES(
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationRoleId,'Rotation Role','Insert', NOW());
     
-ELSEIF ( vRotationRoleIdExists = 1 ) THEN
+ELSEIF ( vRotationRoleIdExists = 1  AND prm_RotationRoleId IS NOT NULL ) THEN
 
 UPDATE AAU.RotationRole SET
-	OrganisationId = vOrganisationId,    
-	RotationRole = prm_RotationRole,
-    RotationAreaId = prm_RotationAreaId,
-    StartTime = prm_StartTime,
-    EndTime = prm_EndTime,
-    BreakStartTime = prm_BreakStartTime,
-    BreakEndTime = prm_BreakEndTime,
-    Colour = prm_Colour,
-    SortOrder = prm_SortOrder,    
-	IsDeleted = prm_Deleted,
-    DeletedDate = IF(prm_Deleted = 1, vTimeNow, null)
+	OrganisationId		= vOrganisationId,    
+	RotationRole		= prm_RotationRole,
+    RotationAreaId		= prm_RotationAreaId,
+    Colour				= prm_Colour,
+    SortOrder			= prm_SortOrder,    
+	IsDeleted			= prm_Deleted,
+    DeletedDate			= IF(prm_Deleted = 1, vTimeNow, null)
     WHERE RotationRoleId = prm_rotationRoleId;
 
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotationRoleId,'Rotation Role','Update', NOW()); 
+	VALUES (prm_Username,vRotationRoleId,'Rotation Role','Update', NOW());
+    
+ELSEIF ( vRotationRoleIdExists = 1  AND prm_RotationRoleId IS NULL ) THEN
+
+	SELECT 2 INTO vSuccess;
     
     ELSE
     
-    SELECT 2 INTO vSuccess;
+    SELECT 3 INTO vSuccess;
 
 END IF;
     

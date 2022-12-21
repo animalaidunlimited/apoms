@@ -380,6 +380,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
 
      dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
 
+      if(result === "cancelled") return;
+
       this.startSave(row);
 
         if (result) {

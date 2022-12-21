@@ -8,8 +8,13 @@
   && period.get('endDate')?.valid;
   else dateInputs" class="period-header-text">
 
-    <div (click)="editPeriod(period, false)"> 
-      {{ (period.get('startDate')?.value | date : "EEE,dd/MMM") + " - " + (period.get('endDate')?.value | date : "EEE,dd/MMM") }}
+    <div (click)="editPeriod(period, false)" class="flex-column flex-start-center"> 
+      <span>
+        {{ (period.get('startDate')?.value | date : "EEE,dd/MMM") + " - " + (period.get('endDate')?.value | date : "EEE,dd/MMM") }}
+      </span>
+      <span>
+        {{period.get('name')?.value}}
+      </span>
 
     </div>
 
@@ -32,10 +37,10 @@
 
     </div>
 
-    {{period.get('locked')?.value}}
-
     <div class="flex-row flex-center-center">
-      <button mat-icon-button (click)="generateRotationPeriodDays(period)"
+      <button mat-icon-button
+      (click)="generateRotationPeriodDays(period)"
+      
       *ngIf="!period.get('locked')?.value" [disabled]="!period.get('rotationPeriodId')?.value || period.dirty">        
         <mat-icon matTooltip="generate" [ngClass]="(!period.get('rotationPeriodId')?.value  || period.dirty) ? 'close-icon disabled' : 'close-button key'">key</mat-icon>
       </button>
@@ -46,7 +51,8 @@
         <mat-icon matTooltip="go to period rota" class="close-icon lock">lock</mat-icon>
       </button>      
 
-      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)">        
+      <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)"
+      [disabled]="period.get('locked')?.value">        
         <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
       </button>
 
@@ -58,24 +64,32 @@
 
   <ng-template #dateInputs>
 
-        <div class="flex-row flex-center-center">
-          <mat-form-field>
-          <input matInput type="date" [max]="period.get('endDate')?.value" formControlName="startDate" placeholder="Period start"  [errorStateMatcher]="errorMatcher"/>
-          <mat-error *ngIf="period.get('startDate')?.hasError('dateExistsInRange')">
-            Day exists in another range
-          </mat-error>
-        </mat-form-field>
+            <div class="flex-row flex-center-center">
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Period start</mat-label>
+              <input matInput type="date" [max]="period.get('endDate')?.value" formControlName="startDate" [errorStateMatcher]="errorMatcher"/>
+              <mat-error *ngIf="period.get('startDate')?.hasError('dateExistsInRange')">
+                Day exists in another range
+              </mat-error>
+            </mat-form-field>
 
-        <mat-form-field>
-          <input matInput type="date" [min]="period.get('startDate')?.value" formControlName="endDate" placeholder="Period end" [errorStateMatcher]="errorMatcher"/>
-          <mat-error *ngIf="period.get('endDate')?.hasError('dateExistsInRange')">
-            Day exists in another range
-          </mat-error>
-        </mat-form-field> 
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Period end</mat-label>
+              <input matInput type="date" [min]="period.get('startDate')?.value" formControlName="endDate" [errorStateMatcher]="errorMatcher"/>
+              <mat-error *ngIf="period.get('endDate')?.hasError('dateExistsInRange')">
+                Day exists in another range
+              </mat-error>
+            </mat-form-field>
 
-        <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
-          <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
-        </button>
+            <mat-form-field subscriptSizing="dynamic">
+              <mat-label>Period name</mat-label>
+              <input matInput type="text" formControlName="name" [errorStateMatcher]="errorMatcher"/>          
+            </mat-form-field> 
+
+
+            <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
+              <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+            </button>
 
             <div class="flex-column" *ngIf="period.get('startDate')?.value && period.get('endDate')?.value">
 

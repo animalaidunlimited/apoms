@@ -27,7 +27,7 @@ export interface UserDetails {
     jobTitleId: number;
     jobTitle: string;
     permissionArray: number[];
-    fixedDayOff: number;
+    fixedDayOff: number[];
     departmentId: number;
     localName: string;
     isDeleted: boolean;

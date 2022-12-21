@@ -101,7 +101,7 @@
 
               <mat-form-field style="padding-top: 20px;" appearance="fill">
                 <mat-label>Fixed day off</mat-label>
-                <mat-select formControlName="fixedDayOff">
+                <mat-select formControlName="fixedDayOff" multiple>
                     <mat-option *ngFor="let day of days" [value]="day.dayId">
                         {{day.name}}
                     </mat-option>

@@ -1,15 +1,20 @@
+.location-wrapper{
+    width: 100%;
+}
+
 @media(max-width: 600px) {
 
-    .locationWrapper {
-        max-width:100%;
+    .location-wrapper{
+        max-width: unset;
     }
-
 }
+
 @media(min-width: 600px) {
 
-    .locationWrapper {
-        max-height: 3rem;
+    .location-wrapper{
+        max-width: unset;
     }
+
     ::ng-deep google-map#googlemap .map-container{
         height: 7rem !important;
     }

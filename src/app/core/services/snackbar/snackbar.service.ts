@@ -45,8 +45,4 @@ export class SnackbarService{
 
   }
 
-  //displaySnackbar(message: string, action: string, class: string) {
-
-
-
 }

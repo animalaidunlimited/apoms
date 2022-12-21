@@ -4,7 +4,6 @@ import { MaterialModule } from 'src/app/material-module';
 import { OutstandingCaseBoardComponent } from './outstanding-case-board.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { SearchResultCardModule } from 'src/app/core/components/search-result-card/search-result-card.module';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { SharedPipesModule } from 'src/app/shared-pipes.module';
 import { OutstandingCaseBoardAmbulanceModule } from '../outstanding-case-board-ambulance/outstanding-case-board-ambulance.module';
 
@@ -22,7 +21,6 @@ import { OutstandingCaseBoardCasePanelModule } from '../outstanding-case-board-c
         GoogleMapsModule,
         SearchResultCardModule,
         SharedPipesModule,
-        MatChipsModule,
         OutstandingCaseBoardAmbulanceModule,
         OutstandingCaseBoardCasePanelModule,
         OutstandingCaseMapModule

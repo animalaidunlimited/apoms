@@ -5,7 +5,7 @@ ngStyle.lt-sm="padding: 0 5px;"
 
     <legend class="legend">Patient details</legend>
 
-    <div class="flex-row flex-wrap gap-20 flex-space-between-center">
+    <div class="flex-row flex-wrap gap-20-10 flex-space-between-center">
         <mat-form-field formGroupName="patientDetails">
             <mat-label>Animal type</mat-label>
             <mat-select formControlName="animalTypeId" [errorStateMatcher]="errorMatcher">
@@ -25,7 +25,7 @@ ngStyle.lt-sm="padding: 0 5px;"
 
     </div>
 
-    <div class="flex-row gap-20 flex-space-between-center" formGroupName="patientDetails">
+    <div class="flex-row flex-wrap gap-20-10 flex-space-between-center" formGroupName="patientDetails">
 
         <mat-form-field>
             <mat-label>Temperament</mat-label>
@@ -51,7 +51,7 @@ ngStyle.lt-sm="padding: 0 5px;"
 
     </div>
 
-    <div class="flex-row gap-20 flex-space-between-center" formGroupName="patientDetails">
+    <div class="flex-row flex-wrap gap-20-10 flex-space-between-center" formGroupName="patientDetails">
 
         <mat-form-field>
             <mat-label>Release status</mat-label>
@@ -74,7 +74,7 @@ ngStyle.lt-sm="padding: 0 5px;"
 
     </div>
 
-    <div class="flex-row gap-20 flex-space-between-center" formGroupName="patientDetails">
+    <div class="flex-row flex-wrap gap-20-10 flex-space-between-center" formGroupName="patientDetails">
 
         <mat-form-field>
             <mat-label>Age</mat-label>
@@ -88,20 +88,23 @@ ngStyle.lt-sm="padding: 0 5px;"
         </mat-form-field>
 
         <mat-form-field >
-            <input formControlName="knownAsName" type="text" placeholder="Known as" matInput>
+            <mat-label>Known as</mat-label>            
+            <input formControlName="knownAsName" type="text" matInput>
         </mat-form-field>
 
 
     </div>
 
-    <div class="flex-column gap-20 flex-start-start" formGroupName="patientDetails">
+    <div class="flex-column gap-20-10 flex-start-start" formGroupName="patientDetails">
 
-        <mat-form-field  >
-            <input formControlName="mainProblems" type="text" placeholder="Main problem(s)" matInput>
+        <mat-form-field class="full-width-form-field">
+            <mat-label>Main problem(s)</mat-label>
+            <input formControlName="mainProblems" type="text" matInput>
         </mat-form-field>
 
-        <mat-form-field >
-            <input formControlName="description" type="text" placeholder="Description" matInput>
+        <mat-form-field class="full-width-form-field">
+            <mat-label>Description</mat-label>
+            <input formControlName="description" type="text" matInput>
         </mat-form-field>
 
     </div>

@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { UntypedFormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { BaseRotationRole, RotationArea, RotationRole } from 'src/app/core/models/rota';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { RotaSettingsService } from './../../services/rota-settings.service';
 import { SnackbarService } from './../../../../../../core/services/snackbar/snackbar.service';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
+import { generateUUID } from 'src/app/core/helpers/utils';
 
 @Component({
   selector: 'app-rotation-role-editor',
   templateUrl: './rotation-role-editor.component.html',
-  styleUrls: ['./rotation-role-editor.component.scss']
+  styleUrls: ['./rotation-role-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RotationRoleEditorComponent implements OnInit {
 
@@ -23,10 +25,7 @@ export class RotationRoleEditorComponent implements OnInit {
     rotationAreaId: ["", Validators.required],
     rotationRole: ["", Validators.required],
     colour: ["#ffffff"],
-    startTime: ["", Validators.required],
-    endTime: ["", Validators.required],
-    breakStartTime: ["", Validators.required],
-    breakEndTime: ["", Validators.required],
+    shiftSegments: this.fb.array([]),
     sortOrder: [, Validators.required],
     organisationId: [],
     isDeleted: [],
@@ -36,12 +35,30 @@ export class RotationRoleEditorComponent implements OnInit {
   rotationRoles$!: Observable<RotationRole[]>;
   rotationRolesForGenericTable$!: Observable<BaseRotationRole[]>;
 
-  rotationRolesUnsubscribe = new Subject();
+  shiftSegmentTypes = [
+    {
+      segmentTypeId: 1,
+      segmentType: 'Working time'
+    },
+    {
+      segmentTypeId: 2,
+      segmentType: 'Lunch break'
+    },
+    {
+      segmentTypeId: 3,
+      segmentType: 'Tea break'
+    }
+  ]
+
+  get shiftSegments() : FormArray {
+    return this.rotationRoleForm.get("shiftSegments") as FormArray;
+  }
 
   constructor(
     private fb: UntypedFormBuilder,
     private rotaSettingsService: RotaSettingsService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private changeDetector : ChangeDetectorRef
   ) { 
 
     this.loadDropdowns();
@@ -57,10 +74,7 @@ export class RotationRoleEditorComponent implements OnInit {
         rotationRoleId: value.rotationRoleId,
         rotationRole: value.rotationRole,
         rotationAreaId: value.rotationAreaId,
-        startTime: value.startTime,
-        endTime: value.endTime,
-        breakStartTime: value.breakStartTime,
-        breakEndTime: value.breakEndTime,
+        shiftSegments: value.shiftSegments,
         colour: value.colour,
         isDeleted: value.isDeleted,
         sortOrder: value.sortOrder
@@ -79,41 +93,105 @@ export class RotationRoleEditorComponent implements OnInit {
   }
 
   private updateSortOrder(): void {
-    this.rotationRoles$.pipe(takeUntil(this.rotationRolesUnsubscribe)).subscribe(roles => {
+    this.rotationRoles$.pipe(take(1)).subscribe(roles => {
 
       this.rotationRoleForm.get('sortOrder')?.setValue(1 + (roles?.length || 0));
-      this.rotationRolesUnsubscribe.next();
     });
+  }
+
+  public addShiftSegment() : void {
+
+    const emptyShiftSegment = this.fb.group({
+      rotationRoleShiftSegmentId: new FormControl<number | null>(null),
+      rotationRoleShiftSegmentUUID: new FormControl<string | null>(generateUUID()),
+      startTime: new FormControl<string | null>(null, Validators.required),
+      endTime: new FormControl<string | null>(null, Validators.required),
+      sameDay: new FormControl<boolean | null>(false, Validators.required),
+      shiftSegmentTypeId: new FormControl<number | null>(null, Validators.required),
+      isDeleted: new FormControl<boolean>(false, Validators.required)
+    });
+
+    this.shiftSegments.push(emptyShiftSegment);
+
+
   }
 
   saveRotationRole() : void {
 
     this.rotaSettingsService.saveRotationRole(this.rotationRoleForm.value).then(response => {
 
-      if(response.success === 1) {
+      const segmentUpsertSuccess = !response.shiftSegments.some(shiftSegment => shiftSegment.success === -1);
+
+      if(response.rotationRoleSuccess === 1 && segmentUpsertSuccess) {
         this.snackbar.successSnackBar("Rotation role updated successfully", "OK");
         this.rotationRoleForm.get('rotationRoleId')?.setValue(response.rotationRoleId);
         this.loadDropdowns();
-        this.clearRotationRole();
       }
       else {
-        this.snackbar.errorSnackBar('An error occurred when attempting to save the rotation role: error RRE-53', 'OK');
+        
+        let message = "An error occurred when attempting to save the rotation role: error RRE-132";
+
+        if(response.success === 2){
+
+          message = "Role name already exists";
+          this.rotationRoleForm.get("rotationRole")?.setErrors({duplicateRoleName: true});
+          this.snackbar.errorSnackBar(message, 'OK');
+          return;
+        }
+
+        if(!segmentUpsertSuccess){
+          
+          this.snackbar.errorSnackBar("An error occurred when attempting to save a shift segment: error RRE-143", 'OK');
+
+          response.shiftSegments.forEach(segment => {
+            if(segment.success !== 1){
+
+              let errorSegment = this.shiftSegments.controls.find(control => 
+                control.get('rotationRoleShiftSegmentUUID')?.value === segment.rotationRoleShiftSegmentUUID
+              );
+
+              errorSegment?.setErrors({updateError:true});
+              this.changeDetector.markForCheck();
+            }
+          });
+
+          return;
+
+        }
+
+        this.snackbar.errorSnackBar(message, 'OK');
+
+        
       }
 
     });
 
-
-
   }
 
   clearRotationRole() : void {
-    this.rotationRoleForm.reset();
+    this.rotationRoleForm.reset({colour: '#ffffff'});
     this.updateSortOrder();
-    this.rotationRoleForm.get('colour')?.setValue('#ffffff');
+    this.changeDetector.detectChanges();
   }
 
   hydrateRotationRoleForEdit(emittedRow: FormGroup) : void {
-    this.rotationRoleForm = emittedRow;
+    //We need to patch the values otherwise we just pass the formGroup object pointer which
+    //causes the row in the table and the formGroup in the form on this page to point to the same object.
+    //So when the form is reset, the row in the table becomes blank.
+    const emittedRole:RotationRole = emittedRow.value;
+
+    this.shiftSegments.clear();
+
+    emittedRole.shiftSegments.forEach(() => this.addShiftSegment());
+
+    this.rotationRoleForm.patchValue(emittedRow.value);
+  }
+
+  duplicateRotationRole() : void {
+    this.rotationRoleForm.get("rotationRoleId")?.reset();
+    this.snackbar.successSnackBar("Rotation role copied successfully", "OK");
+    this.rotationRoleForm.get("rotationRole")?.setErrors({duplicateRoleName: true});
+
   }
 
 }

@@ -1,7 +1,14 @@
 .outcomeWrapper {
-    width: 100%;
+    width: 100%;    
 }
 
 mat-form-field.mat-form-field.outcomeWrapper {
     max-width: 100% !important;
+}
+
+@media(max-width: 600px) {
+    .outcomeWrapper {
+        max-width: unset;
+        min-width: 33%;
+    }
 }

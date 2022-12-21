@@ -132,9 +132,6 @@ openGalleryDialog($event: Event): void{
 
 openMediaDialog(patientId: number, tagNumber: string): void{
 
-
-
-
   const dialogRef = this.dialog.open(MediaDialogComponent, {
       minWidth: '50%',
       data: {
@@ -144,7 +141,6 @@ openMediaDialog(patientId: number, tagNumber: string): void{
   });
 
   dialogRef.afterClosed();
-
 
 }
 

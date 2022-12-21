@@ -2,7 +2,7 @@
     font-family: arial !important;
 }
 
-.mat-mdc--card-header {
+.mat-mdc-card-header {
     background-color: #607d8b;
     height: 40px;
     border-radius: 8px 8px 0px 0px;
@@ -17,6 +17,12 @@
 .mat-mdc-card-content {
     margin-bottom: 0px;
     height: 180px;
+    padding: 0;
+}
+
+.mat-mdc-icon-button{
+    height: 40px;
+    width: 40px;
 }
 
 .circle-edit-button {

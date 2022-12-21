@@ -33,6 +33,11 @@ $standard-width: 175px;
 }
 
 @media(max-width: 600px) {
+
+    .surgery-table {
+      width: 95vw;
+    }
+
     .mobile-label {
         width: 12rem;
         display: inline-block;

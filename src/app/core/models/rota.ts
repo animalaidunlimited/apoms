@@ -4,14 +4,31 @@ export interface RotationRoleResponse{
     success: number;
   }
 
+  export interface ShiftSegmentType {
+    segmentTypeId: number;
+    segmentType: string;
+  }
+
+  export interface BaseShiftSegment{
+    rotationRoleShiftSegmentId: number;
+    shiftSegmentTypeId: number;    
+    startTime: string;
+    endTime: string;
+    sameDay: boolean;
+  }
+
+
+  export interface ShiftSegment extends BaseShiftSegment{
+    rotationRoleShiftSegmentUUID: string;
+    shiftSegmentType: string;
+    isDeleted: boolean;
+  }
+
   export interface BaseRotationRole{
     rotationRoleId: number | undefined;
     rotationRole: string;
     rotationAreaId: number;
-    startTime: string;
-    endTime: string;
-    breakStartTime: string;
-    breakEndTime: string;
+    shiftSegments: ShiftSegment[],
     colour: string;
     isDeleted: boolean;
     sortOrder: number;
@@ -77,6 +94,7 @@ export interface RotationPeriod{
   rotaVersionId: number;
   startDate: Date | string;
   endDate: Date | string;
+  name: string;
   locked: boolean;
 }
 
@@ -107,9 +125,21 @@ export interface AreaShift{
     rotationAreaColour: string;    
   }
 
-  export interface RotationRoleResponse{
+  export interface RotationAreaResponse{
     rotationAreaId: number;
     success: number;
+  }
+
+  export interface RotationRoleResponse{
+    rotationRoleId: number;
+    rotationRoleSuccess: number;
+    shiftSegments: RotationRoleShiftSegmentResponse[]
+  }
+
+  export interface RotationRoleShiftSegmentResponse {
+    rotationRoleShiftSegmentUUID: string;
+    rotationRoleShiftSegmentId: number;
+    success: number
   }
 
 
@@ -155,14 +185,7 @@ export interface RotaDayAssignment{
   rotationArea: string;  
   rotationAreaColour: string;
   rotationAreaSortOrder: number;
-  plannedShiftStartTime: string;
-  plannedShiftEndTime: string;
-  actualShiftStartTime: string;
-  actualShiftEndTime: string;
-  plannedBreakStartTime: string;
-  plannedBreakEndTime: string;
-  actualBreakStartTime: string;
-  actualBreakEndTime: string;
+  rotationShiftSegments: BaseShiftSegment[];
   notes: string;
   isAdded: boolean;
   guid: string;

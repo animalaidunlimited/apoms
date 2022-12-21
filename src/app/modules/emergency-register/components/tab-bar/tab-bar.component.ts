@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, InjectionToken } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
@@ -11,11 +11,21 @@ import { takeUntil } from 'rxjs/operators';
 import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { MatTabsConfig, MAT_TABS_CONFIG } from '@angular/material/tabs';
 
 interface EmergencyCaseIdentifiers {
     emergencyNumber : number | string;
     GUID : string;
 }
+
+interface EmergencyTab {
+        id: number;
+        value: string;
+        emergencyCaseId: number;
+        icon: string;
+        GUID: BehaviorSubject<string>;
+    }
+
 
 
 @Component({
@@ -24,20 +34,37 @@ interface EmergencyCaseIdentifiers {
     selector: 'tab-bar',
     templateUrl: './tab-bar.component.html',
     styleUrls: ['./tab-bar.component.scss'],
+    providers: [
+        {
+            provide: MAT_TABS_CONFIG,
+            useValue:   {
+                        animationDuration: '600ms',
+                        contentTabIndex: 0,
+                        disablePagination: true,
+                        dynamicHeight: true,
+                        fitInkBarToContent: false,
+                        preserveContent: true
+                        }
+        }   
+    ]
+
 })
 
 export class TabBarComponent implements OnInit, OnDestroy {
 
     private ngUnsubscribe = new Subject();
 
+
     loadBoard = false;
 
-    selected = new FormControl(0);
+    selected = new FormControl(0);    
 
-    tabs = [
+    tabs:EmergencyTab[] = [
         { id: 0, value: 'Board', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
         { id: 1, value: 'Search', emergencyCaseId: 0, icon: '', GUID: new BehaviorSubject<string>('') },
     ];
+
+    activeIndex = 1;
 
     constructor(
         private cdr: ChangeDetectorRef,
@@ -47,6 +74,8 @@ export class TabBarComponent implements OnInit, OnDestroy {
         private caseService: CaseService,
         private printService: PrintTemplateService
     ) {}
+
+        
 
     ngOnInit() {
 
@@ -95,12 +124,11 @@ export class TabBarComponent implements OnInit, OnDestroy {
         if (index > 1 && index < this.tabs.length) {
             this.tabs.splice(index, 1);
             this.selected.setValue(this.tabs.length - 1);
+            this.activeIndex--;
         }
     }
 
     addTab(emergencyCaseId: number, emergencyNumber: number | string) {
-
-        console.log('added tab');
 
         const guIdVal = new BehaviorSubject<string>(generateUUID());
 
@@ -113,6 +141,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
         });
         setTimeout(() => {
         this.selected.setValue(this.tabs.length - 1);
+        this.activeIndex = (this.tabs.length - 1);
         this.cdr.detectChanges();
         });
     }
@@ -169,7 +198,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
         dialog.afterClosed().pipe(takeUntil(this.ngUnsubscribe)).subscribe(()=> this.selected.setValue(tabIndex));
     }
 
-    tabChanged($event:number){
+    tabChanged($event:any){
 
         if($event === 0){
             this.loadBoard = true;
@@ -183,4 +212,5 @@ export class TabBarComponent implements OnInit, OnDestroy {
         this.selected.setValue($event);
 
     }
+
 }

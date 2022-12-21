@@ -131,7 +131,7 @@
           </td>
         </ng-container>
       
-        <ng-container matColumnDef="plannedStartTime">
+        <!-- <ng-container matColumnDef="plannedStartTime">
           <th mat-header-cell *matHeaderCellDef> Start time </th>
           <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedShiftStartTime')?.value}}</span></td>
         </ng-container>
@@ -199,7 +199,7 @@
               autocomplete="off" formControlName="actualBreakEndTime" type="time" (blur)="checkActualTimes(element, breakEnd, 'actualBreakEndTime', 'actualBreakStartTime')"/>  
             </div>
           </td>
-        </ng-container>
+        </ng-container> -->
 
         <ng-container matColumnDef="notes">
           <th mat-header-cell *matHeaderCellDef> Notes </th>

@@ -1,7 +1,7 @@
 <form autocomplete="off" [formGroup]="patientStatusForm">
 
-      <div class="flex-row flex-wrap flex-space-around-center">
-
+      <div class="flex-row flex-wrap gap-20-10 flex-space-around-center">
+      
       <mat-form-field style="max-width: 48%;">
         <mat-label>Status</mat-label>
         <mat-select formControlName="patientStatusId" [errorStateMatcher]="errorMatcher"
@@ -12,7 +12,8 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field style="max-width: 48%;">
+      <mat-form-field>
+
         <mat-label>Date</mat-label>
         <input formControlName="patientStatusDate" type="date" (click)="setDate()"
         name="patientStatusDate" min="{{createdDate | date:'yyyy-MM-dd'}}" max="{{currentTime | date:'yyyy-MM-dd'}}"
@@ -25,7 +26,7 @@
 
     </div>
 
-    <div class="flex-row flex-wrap flex-space-around-center">
+    <div class="flex-row flex-wrap gap-20-10 flex-space-around-center">
 
       <mat-form-field style="max-width: 48%;" *ngIf="patientStatusForm.get('patientStatusId')?.value == 3">
         <mat-label>P/N</mat-label>

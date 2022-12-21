@@ -1,15 +1,15 @@
-<form class="flex-center-center" [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
+<form class="flex-column flex-center-center" [formGroup]="recordForm" autocomplete="off" (ngSubmit)="saveForm()">
 
   <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
 
-  <div class="flex-column" >
+  <div class="flex-column record-wrapper">
 
     <emergency-details [recordForm]="recordForm" [focusEmergencyNumber]="true"
       (loadEmergencyNumber)="emergencyNumberUpdated($event)"></emergency-details>
 
-    <caller-details [recordForm]="recordForm" [incomingCallerDetails]="[]"></caller-details>
+    <!-- <caller-details [recordForm]="recordForm" [incomingCallerDetails]="[]"></caller-details>
 
-    <location-details [recordForm]="recordForm"></location-details>
+    <location-details [recordForm]="recordForm"></location-details> -->
 
     <animal-selection [isDisplayOnly]="false" [incomingPatientArray] = "[]" (problemTabPressed)="tabPresses($event)" [outcome]="false" [recordForm]="recordForm"></animal-selection>
 

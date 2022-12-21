@@ -10,6 +10,9 @@
         <mat-form-field>
           <mat-label>Rotation area name</mat-label>
           <input matInput type="string" formControlName="rotationArea" [errorStateMatcher]="errorMatcher"/>
+          <mat-error *ngIf="rotationAreaForm.get('rotationArea')?.errors?.duplicateAreaName">
+            Area name already exists
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field>

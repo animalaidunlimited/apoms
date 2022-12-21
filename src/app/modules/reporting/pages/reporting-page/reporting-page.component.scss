@@ -8,10 +8,19 @@ $standard-width: 180px;
 }
 
 .area {
+  
   text-align: left;
+  min-width: 215px;
+}
+
+.highlight{
   padding-bottom: 15px;
   color: #607d8b !important;
   font-weight: bold;
+}
+
+.total{
+  text-align: center;
 }
 
 .link {

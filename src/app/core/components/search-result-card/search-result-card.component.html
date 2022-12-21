@@ -10,9 +10,9 @@
             <mat-icon>create</mat-icon>
         </button>
 
-        <button mat-icon-button color="primary" class="circle-image-button show-images-button">
-        <mat-icon (click)="openMediaDialog(record.PatientId, record.TagNumber)">add_photo_alternate</mat-icon>
-            <i>{{record.MediaCount}}</i>
+        <button mat-mini-fab color="primary" class="circle-image-button show-images-button"
+        (click)="openMediaDialog(record.PatientId, record.TagNumber)">
+            <mat-icon [matBadge]="record.MediaCount">add_photo_alternate</mat-icon>
         </button>
 
         <!--<div class="imageOptions" *ngIf="showImageOptions">

@@ -5,7 +5,7 @@
     }
 }
 .patients_icons{
-    height: 3em;
+    height: 2em;
     min-width:3.6em;
     .mat-icon:not(:last-child){
         margin: 0 0.3rem;
@@ -56,18 +56,23 @@
     height: 30px;
     .mat-icon{
         font-size:1rem;
+        line-height: 1.5;
     }
 }
 
 
 
-.patientOutcomeWrapper {
-    width: 33.3%;
+.patient-outcome-wrapper {
+    flex: 1;
+    max-width: 50%;
+    min-width: 40%;
 }
+
 .admissionAreaDivWrapper {
     width: 33.3%;
 
 }
+
 .admissionAreaWrapper.mat-form-field{
     width:100%;
 }
@@ -75,23 +80,6 @@
 .undoButton{
     @extend .deleteButton;
     background-color: rgb(224, 178, 178);
-}
-
-@media(max-width: 600px) {
-    
-    ::ng-deep .mat-autocomplete-panel{
-        &.speciesAutocomplete{
-            width:max-content;
-        }
-        &.problemAutocomplete{
-            width:max-content;
-        }
-    }
-    .mat-form-field.full-width {
-        max-width: 100% !important;
-        width:100%;
-        margin-right:0px !important;
-    }
 }
 
 @media only screen and (max-width:767px)
@@ -104,17 +92,26 @@
             top: 4px;
             left: 1px;
             font-size: 1rem;
+            line-height: 1.5;
         }
+    }
+
+    //We don't want to show the print icon on mobile.
+    .patients_icons{
+        display: none;
     }
 }
 
 @media(max-width: 600px) {
-  
-    .patientOutcomeWrapper {
-        width: 43.9%;
-    }
+
+    .patient-outcome-wrapper {
+        flex: 1;
+        max-width: unset;
+        min-width: 40%;
+    }    
+
     .admissionAreaDivWrapper{
-        width: 46%;
+        width: 50%;
     }
     .admissionAreaWrapper{
         min-width: 100%;

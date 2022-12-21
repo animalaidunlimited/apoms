@@ -5,8 +5,8 @@ import { HospitalManagerPageComponent } from './pages/hospital-manager-page.comp
 const routes: Routes = [
     {
         path: '',
-        data: { shouldReuse: true, key: 'hospital-manager' },
         component: HospitalManagerPageComponent,
+        data: { shouldReuse: true, key: 'hospital-manager' }
     },
 ];
 

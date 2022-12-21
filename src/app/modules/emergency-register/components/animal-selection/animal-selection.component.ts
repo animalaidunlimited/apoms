@@ -3,7 +3,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, UntypedFormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-import { MatLegacyChipList as MatChipList } from '@angular/material/legacy-chips';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -49,7 +48,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
     @Input() outcome!:boolean;
     @ViewChild(MatTable, { static: true }) patientTable!: MatTable<any>;
-    @ViewChild('problemChips', { static: true }) problemChips!: MatChipList;
     @ViewChild('addPatientBtn', {static: true}) addPatientBtn!: ElementRef;
 
     @ViewChild('auto') matAutocomplete!: MatAutocomplete;

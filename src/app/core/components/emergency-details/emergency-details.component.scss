@@ -1,20 +1,24 @@
-.emergencyDetailsCode {
-    min-width: 1.5em;
-    height: 1.5em;
-    margin-right: 0.5em;
-    border-radius: 50%;
+.emergency-details-code {
     &.red{
-        background: red;
+        color: red;
     }
     &.green{
-        background: green;
+        color: green;
     }
     &.yellow{
-        background: gold;
+        color: gold;
     }
     &.grey{
-        background: grey;
+        color: grey;
     }
+}
+
+.details-wrapper{
+    gap: 10px;
+}
+
+.code-wrapper{
+    width: 50px;
 }
 
 
@@ -45,6 +49,19 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
     .dispatcherWrapper {
         position: relative;
     }
+
+    .code-wrapper{
+        width: 175px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-bottom: 15px;
+    }
+
+    .details-wrapper{
+        gap: 0;
+    }
+    
 }
 
 @media(max-width: 1024px) {
@@ -62,11 +79,5 @@ mat-icon.mat-icon.notranslate.logs_btn.mat-primary.material-icons {
 }
 
 
-@media(min-width: 600px) {
-    .mat-icon{
-        font-size: 2rem;
-        margin-top: -2rem;
-    }
-}
 
 

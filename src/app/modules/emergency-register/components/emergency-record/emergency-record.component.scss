@@ -54,6 +54,8 @@ $standard-width: 183px;
     position: relative;
     margin-bottom: 0;
     padding-right: .35rem;
+    height: unset;
+    width: unset;
 }
 
 .iconWrapper {
@@ -75,6 +77,11 @@ $standard-width: 183px;
 
 
 @media(max-width: 600px) {
+
+    .record-wrapper{
+        max-width: 95vw;    
+    }
+
     .emergencySyncIcon {
         margin-right: 0.3rem !important;
         .mat-icon {

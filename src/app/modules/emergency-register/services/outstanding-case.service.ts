@@ -6,25 +6,24 @@ import { FilterKeys } from '../components/outstanding-case-board/outstanding-cas
 import { RescueDetailsService } from './rescue-details.service';
 import { ThemePalette } from '@angular/material/core';
 import { DriverAssignment } from 'src/app/core/models/driver-view';
+import { resolve } from 'path';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OutstandingCaseService {
 
-  autoRefreshState = false;
-
-  vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
-  loading = new BehaviorSubject<boolean>(true);
-
   autoRefresh:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
-
-  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
-  outstandingCases$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
-  haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
-  mapList$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
-
+  autoRefreshState = false;
+  
   filteredList$!: Observable<(OutstandingAssignment | DriverAssignment)[]>;
+  initialised = false;
+  haveReceivedFocus:BehaviorSubject<boolean> = new BehaviorSubject(Boolean(false));
+  loading = new BehaviorSubject<boolean>(true);
+  mapList$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
+  outstandingCases$:BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]> = new BehaviorSubject<(OutstandingAssignment | DriverAssignment)[]>([]);
+  refreshColour:BehaviorSubject<ThemePalette> = new BehaviorSubject('primary' as ThemePalette);
+  vehicleId$ = new BehaviorSubject<(number| null)[]>([]);
 
   private ngUnsubscribe = new Subject();
 
@@ -35,7 +34,7 @@ export class OutstandingCaseService {
 
    }
 
-  initialise(){
+  initialise(filterFormChanges$:Observable<any>){
 
     this.rescueService.getOutstandingRescues().pipe(
     map(outstandingCases =>
@@ -45,6 +44,7 @@ export class OutstandingCaseService {
 
         if(outstandingCases){
 
+          this.filterCases(filterFormChanges$);
           this.outstandingCases$.next(outstandingCases);
 
           this.zone.run(() => this.refreshColour.next('primary'));
@@ -54,10 +54,9 @@ export class OutstandingCaseService {
         }
       }
     );
-
   }
 
-  getVehicleId(){
+  getVehicleIds() : Observable<(number | null)[]>{
 
     return this.outstandingCases$.pipe(
 
@@ -131,7 +130,6 @@ export class OutstandingCaseService {
       filter(time => time !== null)
     );
 
-
   }
 
   getTimer(vehicleId:number){
@@ -141,8 +139,6 @@ export class OutstandingCaseService {
     );
 
   }
-
-
 
   backToHospitalTimer(backToHospital: Date){
 
@@ -232,108 +228,52 @@ export class OutstandingCaseService {
 
   }
 
-  filterCases(click$:Observable<any>, filters:FilterKeys[], until$:Observable<any>){
+  filterCases(filterFormChanges$:Observable<any>){
 
-    
+    this.filteredList$ = combineLatest([filterFormChanges$, this.outstandingCases$]).pipe(
 
-    this.filteredList$ = combineLatest([click$, this.outstandingCases$]).pipe(
+      map(combined => {
 
-      takeUntil(until$),
-      map(chipChangeObs => chipChangeObs[1]),
-      map(outstandingCases => {
+        let outstandingCases = combined[1];
+        const rawFilter: any[] = Object.entries(combined[0]) as any;
 
-        if(filters.length > 0)
+        const filterKeys:FilterKeys[] = rawFilter.map(element => {
+          return {
+            group: element[0],
+            filters: element[1]
+          }
+        });
+
+        const currentFilter = filterKeys.filter(element => element.filters?.length > 0);
+
+        if(currentFilter.length > 0)
         {
-
-          //Let's transform the filters so we get the list of filter groups with an array of elements.
-          //This way we can make each group an AND, but each element within the group an OR. 
-          //E.g. we want to be able to return (animal type = dog OR cow) AND (code = green OR yellow)
-          let filterResult = filters.reduce((result, element) => {
-    
-            let groupIndex = result.findIndex(group => group.group === element.group);  
-            
-            if(groupIndex === -1) {
-              result.push({
-                group: element.group,
-                filters: [element.value]
-              })
-            }
-            else {
-              result[groupIndex].filters.push(element.value)
-            }  
-            
-            return result;
-            
-          },[] as { group: string, filters: string[]}[] );
 
           //Need to use 'any' here to trick the filter into letting us use the key from the filter to find the correct element on the (DriverAssignment | OutstandingAssignment)
           return outstandingCases.filter((cases:any) =>
 
-          filterResult.every(keyObject=>{
+          currentFilter.every((keyObject: FilterKeys)=>{
 
           const key = keyObject.group;
 
           return key === 'animalType' ?
-              cases?.patients?.some((patient:any) =>  keyObject.filters.some(filter => filter === patient[key]))
+              cases?.patients?.some((patient:any) =>  keyObject.filters?.some(filter => filter === patient[key]))
             :
-              keyObject.filters.some(filter => filter === cases[key])
+              keyObject.filters?.some(filter => filter === cases[key])
 
           }
 
           ));
 
         }
-        else
-        {
+
           return outstandingCases;
-        }
 
       }));
-      
-
-      //     filters.forEach((keyObject,index)=>{
-
-      //       const key = keyObject.group;            
-
-      //       if(index === 0) {
-      //         filteredOutstandingCases.push(outstandingCases.filter((cases:any) =>
-
-      //         key === 'animalType' ?
-      //             cases?.patients?.some((patient:any) => patient[key] === keyObject.value)
-      //           :
-      //             cases[key] === keyObject.value
-
-      //         ));
-      //       }
-      //       else
-      //       {
-      //         filteredOutstandingCases = filteredOutstandingCases.flat().filter((filteredCase:any) =>
-
-      //           key === 'animalType' ?
-      //             filteredCase?.patients?.some((patient:any) => patient[key] === keyObject.value)
-      //           :
-      //             filteredCase[key] === keyObject.value
-
-      //         );
-      //       }
-
-      //     });
-
-      //     return filteredOutstandingCases.flat();
-
-      //   }
-      //   else
-      //   {
-      //     return outstandingCases;
-      //   }
-
-      // })
-    //);
 
   }
 
   onSearchChange(searchValue:string ){
-
 
     this.outstandingCases$.value.forEach(outstandingCase => {
 
@@ -348,8 +288,6 @@ export class OutstandingCaseService {
 
 
   }
-
-
 
   convertObjectToString(assignment : any){
 

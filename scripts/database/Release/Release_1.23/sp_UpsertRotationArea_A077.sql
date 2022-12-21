@@ -2,6 +2,11 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertRotationArea!!
 
+-- CALL AAU.sp_UpsertRotationArea('Jim', NULL, 'A Kennel', 3, '#fffffff', 0)
+
+-- SELECT COUNT(1) FROM AAU.RotationArea WHERE RotationArea = 'A Kennel' AND OrganisationId = 1 AND IsDeleted = 0;
+
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertRotationArea(
 		IN prm_Username VARCHAR(45),
@@ -31,7 +36,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT COUNT(1) INTO vRotationAreaIdExists FROM AAU.RotationArea WHERE RotationAreaId = prm_RotationAreaId;
+SELECT COUNT(1) INTO vRotationAreaIdExists FROM AAU.RotationArea WHERE RotationArea = prm_RotationArea AND OrganisationId = vOrganisationId AND IsDeleted = 0;
 
 IF ( vRotationAreaIdExists = 0 ) THEN
 
@@ -56,7 +61,7 @@ VALUES(
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Insert', NOW());
     
-ELSEIF ( vRotationAreaIdExists = 1 ) THEN
+ELSEIF ( vRotationAreaIdExists = 1  AND prm_RotationAreaId IS NOT NULL ) THEN
 
 UPDATE AAU.RotationArea SET
 	OrganisationId = vOrganisationId,
@@ -71,10 +76,14 @@ UPDATE AAU.RotationArea SET
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Update', NOW()); 
-    
-    ELSE
-    
-    SELECT 2 INTO vSuccess;
+
+ELSEIF ( vRotationAreaIdExists = 1  AND prm_RotationAreaId IS NULL ) THEN
+
+SELECT 2 INTO vSuccess;
+
+ELSE
+
+SELECT 3 INTO vSuccess;
 
 END IF;
     

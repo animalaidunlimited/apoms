@@ -3,15 +3,16 @@
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
         <mat-spinner class="mat-spinner" *ngIf="loading"></mat-spinner>
         <form [formGroup]="recordForm" autocomplete="false" (ngSubmit)="saveForm()">
-            <div class="flex-row gap-5 flex-start-start">
-                <div class="flex-column gap-15 flex-start-start" style="flex: 1 1 50;">
+            
+            <div class="flex-row flex-wrap gap-5 flex-start-start">
+                <div class="flex-column gap-15 flex-start-stretch" style="flex: 1 0 49%">
 
                     <animal-header
                         [recordForm]="recordForm"
                         [profileUrl]="profileUrl">
                     </animal-header>
 
-                    <media-gallery-wrapper [displayImagesAndButtons]="true" [patientData]="recordForm.get('patientDetails')"></media-gallery-wrapper>
+                    <media-gallery-wrapper style="max-width: 100vw;" [displayImagesAndButtons]="true" [patientData]="recordForm.get('patientDetails')"></media-gallery-wrapper>
 
                     <fieldset class="form-sub-group" autocomplete=false>
                         <legend class="legend" i18n>Status</legend>
@@ -19,7 +20,7 @@
                         <patient-status [hasPermission]="hasWritePermission" [patientId]="recordForm.get('patientDetails.patientId')?.value" #patient></patient-status>
                     </fieldset>
 
-                    <fieldset class="form-sub-group" autocomplete=false>
+                    <fieldset class="form-sub-group" autocomplete=false style="max-width: 95vw;">
                         <legend class="legend" i18n>Comments</legend>
 
                         <app-comment [parentRecordId]="recordForm.get('patientDetails.patientId')?.value" parentRecordType="patient"></app-comment>
@@ -27,11 +28,11 @@
 
                 </div>
 
-                <div class="flex-column gap-15 flex-start-start" style="flex: 0 1 50;">
+                <div class="flex-column gap-15 flex-start-stretch" style="flex: 1 0 49%">
 
                     <patient-details [recordForm]="recordForm"></patient-details>
 
-                    <treatment-area-history [tagNumber]="recordForm.get('patientDetails.tagNumber')?.value"></treatment-area-history>
+                    <treatment-area-history style="width: 100%;" [tagNumber]="recordForm.get('patientDetails.tagNumber')?.value"></treatment-area-history>
 
                     <surgery-details
                         [patientId]="recordForm.get('patientDetails.patientId')?.value"
@@ -40,17 +41,21 @@
                         [animalType]="recordForm.get('patientDetails.animalType')?.value">
                     </surgery-details>
 
-                    <div class="flex-row flex-wrap gap-20 flex-center-center form-sub-group">
-                        <button mat-raised-button color="primary" (click)="saveForm(); patient.onSave()">Save</button>
-                    </div>
                 </div>
+
+                <div class="save-row">
+                    <button mat-raised-button color="primary" (click)="saveForm(); patient.onSave()"
+                        style="margin-top: -5px !important; margin-bottom: 20px !important; width: 100px">Save</button>
+                </div>
+
+
             </div>
         </form>
     </mat-tab>
 
     <mat-tab label="Emergency details" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-            <div class="emergencyRecordWrapper flex-column gap-15 flex-start-start">
+            <div class="emergencyRecordWrapper flex-column gap-15 flex-start-stretch">
 
                 <emergency-details
                     [recordForm]="recordForm"
@@ -88,12 +93,9 @@
 
     <mat-tab label="Treatments" [disabled]="patientLoaded">
         <mat-icon role="button" aria-hidden="true" class="toggle" (click)="toggleMenu()" i18n>menu</mat-icon>
-        <fieldset class="form-sub-group">
-            <legend class="legend" i18n>Treatments</legend>
             <treatment-details
                 [patientId]="patientId">
             </treatment-details>
-        </fieldset>
     </mat-tab>
 
     <mat-tab label="Patient calls" [disabled]="patientLoaded">

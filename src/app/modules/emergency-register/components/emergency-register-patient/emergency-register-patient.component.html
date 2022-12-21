@@ -1,47 +1,54 @@
 <div *ngIf="patientForm && !isDisplayOnly" [formGroup]="patientForm" class="patientForm elevatedFormsRepeaterFields flex-column">
 
-  <div class="elevatedFormsIndex">{{patientIndex + 1}}</div>
+  <div class="elevatedFormsIndex" >{{patientIndex + 1}}</div>
 
   <!-- patient details-->
-  <div *ngIf="!outcome" class="flex-row gap-20">
+  <div *ngIf="!outcome" class="flex-row gap-10">
 
     <!-- Animal Dropdown-->
-    <mat-form-field class="flex-end-end">
+    <mat-form-field style="width: 150px; height: 77.6px">
 
-      <input tabindex="8" #animalTypeInput type="text" placeholder="Species" matInput formControlName="animalType"
-        [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher"
-        (focus)="animalTypeChangesSub()" (focusout)="animalTypeChangesUnsub()">
+      <mat-label>Species</mat-label>
+      <input tabindex="8" #animalTypeInput type="text" matInput formControlName="animalType"
+        (focusout)="isSpeciesBlank()"
+        [matAutocomplete]="animalAuto" [errorStateMatcher]="errorMatcher">
 
       <mat-autocomplete class="speciesAutocomplete" autoActiveFirstOption #animalAuto="matAutocomplete"
-        (optionSelected)="animalSelected($event)">
+        (optionSelected)="animalSelected($event.option.value)">
 
         <mat-option *ngFor="let animal of filteredAnimalTypes$" [value]="animal">
           {{ animal.AnimalType }}
         </mat-option>
+
       </mat-autocomplete>
 
     </mat-form-field>
 
     <!-- Main Problem-->
-    <mat-form-field>
+    <mat-form-field [matTooltip]="problemTooltip" matTooltipPosition="above" style="flex-grow: 1;">
 
-      <mat-chip-list #chipList [disabled]="animalType.value === ''" (click)="isSpeciesBlank()" required>
-
-        <mat-chip *ngFor="let problem of problemsArray?.value" style="margin-right: 5px" [selectable]="selectable"
-          [removable]="removable" (removed)="remove(problem.problemId)">
+      <mat-label>Main problem(s)</mat-label>
+      <mat-chip-grid #problemChipGrid aria-label="Problem selection" [errorStateMatcher]="errorMatcher">
+        <mat-chip-row *ngFor="let problem of problemsArray?.value" (removed)="remove(problem.problemId)">
           {{problem.problem}}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
+          <button matChipRemove [attr.aria-label]="'remove ' + problem.problem">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-grid>
+     
+      <input tabindex="9" #problemRef
+        [formControl]="problemInput"        
+        [matChipInputFor]="problemChipGrid"
+        [matAutocomplete]="mainProblemAuto"
+        (focusout)="checkMainProblem()"
+        (keydown.Shift.Tab)="focusAnimalType($event)"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="problemInputTokenEnd($event)"/>
 
-        <input placeholder="Main problem(s)" tabindex="9" #problemRef [formControl]="problemInput" [matAutocomplete]="problemAuto"
-          [matChipInputFor]="chipList" (focusout)="checkMainProblem()" (keydown.Tab)="problemTabPressed($event)"
-          (keydown.Shift.Tab)="focusAnimalType($event)">
+      <mat-autocomplete #mainProblemAuto="matAutocomplete" (optionSelected)="updatePatientProblemArray($event)">
 
-      </mat-chip-list>
-
-      <mat-autocomplete class="problemAutocomplete" autoActiveFirstOption #problemAuto="matAutocomplete"
-        (optionSelected)="updatePatientProblemArray($event)">
-        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem.ProblemId">
+        <mat-option *ngFor="let problem of (filteredProblems$ | async)" [value]="problem">
           {{problem.Problem}}
         </mat-option>
       </mat-autocomplete>
@@ -66,11 +73,13 @@
 
 
   <!-- Call Outcome details-->
-  <div *ngIf="outcome && !isDisplayOnly" class="flex-row gap-20 flex-space-between-end">
+  <div *ngIf="outcome && !isDisplayOnly" class="flex-row flex-wrap gap-20-10 flex-start-center">
 
-    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patientOutcomeWrapper" [patientForm]="patientForm"></emergency-case-outcome>
+    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patient-outcome-wrapper" [patientForm]="patientForm"></emergency-case-outcome>
 
-    <mat-form-field *ngIf="patientForm.get('isAdmission')?.value || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 || patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
+    <mat-form-field style="width: 150px;" *ngIf="patientForm.get('isAdmission')?.value || 
+    patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ||
+     patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
 
       <mat-label>Tag number</mat-label>
 
@@ -101,7 +110,7 @@
     </div>
     <div class="patients_icons">
       <!-- <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon> -->
-      <mat-icon style="cursor:pointer;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
+      <mat-icon style="cursor:pointer; margin-bottom: 17px;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>
   </div>
 

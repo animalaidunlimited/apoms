@@ -7,7 +7,7 @@
         formControlName="rotationRoleId"
         [errorStateMatcher]="errorMatcher">
         <mat-option>N/A</mat-option>
-            <mat-option *ngFor="let role of rotationRoles$ | async" [value]="role.rotationRoleId">
+            <mat-option *ngFor="let role of (rotationRoles$ | async)" [value]="role.rotationRoleId">
             {{role.rotationRole}}
         </mat-option>
     </mat-select>

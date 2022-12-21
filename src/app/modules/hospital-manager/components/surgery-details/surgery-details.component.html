@@ -3,7 +3,7 @@
   <legend class="legend">Surgery details</legend>
 
   <div class="example-container mat-elevation-z8">
-    <mat-table matSort #table [dataSource]="surgeryRecords">
+    <mat-table matSort #table [dataSource]="surgeryRecords" class="surgery-table">
       <ng-container matColumnDef="Date">
         <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
@@ -57,7 +57,7 @@
     </mat-table>
   </div>
 
-  <div class="flex-center-center" style="padding-top: 10px;">
+  <div class="flex-row flex-center-center" style="padding-top: 10px;">
     <button type="button" mat-mini-fab (click)="launchSurgeryDialog(null)" color="primary">
       <mat-icon>add</mat-icon>
     </button>
