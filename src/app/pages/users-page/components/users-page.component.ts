@@ -299,9 +299,10 @@ export class UsersPageComponent implements OnInit {
 
       ];
 
-      this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType=>{
+      this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType => {
         this.jobTypes = jobType;
       });
+
       this.getRefreshTableData();
 
     }

@@ -14,7 +14,7 @@ CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
                                         IN prm_Password VARCHAR(255) CHARACTER SET UTF8MB4,
 										IN prm_RoleId INTEGER,
                                         IN prm_PermissionArray JSON,
-                                        IN prm_FixedDayOff TINYINT,
+                                        IN prm_FixedDayOff JSON,
                                         IN prm_DepartmentId INT,
                                         IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4
 										)
