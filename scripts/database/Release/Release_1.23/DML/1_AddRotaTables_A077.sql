@@ -433,6 +433,7 @@ INSERT INTO `AAU`.`RotationArea` (OrganisationId, RotationArea, SortOrder, Colou
 (1,'A Kennel', 1, '#ffb6c1'),
 (1,'B Kennel', 2, '#add8e6');
 
+
 INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, RotationAreaId, startTime, EndTime, BreakStartTime, BreakEndTime, SortOrder) VALUES
 ('N01','#90ee90',1,1,'08:00','17:00','13:00','14:00',1),
 ('N02','#add8e6',1,1,'09:00','18:00','14:00','15:00',2),
@@ -440,7 +441,6 @@ INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, Rotation
 ('HX1','#20b2aa',1,2,'11:00','20:00','16:00','14:00',4),
 ('HX2','#ffffe0',1,2,'12:00','21:00','17:00','18:00',5),
 ('HX3','#ffa07a',1,2,'06:00','15:00','11:00','12:00',6);
-
 
 INSERT INTO `AAU`.`Rota` (`OrganisationId`,`RotaName`,`DefaultRota`) VALUES (1, 'Hospital Staff', 1), (1, 'Desk Staff', 0);
 INSERT INTO `AAU`.`RotaVersion` (`OrganisationId`,`RotaVersionName`,`DefaultRotaVersion`, `RotaId`) VALUES
