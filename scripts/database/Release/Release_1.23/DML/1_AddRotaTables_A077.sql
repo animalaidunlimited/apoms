@@ -87,7 +87,7 @@ CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 		REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION,
-    INDEX `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
+    INDEX `FK_ShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
 	  CONSTRAINT `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentType`
 		FOREIGN KEY (`ShiftSegmentTypeId`)
 		REFERENCES `AAU`.`ShiftSegmentType` (`ShiftSegmentTypeId`)
