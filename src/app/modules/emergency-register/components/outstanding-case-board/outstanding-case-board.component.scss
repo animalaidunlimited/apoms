@@ -56,13 +56,11 @@
         background-color: white;
     }
 }
-.mat-progress-spinner {
-    margin: auto;
-    top: 0;
-    left: 20em;
-    right: 0;
-    bottom: 0;
-    position: fixed;
+.mat-mdc-progress-spinner {
+    position: absolute;
+    z-index: 101;
+    left: calc(50% - 50px);
+    top: 25vh;
 }
 
 .filterWrapper{

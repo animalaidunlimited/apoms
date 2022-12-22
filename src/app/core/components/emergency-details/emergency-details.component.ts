@@ -73,7 +73,7 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
         this.minimumDate =
             this.datePipe.transform(
                 this.userOptions.getMinimumDate(),
-                'yyyy-MM-ddTHH:mm:ss.ms',
+                'yyyy-MM-ddTHH:mm',
             ) || '';
 
         const emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId');
@@ -137,6 +137,8 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
                 [this.emergencyNumberValidator.validate(this.recordForm.get('emergencyDetails.emergencyCaseId')?.value, 1)]
             )
         );
+
+        console.log(getCurrentTimeString());
 
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));

@@ -6,11 +6,12 @@
         <div class="code-wrapper">
            
             <mat-icon
+                style="margin-left: 16px;"
                 matTooltip="Emergency code"
                 [ngStyle]="{ 'color' : recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 4 ? 'grey' : 
                     recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 1 ? 'red' :
                     recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 2 ? 'green' :
-                    recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3 ? 'yellow' : 'white'
+                    recordForm.get('emergencyDetails.code')?.value?.EmergencyCodeId == 3 ? 'gold' : 'white'
                     }">traffic_light
             </mat-icon>
 
