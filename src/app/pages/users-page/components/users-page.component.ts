@@ -16,6 +16,7 @@ import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { Department } from 'src/app/core/models/rota';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
+import { ReturnStatement } from '@angular/compiler';
 
 
 interface StreetTreatRole {
@@ -337,20 +338,13 @@ export class UsersPageComponent implements OnInit {
       this.dataSource.sort = this.sort;
     }
 
-    submit(userDetailsForm: any) {
+    submit() {
 
       if(this.hasWritePermission) {
         this.loading = true;
 
-        if(userDetailsForm.get('password').value !== ''){
-          userDetailsForm.get('password').setValue(userDetailsForm.get('password').value);
-        }
-        else {
-          userDetailsForm.get('password').setValue('');
-        }
-
-        if(userDetailsForm.valid) {
-          this.userDetailsService.insertUser(userDetailsForm.value).then((res : any)=>{
+        if(this.userDetails.valid) {
+          this.userDetailsService.insertUser(this.userDetails.value).then((res : any)=>{
             this.loading = false;
 
             if(res.success) {
@@ -450,6 +444,30 @@ export class UsersPageComponent implements OnInit {
 
       this.userDetails.patchValue(selectedUser);
 
+    }
+
+    deleteUser() : void {
+
+      let userId = this.userDetails.get('userId')?.value;
+
+      if(!userId){
+        return;
+      }
+
+      this.userDetailsService.deleteUserById(userId).then(result => {
+
+        if(result.success === 1){
+          this.snackBar.successSnackBar('User deleted successfully.' , 'Ok');
+          this.afterSaveActions();
+
+        }
+        else {
+          this.snackBar.errorSnackBar('Delete error, See admin. error: UPC:465','Ok');
+        }
+
+        
+
+      });
     }
 
 }

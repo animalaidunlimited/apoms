@@ -3,6 +3,7 @@ import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { CaseService } from 'src/app/modules/emergency-register/services/case.service';
+import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 
 @Injectable({ providedIn: 'root' })
 export class UniqueEmergencyNumberValidator {
@@ -17,11 +18,14 @@ export class UniqueEmergencyNumberValidator {
                 return of(null);
             }
 
-            return this.caseService.checkEmergencyNumberExists(control.value, emergencyNumber).pipe(map((res:any) => {
+            return this.caseService.checkEmergencyNumberExists(control.value, emergencyNumber).pipe(map((result:SuccessOnlyResponse) => {
 
                         // if emergency number is already taken
-                        if (res[0]['@success'] === checkExists) {
+                        if (result.success === checkExists) {
                             return { emergencyNumberTaken: true };
+                        }
+                        else if (result.success === -1){
+                            return { databaseError : true };
                         }
                         else
                         {

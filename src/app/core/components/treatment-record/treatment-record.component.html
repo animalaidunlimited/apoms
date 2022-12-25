@@ -6,15 +6,17 @@
 <div class="flex-row gap-10 flex-start-space-between" >
 
 <mat-form-field>
+    <mat-label>Treatment date</mat-label>
     <input formControlName="treatmentDateTime" name="treatmentDateTime" type="datetime-local"
     (focus)="setInitialTime($event)"
-        [max]="currentTime" placeholder="Treatment date" matInput>
+        [max]="currentTime" matInput>
 </mat-form-field>
 
 <mat-form-field>
+    <mat-label>Next treatment date</mat-label>
     <input formControlName="nextTreatmentDateTime" name="nextTreatmentDateTime" type="datetime-local"
     (focus)="setInitialTime($event)"
-    [min]="currentTime" placeholder="Next treatment date" matInput>
+    [min]="currentTime" matInput>
 </mat-form-field>
 
 </div>
@@ -37,7 +39,8 @@
 </mat-chip-listbox>
 
 <mat-form-field class="extra-wide">
-    <textarea formControlName="comment" rows="3" placeholder="Comment" matInput></textarea>
+    <mat-label>Comment</mat-label>
+    <textarea formControlName="comment" rows="3" matInput></textarea>
 </mat-form-field>
 
 </mat-dialog-content>

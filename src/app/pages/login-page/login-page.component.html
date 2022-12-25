@@ -11,12 +11,12 @@
         <mat-card-content>
             <form (keyup.enter)="login(username, password)">
                 <mat-form-field class="login-field">
-
-                    <input matInput autocomplete="off" placeholder="Username" name="username" [(ngModel)]="username" type="username"/>
+                    <mat-label>Username</mat-label>
+                    <input matInput autocomplete="off" name="username" [(ngModel)]="username" type="username"/>
                 </mat-form-field>
                 <mat-form-field class="login-field">
-
-                    <input matInput placeholder="Password" name="password" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" autocomplete="current-password"/>
+                    <mat-label>Password</mat-label>
+                    <input matInput name="password" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" autocomplete="current-password"/>
                     <mat-icon matSuffix style="cursor: pointer;" (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
                 </mat-form-field>
             </form>

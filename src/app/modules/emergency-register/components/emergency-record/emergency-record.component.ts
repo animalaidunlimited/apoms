@@ -201,7 +201,6 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
     getCaseSaveMessage(resultBody: EmergencyResponse) : SaveResult {
 
-
          const result:SaveResult = {
             message: 'Other error - See admin\n',
             failure: 0
@@ -209,9 +208,9 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
 
         // Check the record succeeded
         if (resultBody.emergencyCaseSuccess === 1) {
-            result.message = 'Success';
+            result.message = 'Success saving case. ';
         } else if (resultBody.emergencyCaseSuccess === 2) {
-            result.message = 'Error adding the record: Duplicate record\n';
+            result.message = 'Error saving the record: Duplicate record\n';
             result.failure = -1;
 
             return result;
@@ -361,7 +360,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                                     this.showSnackBar.warningSnackBar('Case inserted successfully, but area admission failed: see admin.', 'OK');
                                 }
                                 else if (messageResult.failure === 1) {
-                                    this.showSnackBar.errorSnackBar('Case saved offline','OK');
+                                    this.showSnackBar.errorSnackBar(messageResult.message,'OK');
                                     this.syncedToLocalStorage = true;
                                     this.recordForm.markAsPristine();
                                 }
@@ -395,7 +394,7 @@ export class EmergencyRecordComponent implements OnInit, OnDestroy {
                                     this.recordForm.markAsPristine();
                                 }
                                 else if (messageResult.failure === 1){
-                                    this.showSnackBar.errorSnackBar('Case updated offline.','OK');
+                                    this.showSnackBar.errorSnackBar(messageResult.message,'OK');
                                     this.syncedToLocalStorage = true;
                                     this.recordForm.markAsPristine();
                                 }

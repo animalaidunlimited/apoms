@@ -1,5 +1,5 @@
 
-<div class="flex-row flex-wrap flex-start-start gap-20" [formGroup]="areaForm" style="margin-top: 10px; margin-left:10px;">
+<div class="flex-row flex-wrap flex-start-center gap-20" [formGroup]="areaForm" style="margin-top: 10px; margin-left:10px;">
 
   <div class="flex-row flex-start-center gap-10">
 
@@ -63,7 +63,12 @@
 
   </div>
 
-  <div>
+  <div class="flex-row flex-center-center gap-10">
+
+    <button mat-mini-fab color="primary" (click)="printRotaDay()" matTooltip="Reload rota">
+      <mat-icon>print</mat-icon>
+    </button>
+
     <button mat-mini-fab color="primary" (click)="loadRotaDays()" matTooltip="Reload rota">
       <mat-icon>refresh</mat-icon>
     </button>

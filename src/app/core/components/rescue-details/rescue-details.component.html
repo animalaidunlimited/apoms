@@ -52,7 +52,7 @@
                 type="datetime-local"
                 name="ambulanceAssignmentTime" (focus)="setInitialTime($event)"
                 (blur)="updateTimes()"
-                placeholder="Ambulance assignment time" [errorStateMatcher]="errorMatcher" matInput>
+                [errorStateMatcher]="errorMatcher" matInput>
                     <mat-error *ngIf="ambulanceAssignmentTime?.hasError('ambulanceAssignedAfterRescue')">
                         Ambulance assigned after rescue!
                     </mat-error>

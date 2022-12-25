@@ -70,7 +70,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
   patientDeletedFlag = false;
   patientForm: FormGroup = new FormGroup({});
-  problemInput = new FormControl<ProblemDropdownResponse | string | null>({ value: null, disabled: true }, { nonNullable: true });
+  problemInput = new FormControl<ProblemDropdownResponse | string | null>({ value: null, disabled: false }, { nonNullable: true });
   problemTooltip: string = "";
   problemsExclusions$ = new BehaviorSubject<string[]>(['']);
 
@@ -98,9 +98,7 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
   );
 
 
-  treatmentAreaNames$!: Observable<TreatmentArea[]>;
-
-  
+  treatmentAreaNames$!: Observable<TreatmentArea[]>;  
 
   constructor(
     private dropdown: DropdownService,
@@ -179,7 +177,8 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
     this.animalType?.valueChanges.pipe(
       startWith(''),
       takeUntil(this.ngUnsubscribe),
-      map(animalType => typeof animalType === 'string' ? animalType : animalType?.AnimalType))
+      map(animalType => typeof animalType === 'string' ? animalType : animalType?.AnimalType)
+      )
       .subscribe(animalType => {
 
         this.filteredAnimalTypes$ = animalType ? this.animalFilter(animalType.toLowerCase()) : this.sortedAnimalTypes;
@@ -189,14 +188,14 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
         }
         else {
           this.problemInput.enable({ emitEvent: false });
-          this.problemRef?.nativeElement.focus();
-        }        
+        }
 
-        if (animalType === '') {
+        if (animalType === '' && this.animalType.value === '') {
           this.problemsArray.clear();
         }
 
       });
+
   }
 
   ngOnDestroy() {

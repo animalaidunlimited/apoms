@@ -122,6 +122,8 @@ export class DailyRotaComponent implements OnInit {
 
     this.rotaService.getRotationPeriods(rotaVersionId, limit, offset).then(result => {
 
+      console.log(result);
+
       if(!result){
         return;
       }
@@ -147,6 +149,8 @@ export class DailyRotaComponent implements OnInit {
     }
 
     this.rotaService.getRotaDayAssignmentsByRotationPeriodId(this.rotationPeriodId).then(rotaDays => {
+
+      console.log(rotaDays);
 
       if(!rotaDays) return;
 
@@ -277,6 +281,10 @@ shiftRotationPeriod(direction: number) : void {
 
   this.getRotationPeriodForRotaVersion(this.getRotaVersionId, 1, this.offset)
 
+}
+
+printRotaDay() : void {
+  console.log('printing');
 }
 
 

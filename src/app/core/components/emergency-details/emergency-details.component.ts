@@ -138,8 +138,6 @@ export class EmergencyDetailsComponent implements OnInit, AfterViewInit, OnDestr
             )
         );
 
-        console.log(getCurrentTimeString());
-
         this.emergencyDetails.addControl('callDateTime',new FormControl(getCurrentTimeString(), Validators.required));
         this.emergencyDetails.addControl('dispatcher',new FormControl('', Validators.required));
         this.emergencyDetails.addControl('code',new FormControl());

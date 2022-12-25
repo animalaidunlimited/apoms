@@ -47,6 +47,8 @@ SELECT
     p.RotaVersionId,
 	rda.RotaDayDate,
 	rda.RotaDayId,
+    p.StartDate,
+    p.EndDate,
 	IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, rda.UserId) AS 'UserId',
     IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, CONCAT(u.EmployeeNumber, ' - ', u.FirstName)) AS 'UserCode',
 	rda.RotationUserId,
@@ -89,6 +91,8 @@ SELECT
     rp.RotaVersionId,
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY),
 	-1,
+    rp.StartDate,
+    rp.EndDate,
 	lr.UserId,
     '',
 	lr.UserId,
@@ -124,6 +128,8 @@ SELECT
     rp.RotaVersionId,
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY),
 	-1,
+    rp.StartDate,
+    rp.EndDate,
 	u.UserId,
     '',
 	u.UserId,
@@ -151,13 +157,13 @@ INNER JOIN AAU.User u ON u.FixedDayOff = WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 
-
-
 ),
 rotaDayAssignmentCTE AS
 (
 SELECT RotationPeriodId,
-RotaVersionId,
+		RotaVersionId,
+		StartDate,
+		EndDate,
 		JSON_MERGE_PRESERVE(
 			JSON_OBJECT("rotaDayDate", RotaDayDate),
 			JSON_OBJECT("rotaDayAssignments", 
@@ -187,12 +193,16 @@ RotaVersionId,
 FROM BaseCTE
 GROUP BY RotationPeriodId,
 		 RotaVersionId,
-		 RotaDayDate
+		 RotaDayDate,
+		 StartDate,
+		 EndDate
 )
 
 SELECT
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("rotationPeriodId", rd.RotationPeriodId),
+        JSON_OBJECT("startDate", rd.StartDate),
+        JSON_OBJECT("endDate", rd.EndDate),
         JSON_OBJECT("rotaId", rv.RotaId),
         JSON_OBJECT("rotaVersionId", rv.RotaVersionId),
 		JSON_OBJECT("rotaDays", 
@@ -203,7 +213,7 @@ SELECT
 	) AS `RotationPeriodAssignments`
 FROM rotaDayAssignmentCTE rd
 INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = rd.RotaVersionId
-GROUP BY rd.RotationPeriodId, rv.RotaId, rv.RotaVersionId;
+GROUP BY rd.RotationPeriodId, rd.StartDate, rd.EndDate, rv.RotaId, rv.RotaVersionId;
 
 END$$
 

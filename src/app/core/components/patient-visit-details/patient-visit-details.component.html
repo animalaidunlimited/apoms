@@ -6,8 +6,7 @@
 			<input formControlName="ambulanceAssignmentTime" type="datetime-local"
 			[min]="callDateTime"
 			[max]="currentTime"
-			name="ambulanceAssignmentTime"
-			placeholder="Ambulance assignment time" matInput [errorStateMatcher]="errorMatcher">
+			name="ambulanceAssignmentTime"matInput [errorStateMatcher]="errorMatcher">
 
 		</mat-form-field>
 
@@ -25,7 +24,7 @@
 
 		<mat-form-field appearance="fill">
 			<mat-label>Case priority</mat-label>
-			<mat-select placeholder="Case priority" formControlName="casePriority" [errorStateMatcher]="errorMatcher">
+			<mat-select formControlName="casePriority" [errorStateMatcher]="errorMatcher">
 				<mat-option *ngFor="let treatmentPriority of (treatmentPriority$ | async)" [value]="treatmentPriority.PriorityId">
 					{{ treatmentPriority.Priority }}
 				</mat-option>
@@ -80,7 +79,7 @@
 
 					<mat-form-field appearance="fill" *ngIf="!showVisitDate" class="date" >
 						<mat-label>Day</mat-label>
-						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" placeholder="Day" [errorStateMatcher]="errorMatcher"
+						<input matInput (keypress)="keyPressNumbers($event)" type="number" min="0" [errorStateMatcher]="errorMatcher"
 							value="0" formControlName="visit_day"  />
 							<mat-error *ngIf="item.get('visit_day')?.hasError('uniqueBy')">
 								Day should be unique
@@ -89,7 +88,7 @@
 
 					<mat-form-field appearance="fill" *ngIf="showVisitDate" class="visit-date date">
 						<mat-label>Date</mat-label>
-						<input matInput  type="date" [min]="minVisitDate" placeholder="Date"  [errorStateMatcher]="errorMatcher"
+						<input matInput  type="date" [min]="minVisitDate" [errorStateMatcher]="errorMatcher"
 							value="0" formControlName="visit_date"  />
 							<mat-error *ngIf="item.get('visit_date')?.hasError('uniqueBy')">
 								Date should be unique
@@ -98,7 +97,7 @@
 
 					<mat-form-field appearance="fill" class="status">
 						<mat-label>Visit status</mat-label>
-						<mat-select placeholder="Select" formControlName="visit_status" [errorStateMatcher]="errorMatcher">
+						<mat-select formControlName="visit_status" [errorStateMatcher]="errorMatcher">
 							<mat-option *ngFor="let status of (status$ | async)" [value]="status.StatusId">{{ status.Status}}</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -106,7 +105,7 @@
 					<mat-form-field appearance="fill" ngClass.lt-md="full-width">
 						<mat-label>Visit type</mat-label>
 
-						<mat-select placeholder="Select" formControlName="visit_type" [errorStateMatcher]="errorMatcher">
+						<mat-select formControlName="visit_type" [errorStateMatcher]="errorMatcher">
 							<mat-option  *ngFor="let visitTypes of (visitType$ | async)" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
 						</mat-select>
 
