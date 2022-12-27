@@ -246,7 +246,19 @@ private toCamelCase(str:string) : string {
 
   }
 
-  public sendTreatmentListToPrinter(contentToPrint: string){
+  publicSendRotaDayToPrinter(contentToPrint: string) : void {
+
+    this.isPrinting.next(true);
+
+    this.router.navigate(['/',
+    {
+      outlets: {
+      'staff': ['treatment-list', 'treatment-list', contentToPrint]
+    }}]);
+
+  }
+
+  public sendTreatmentListToPrinter(contentToPrint: string) : void {
 
     this.isPrinting.next(true);
 
