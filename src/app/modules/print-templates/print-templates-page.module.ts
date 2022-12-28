@@ -6,15 +6,13 @@ import { PrintTemplatesPageComponent } from './pages/print-templates-page.compon
 import { PrintElementFilter } from './pipes/print-element-filter';
 import { PrintWrapperComponent } from './components/print-wrapper/print-wrapper.component';
 import { PrintContentComponent } from './components/print-content/print-content.component';
-import { TreatmentListContentComponent } from './components/treatment-list-content/treatment-list-content.component';
 
 @NgModule({
   declarations: [
     PrintTemplatesPageComponent,
     PrintElementFilter,
     PrintWrapperComponent,
-    PrintContentComponent,
-    TreatmentListContentComponent
+    PrintContentComponent
   ],
   imports: [
     CommonModule,

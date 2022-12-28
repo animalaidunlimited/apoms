@@ -68,7 +68,8 @@
             </div>
             <div class="AssignedVehicle_Compare_list">
                 <mat-form-field appearance="fill">
-                    <mat-select placeholder="Assigned vehicle" formControlName="vehicles" multiple>
+                    <mat-label>Assigned vehicle</mat-label>
+                    <mat-select formControlName="vehicles" multiple>
                         <mat-option *ngFor="let vehicle of caseDropDown" [value]="vehicle.VehicleId">
                             {{vehicle.VehicleNumber}}
                         </mat-option>

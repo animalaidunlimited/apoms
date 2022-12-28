@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormArray, UntypedFormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject} from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { AreaShift, AreaShiftResponse, AssignedStaffResponse, AssignedUser,
-         CurrentRota, Rota, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
+         CurrentRota, Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotationPeriod,
          RotationPeriodLeave, RotationPeriodResponse, RotationPeriodSaveResponse, RotaVersion } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { APIService } from 'src/app/core/services/http/api.service';
@@ -49,6 +49,8 @@ export class RotaService extends APIService {
   rotaVersions:BehaviorSubject<RotaVersion[]> = new BehaviorSubject<RotaVersion[]>([]);
 
   beginningOrEndRotation: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
+
+  rotaDays$ = new BehaviorSubject<RotaDayAssignmentResponse | null>(null);
 
   rotaForm:FormGroup = this.fb.group({
     currentRota: this.fb.group({
@@ -1124,9 +1126,17 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
-  public getRotaDayAssignmentsByRotationPeriodId(rotationPeriodId: number) : Promise<RotaDayAssignmentResponse | null>{
+  public getRotaDayAssignmentsByRotationPeriodId(rotationPeriodId: number) : void {
 
-    return this.get(`/GetRotaDayAssignmentsByRotationPeriodId?rotationPeriodId=${rotationPeriodId}`);
+    this.get(`/GetRotaDayAssignmentsByRotationPeriodId?rotationPeriodId=${rotationPeriodId}`)
+                  .then(result => result as RotaDayAssignmentResponse)
+                  .then(rotaDays => this.rotaDays$.next(rotaDays));
+
+  }
+
+  public getRotaDayAssignmentsForDay(day: string) : Observable<RotaDay | undefined> {
+
+    return this.rotaDays$.pipe(map(rawValue => rawValue?.rotaDays.find(rotaDay => rotaDay.rotaDayDate === day)))
 
   }
 

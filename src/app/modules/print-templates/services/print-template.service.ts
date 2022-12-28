@@ -246,7 +246,19 @@ private toCamelCase(str:string) : string {
 
   }
 
-  public sendTreatmentListToPrinter(contentToPrint: string){
+  public sendRotaDayToPrinter(contentToPrint: string) : void {
+
+    this.isPrinting.next(true);
+
+    this.router.navigate(['/',
+    {
+      outlets: {
+      'print-daily-rota-day': ['print-daily-rota-day', 'print-daily-rota-day', contentToPrint]
+    }}]);
+
+  }
+
+  public sendTreatmentListToPrinter(contentToPrint: string) : void {
 
     this.isPrinting.next(true);
 
@@ -270,6 +282,9 @@ private toCamelCase(str:string) : string {
       }
       else if(printItemName === 'treatment-list'){
         this.router.navigate([{ outlets: { 'treatment-list': null }}]);
+      }
+      else if(printItemName === 'print-daily-rota-day'){
+        this.router.navigate([{ outlets: { 'print-daily-rota-day': null }}]);
       }
 
 

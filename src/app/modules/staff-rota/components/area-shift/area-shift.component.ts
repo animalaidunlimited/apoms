@@ -50,7 +50,7 @@ export class AreaShiftComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(change: SimpleChanges) {    
-    // this.areaShift = this.inputAreaShift as FormGroup;
+    this.areaShift = this.inputAreaShift as FormGroup;
   }
 
   groupSelected($event: MatSelectChange, areaShift: AbstractControl) : void {

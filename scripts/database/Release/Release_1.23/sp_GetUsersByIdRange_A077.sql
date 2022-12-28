@@ -64,6 +64,7 @@ FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArr
 					ORDER BY UserId ASC) jobTitle
 	ON jobTitle.UserId = u.UserId
     WHERE u.UserId <> -1
+    AND u.IsDeleted = 0
     AND u.OrganisationId = vOrganisationId) UserDetails;
         
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;

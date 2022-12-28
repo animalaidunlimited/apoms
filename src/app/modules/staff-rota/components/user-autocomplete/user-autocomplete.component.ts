@@ -107,15 +107,7 @@ setSelectedUsers() : void {
 }
 
   get displayFn() {
-    return (userId:number) => this.findUser(userId);
-  }
-
-  findUser(userId: number) : string {
-
-    let foundUser = this.userList.value.find(user => user.userId === userId);
-
-    return foundUser ? `${foundUser.employeeNumber} - ${foundUser.firstName}` : '';
-
+    return (userId:number) => this.userDetails.getUserCode(userId);
   }
 
   private _filter(value: any): UserDetails[] {

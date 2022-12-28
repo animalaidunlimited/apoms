@@ -59,14 +59,12 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
     @ViewChildren(EmergencyRegisterPatientComponent) emergencyRegisterPatients!: QueryList<EmergencyRegisterPatientComponent>;
 
     currentPatientSpecies: string | undefined;
-    emergencyCaseId: number | undefined;
+
     exclusions: Exclusions[] = [] as Exclusions[];
 
     problemsExclusions!: string[];
 
     selectedProblems:string[] = [];
-
-    patients!:FormArray;
 
     form = new FormGroup({});
 
@@ -82,6 +80,10 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
     treatmentAreaNames$!: Observable<TreatmentArea[]>;
 
+    get patients() : FormArray { return this.recordForm.get('patients') as FormArray}
+
+    get emergencyCaseId() : number { return this.recordForm.get('emergencyDetails.emergencyCaseId')?.value;}
+
     @HostListener('document:keydown.control.p', ['$event'])
     addPatientTable(event: KeyboardEvent) {
         event.preventDefault();
@@ -90,7 +92,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
         }
         this.addPatientRow();
         this.cdr.detectChanges();
-
 
         const insertedPatientIndex = this.emergencyRegisterPatients.toArray().length - 1;
         this.emergencyRegisterPatients.toArray()[insertedPatientIndex - 1].animalAutoComplete.closePanel();
@@ -114,17 +115,6 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
         this.recordForm.addControl('patients', this.fb.array([]));
 
-        this.patients = this.recordForm.get('patients') as FormArray;
-
-
-        this.emergencyCaseId = this.recordForm.get('emergencyDetails.emergencyCaseId')?.value || null;
-
-        this.recordForm.get('emergencyDetails.emergencyCaseId')?.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe))
-        // tslint:disable-next-line: deprecation
-        .subscribe(newValue => this.emergencyCaseId = newValue);
-
-
         this.emergencyCaseId || this.incomingPatientArray.length > 0
         ? this.loadPatientArray(this.emergencyCaseId)
         : this.initPatientArray();
@@ -144,6 +134,7 @@ export class AnimalSelectionComponent implements OnInit, OnDestroy{
 
     addPatientRow(){
         const patient = this.getEmptyPatient();
+
         if(this.patients.at(0).get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 1){
             patient.get('callOutcome.CallOutcome')?.setValue({
                 CallOutcomeId : 1,

@@ -1,4 +1,5 @@
 <mat-form-field class="er-case-search-box">
+    <mat-label>Search cases</mat-label>
     <span matPrefix (click)="executeSearch()" >
         <mat-icon style="cursor: pointer;" matSuffix>search</mat-icon>
     </span>
@@ -10,7 +11,6 @@
         type="text"
         (keyup.enter)="executeSearch()"
         matInput
-        placeholder="Search cases"
     />
 
     <mat-icon *ngIf="searchHistory.length > 0" style="cursor: pointer; font-size: 1.2rem; vertical-align: text-bottom;" id="loadHistoryBtn" matSuffix

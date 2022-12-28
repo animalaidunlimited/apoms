@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject, Observable } from 'rxjs';
 import { Department, DisplayLeaveRequest } from 'src/app/core/models/rota';
-import { LeaveRequestService } from './../../services/leave-request.service';
+import { LeaveRequestService } from '../../../../services/leave-request.service';
 import { FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';

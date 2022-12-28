@@ -33,7 +33,6 @@ FROM AAU.RotaDayAssignment rda
 INNER JOIN AAU.RotationRole rr 	ON rr.RotationRoleId = rda.RotationRoleId AND rr.IsDeleted = 0
 INNER JOIN AAU.RotationRoleShiftSegment rrss ON rrss.RotationRoleId = rr.RotationRoleId
 WHERE rda.RotationPeriodId = prm_RotationPeriodId
-AND rr.IsDeleted = 0
 GROUP BY rrss.RotationRoleId,
 rr.RotationRole,
 rr.RotationAreaId
@@ -44,7 +43,6 @@ BaseCTE AS
 (
 SELECT
 	rda.RotationPeriodId,
-    p.RotaVersionId,
 	rda.RotaDayDate,
 	rda.RotaDayId,
 	IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, rda.UserId) AS 'UserId',
@@ -70,23 +68,19 @@ SELECT
 					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY ra.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
 					0) AS `AreaRowSpan`
 	FROM AAU.RotaDayAssignment rda
-	INNER JOIN AAU.RotationPeriod p				ON p.RotationPeriodId = rda.RotationPeriodId AND p.IsDeleted = 0
-    INNER JOIN RotationRoleShiftSegmentsCTE rr ON rr.RotationRoleId = rda.RotationRoleId
+	INNER JOIN RotationRoleShiftSegmentsCTE rr ON rr.RotationRoleId = rda.RotationRoleId
     INNER JOIN AAU.RotationArea ra 				ON ra.RotationAreaId = rr.RotationAreaId AND ra.IsDeleted = 0
 	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.RotationUserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
     LEFT JOIN AAU.User lu						ON lu.UserId = lr.UserId
     LEFT JOIN AAU.User u						ON u.UserId = rda.UserId
-WHERE p.RotationPeriodId = prm_RotationPeriodId AND
-	  rda.IsDeleted = 0 AND
-	  p.IsDeleted = 0
+WHERE rda.RotationPeriodId = prm_RotationPeriodId
       
 UNION ALL
 
 -- Now let's add in any leave requests
 
 SELECT 
-	rp.RotationPeriodId,
-    rp.RotaVersionId,
+    rp.RotationPeriodId,
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY),
 	-1,
 	lr.UserId,
@@ -121,7 +115,6 @@ UNION ALL
 -- Let's get all of the fixed off records
 SELECT
 	rp.RotationPeriodId,
-    rp.RotaVersionId,
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY),
 	-1,
 	u.UserId,
@@ -151,13 +144,10 @@ INNER JOIN AAU.User u ON u.FixedDayOff = WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 
-
-
 ),
 rotaDayAssignmentCTE AS
 (
 SELECT RotationPeriodId,
-RotaVersionId,
 		JSON_MERGE_PRESERVE(
 			JSON_OBJECT("rotaDayDate", RotaDayDate),
 			JSON_OBJECT("rotaDayAssignments", 
@@ -185,14 +175,14 @@ RotaVersionId,
 			)
 		) AS `RotaDayAssignments`
 FROM BaseCTE
-GROUP BY RotationPeriodId,
-		 RotaVersionId,
-		 RotaDayDate
+-- GROUP BY RotationPeriodId -- Commenting this for the moment as it causes a memory spill to disk
 )
 
 SELECT
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("rotationPeriodId", rd.RotationPeriodId),
+        JSON_OBJECT("startDate", p.StartDate),
+        JSON_OBJECT("endDate", p.EndDate),
         JSON_OBJECT("rotaId", rv.RotaId),
         JSON_OBJECT("rotaVersionId", rv.RotaVersionId),
 		JSON_OBJECT("rotaDays", 
@@ -202,8 +192,9 @@ SELECT
 		)
 	) AS `RotationPeriodAssignments`
 FROM rotaDayAssignmentCTE rd
-INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = rd.RotaVersionId
-GROUP BY rd.RotationPeriodId, rv.RotaId, rv.RotaVersionId;
+INNER JOIN AAU.RotationPeriod p ON p.RotationPeriodId = rd.RotationPeriodId
+INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = p.RotaVersionId
+GROUP BY rd.RotationPeriodId, p.StartDate, p.EndDate, rv.RotaId, rv.RotaVersionId;
 
 END$$
 

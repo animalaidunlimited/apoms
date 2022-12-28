@@ -4,6 +4,7 @@ import { APIService } from '../http/api.service';
 import { BehaviorSubject } from 'rxjs';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { UserDetails } from '../../models/user';
+import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +66,15 @@ export class UserDetailsService extends APIService{
 
   }
 
+  public deleteUserById(userId: number): Promise<SuccessOnlyResponse> {
+
+    const body = {
+      userId
+    }
+
+    return this.postSubEndpoint('DeleteUserById', body);
+  }
+
   public setUserPermissions() : void {
 
     const request = '?Username=' + null;
@@ -79,6 +89,21 @@ export class UserDetailsService extends APIService{
       this.permissionArray.next(permissions);
     })
   }
+
+  public getUserCode(userId: number) : string {
+
+    let foundUser = this.userList.value.find(user => user.userId === userId);
+  
+    return foundUser ? `${foundUser.employeeNumber} - ${foundUser.firstName}` : '';
+  
+   }
+
+   public getUser(userId: number) : UserDetails | undefined {
+
+    return this.userList.value.find(user => user.userId === userId);
+
+
+   }
 
 
 

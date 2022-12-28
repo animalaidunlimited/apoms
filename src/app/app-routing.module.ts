@@ -8,6 +8,7 @@ import { NavGuard } from './core/nav.guard';
 import { PrintContentComponent } from './modules/print-templates/components/print-content/print-content.component';
 import { PrintWrapperComponent } from './modules/print-templates/components/print-wrapper/print-wrapper.component';
 import { TreatmentListComponent } from './modules/treatment-list/components/treatment-list/treatment-list.component';
+import { DailyRotaPrintComponent } from './modules/staff-rota/components/daily-rota-print/daily-rota-print.component';
 
 export const routes: Routes = [
     {
@@ -83,6 +84,16 @@ export const routes: Routes = [
         canActivateChild: [NavGuard],
         children: [
         { path: 'treatment-list/:treatmentList', component: TreatmentListComponent }
+        ]
+    },
+    {
+        path: 'print-daily-rota-day',
+        outlet: 'print-daily-rota-day',
+        component: PrintWrapperComponent,
+        canActivate: [AuthGuard],
+        canActivateChild: [NavGuard],
+        children: [
+        { path: 'print-daily-rota-day/:dailyRotaDay', component: DailyRotaPrintComponent }
         ]
     },
     {

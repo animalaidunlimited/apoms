@@ -39,6 +39,7 @@ IF ( vRotationRoleShiftSegmentExists = 0 ) THEN
 
 INSERT INTO AAU.RotationRoleShiftSegment(	
 	RotationRoleId,
+    OrganisactionId,
 	StartTime,
 	EndTime,
 	SameDay,
@@ -47,6 +48,7 @@ INSERT INTO AAU.RotationRoleShiftSegment(
 )
 VALUES(
 	prm_RotationRoleId,
+    vOrganisationId,
 	prm_StartTime,
 	prm_EndTime,
 	prm_SameDay,

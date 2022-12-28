@@ -45,6 +45,7 @@ SET StatementVariable = 1;
 SELECT COUNT(1) INTO vUserCount FROM AAU.User WHERE FirstName = prm_FirstName
 													AND Surname = prm_Surname
                                                     AND Telephone = prm_Telephone;
+                                                    
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_User LIMIT 1;
                                                     
                                                     
@@ -62,7 +63,7 @@ INSERT INTO AAU.User (OrganisationId,
 						RoleId,
 						PermissionArray,
                         FixedDayOff,
-                        Department,
+                        DepartmentId,
                         LocalName
                         )
 				VALUES

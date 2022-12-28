@@ -54,7 +54,7 @@
         <mat-select (selectionChange)="checkAgainstProtocol()"
         formControlName="festivalId">
           <mat-option>N/A</mat-option>
-          <mat-option *ngFor="let festival of festivals" [value]="festival.festivalId">
+          <mat-option *ngFor="let festival of festivals$ | async" [value]="festival.festivalId">
             {{ festival.festival }}
           </mat-option>
         </mat-select>

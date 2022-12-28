@@ -3,11 +3,11 @@ import { LeaveRequestService } from './../../services/leave-request.service';
 import { Department, DisplayLeaveRequest, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { LeaveRequestFormComponent } from '../../components/leave-request-form/leave-request-form.component';
+import { LeaveRequestFormComponent } from './components/leave-request-form/leave-request-form.component';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
-import { LeaveRequestHistoryComponent } from '../../components/leave-request-history/leave-request-history.component';
+import { LeaveRequestHistoryComponent } from './components/leave-request-history/leave-request-history.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -69,7 +69,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
       });
 
 
-    this.displayColumns = of(["edit","department","userCode","requestDate","leaveRequestReason",
+    this.displayColumns = of(["edit","department","staff","requestDate","leaveRequestReason",
     "additionalInformation","leaveStartDate","leaveEndDate","numberOfDays","granted","commentReasonManagementOnly",
     "dateApprovedRejected","recordedOnNoticeBoard","delete"
     ]);

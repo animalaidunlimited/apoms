@@ -2,13 +2,12 @@ import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, BehaviorSubject, merge } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { Festival, LeaveRequest, LeaveRequestReason, LeaveRequestSaveResponse, LeaveRequestProtocol } from 'src/app/core/models/rota';
 import { UserDetails } from 'src/app/core/models/user';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { LeaveRequestService } from '../../services/leave-request.service';
-import { DailyRotaService } from './../../services/daily-rota.service';
+import { LeaveRequestService } from '../../../../services/leave-request.service';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { getCurrentDateString } from 'src/app/core/helpers/utils';
@@ -31,7 +30,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
   errorMatcher = new CrossFieldErrorMatcher();
 
-  festivals: Festival[] = [];  
+  festivals$: Observable<Festival[]>;  
 
   leaveRequestForm: ModelFormGroup<LeaveRequest> = this.fb.nonNullable.group({
     leaveRequestId: new FormControl<number | null>(null),
@@ -51,13 +50,9 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     festivalId: new FormControl<number | null>(null),
     lastFestivalDetails: new FormControl<any | null>(null),
     isDeleted: [false]
-  });
-
-  
+  });  
 
   leaveRequestId = 0;
-
-  leaveRequestProtocol!: LeaveRequestProtocol[];
 
   minDate = getCurrentDateString();
 
@@ -97,9 +92,8 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
         this.userList = this.userDetailsService.getUserList();
         this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
-        this.dropdown.getFestivals().subscribe(festivals => this.festivals = festivals);
-        this.watchRequestDateChanges();
-        this.requestService.getLeaveRequestProtocol().subscribe(protocol => this.leaveRequestProtocol = protocol);
+        this.festivals$ = this.dropdown.getFestivals();
+        this.watchRequestDateChanges();        
       
       }
 
@@ -108,6 +102,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     if(this.data.leaveRequestId){
       this.leaveRequestId = this.data.leaveRequestId;
       this.loadLeaveRequest(this.leaveRequestId);
+      this.checkAgainstProtocol();
     }
 
   }
@@ -194,28 +189,12 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
   checkAgainstProtocol() : void {
 
     let noticeDaysRequired = this.leaveRequestForm.get('leaveRequestReason')?.value?.toLowerCase() === 'festival' ?
-      this.getFestivalNoticeDays() :
-      this.getNonFestivalNoticeDays();
+      this.requestService.getFestivalNoticeDays(this.leaveRequestForm.get('leaveRequestReasonId')?.value || -1) :
+      this.requestService.getNonFestivalNoticeDays(this.numberOfDays?.value || -1);
 
     const noticeGiven = ((new Date(this.leaveStartDate || "").getTime()) - (new Date(this.requestDate || "").getTime())) / 86400 / 1000;
 
     this.leaveRequestForm.get('withinProtocol')?.setValue(noticeGiven > noticeDaysRequired);
-
-  }
-
-  getNonFestivalNoticeDays() : number {
-
-    return this.leaveRequestProtocol
-    .sort((a,b) => a.dayRangeEnd - b.dayRangeEnd)
-    .find(element => (this.numberOfDays?.value || -1) <= element.dayRangeEnd)?.noticeDaysRequired || 0;
-
-  }
-  
-  getFestivalNoticeDays() : number {
-
-    const selectedFestival = this.leaveRequestForm.get('leaveRequestReasonId')?.value || -1;
-
-    return this.festivals.find(festival => festival?.festivalId === selectedFestival)?.noticeDaysRequired || 30;
 
   }
 
@@ -230,17 +209,8 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
   }
 
   get displayFn() {
-    return (userId:number) => this.findUser(userId);
+    return (userId:number) => this.userDetailsService.getUserCode(userId);
   }
-
-  findUser(userId: number) : string {
-
-    let foundUser = this.userList.value.find(user => user.userId === userId);
-
-    return foundUser ? `${foundUser.employeeNumber} - ${foundUser.firstName}` : '';
-
-  }
-
   saveLeaveRequest() : void {  
 
     this.requestService.saveLeaveRequest(this.leaveRequestForm.value).then((response: LeaveRequestSaveResponse) => {

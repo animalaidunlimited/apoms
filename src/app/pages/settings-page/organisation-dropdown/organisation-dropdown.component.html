@@ -57,7 +57,7 @@
 			<mat-header-cell *matHeaderCellDef> Sort order </mat-header-cell>
 			<mat-cell *matCellDef="let element; let index = index" [formGroup]="element">
 				<mat-form-field>
-					<mat-select formControlName="sort" placeholder="Sort order">
+					<mat-select formControlName="sort">
 						<mat-option>None</mat-option>
 						<mat-option *ngFor="let x of (currentDropdownDataSource | async); let i = index;" [value]="i+1">
 							{{ i + 1 }}
