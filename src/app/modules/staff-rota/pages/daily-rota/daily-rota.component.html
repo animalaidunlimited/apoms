@@ -65,7 +65,7 @@
 
   <div class="flex-row flex-center-center gap-10">
 
-    <button mat-mini-fab color="primary" (click)="printRotaDay()" matTooltip="Reload rota">
+    <button mat-mini-fab color="primary" [disabled]="!dataLoaded" (click)="printRotaDay()" matTooltip="Print schedule">
       <mat-icon>print</mat-icon>
     </button>
 
@@ -78,7 +78,7 @@
 
 </div>
 
-<mat-tab-group >
+<mat-tab-group (selectedTabChange)="tabChanged($event)">
   <mat-tab *ngFor="let day of rotaDayForm.controls" >
     <ng-template mat-tab-label>
       <span>{{day.get('rotaDayDate')?.value | date : "EEE,dd/MMM"}}</span>

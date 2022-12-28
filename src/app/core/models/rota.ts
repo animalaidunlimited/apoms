@@ -170,11 +170,22 @@ export interface RotaDay{
   rotaDayAssignments: RotaDayAssignment[]
 }
 
+export interface UserAssignmentPrintItem {
+  userId: number;
+  employeeNumber: string;
+  firstName: string;
+  localName: string
+  notes: string;
+  startTime?: Date;
+  endTime?: Date;
+  rotationArea: string;
+  rotationRoleShiftSegments: BaseShiftSegment[];
+}
+
 export interface RotaDayAssignment{
   rotaDayId: number;
   areaRowSpan: number;
   userId: number;
-  userCode: string;
   rotationUserId: number;
   leaveRequestId: number;
   leaveGranted: string;
@@ -185,7 +196,7 @@ export interface RotaDayAssignment{
   rotationArea: string;  
   rotationAreaColour: string;
   rotationAreaSortOrder: number;
-  rotationShiftSegments: BaseShiftSegment[];
+  rotationRoleShiftSegments: BaseShiftSegment[];
   notes: string;
   isAdded: boolean;
   guid: string;

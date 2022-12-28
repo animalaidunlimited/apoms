@@ -84,6 +84,8 @@ export class AreaStaffCoverageComponent implements OnInit {
       this.getAssignments.push(assignmentGroup);
 
     }
+
+    console.log(this.data);
   }
 
   barSelected(val: any) : void {

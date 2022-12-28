@@ -87,13 +87,13 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'daily-rota',
-        outlet: 'daily-rota',
+        path: 'print-daily-rota-day',
+        outlet: 'print-daily-rota-day',
         component: PrintWrapperComponent,
         canActivate: [AuthGuard],
         canActivateChild: [NavGuard],
         children: [
-        { path: 'daily-rota/:dailyRota', component: DailyRotaPrintComponent }
+        { path: 'print-daily-rota-day/:dailyRotaDay', component: DailyRotaPrintComponent }
         ]
     },
     {

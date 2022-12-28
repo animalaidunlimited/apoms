@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
 DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
-DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
+DROP TABLE IF EXISTS `AAU`.`RotationRoleShiftSegment`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
@@ -70,9 +70,11 @@ INSERT INTO `AAU`.`ShiftSegmentType` (OrganisationId, ShiftSegmentType, SortOrde
 (1,'Working time',1),
 (1,'Lunch break',2),
 (1,'Tea break',3);
-    
+
+  
 CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 	`RotationRoleShiftSegmentId` INT NOT NULL AUTO_INCREMENT,
+    `OrganisationId` INT NOT NULL,
 	`RotationRoleId` INT NOT NULL,    
 	`StartTime` TIME NOT NULL,
 	`EndTime` TIME NOT NULL,
@@ -82,17 +84,23 @@ CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 	`DeletedDate` DATETIME NULL,
 	`CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`RotationRoleShiftSegmentId`),
-    INDEX `FK_RotationRoleShiftSegment_RotationRole_RotationRoleId_idx` (`RotationRoleId` ASC) VISIBLE,
+    INDEX `FK_RRShiftSegment_RotationRole_RotationRoleId_idx` (`RotationRoleId` ASC) VISIBLE,
 	  CONSTRAINT `FK_RotationRoleShiftSegment_RotationRole_RotationRoleId`
 		FOREIGN KEY (`RotationRoleId`)
 		REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION,
-    INDEX `FK_ShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
+    INDEX `FK_RRShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
 	  CONSTRAINT `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentType`
 		FOREIGN KEY (`ShiftSegmentTypeId`)
 		REFERENCES `AAU`.`ShiftSegmentType` (`ShiftSegmentTypeId`)
 		ON DELETE NO ACTION
+		ON UPDATE NO ACTION,
+	INDEX `FK_RRShiftSegmentType_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+	CONSTRAINT `FK_ShiftSegmentType_Organisation_OrganisationId`
+	FOREIGN KEY (`OrganisationId`)
+	REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
 		ON UPDATE NO ACTION);
     
 CREATE TABLE `AAU`.`RotaVersion` (
@@ -424,9 +432,9 @@ PRIMARY KEY (`LeaveRequestProtocolId`),
     
 INSERT INTO AAU.LeaveRequestProtocol (OrganisationId, DayRangeStart, DayRangeEnd, NoticeDaysRequired, SortOrder) VALUES
 (1,0,1,3,1),
-(1,2,3,7,1),
-(1,4,5,14,1),
-(1,6,999,30,1);
+(1,2,3,7,2),
+(1,4,5,14,3),
+(1,6,999,30,4);
     
 /*
 

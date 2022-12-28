@@ -90,6 +90,21 @@ export class UserDetailsService extends APIService{
     })
   }
 
+  public getUserCode(userId: number) : string {
+
+    let foundUser = this.userList.value.find(user => user.userId === userId);
+  
+    return foundUser ? `${foundUser.employeeNumber} - ${foundUser.firstName}` : '';
+  
+   }
+
+   public getUser(userId: number) : UserDetails | undefined {
+
+    return this.userList.value.find(user => user.userId === userId);
+
+
+   }
+
 
 
 }

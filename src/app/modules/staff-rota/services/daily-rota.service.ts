@@ -62,24 +62,23 @@ public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
   }];
 
   return this.fb.nonNullable.group({
-    rotaDayId :             [0],
-    areaRowSpan :           [1],
-    userId :                [0],
-    userCode :              [''],
-    rotationUserId :        [0],
-    leaveRequestId :        [0],
-    leaveGranted :          [''],
-    leaveUser :             [''],
-    rotationRoleId :        [0],
-    rotationRole :          [''],
-    rotationAreaId :        [0],
-    rotationArea :          [''],
-    rotationAreaColour :    [''],
-    rotationAreaSortOrder : [0],
-    rotationShiftSegments : [blankSegment],       
-    notes :                 [''],
-    isAdded:                [true],
-    guid:                   ['']
+    rotaDayId :                 [0],
+    areaRowSpan :               [1],
+    userId :                    [0],
+    rotationUserId :            [0],
+    leaveRequestId :            [0],
+    leaveGranted :              [''],
+    leaveUser :                 [''],
+    rotationRoleId :            [0],
+    rotationRole :              [''],
+    rotationAreaId :            [0],
+    rotationArea :              [''],
+    rotationAreaColour :        [''],
+    rotationAreaSortOrder :     [0],
+    rotationRoleShiftSegments : [blankSegment],       
+    notes :                     [''],
+    isAdded:                    [true],
+    guid:                       ['']
   });
 
 }

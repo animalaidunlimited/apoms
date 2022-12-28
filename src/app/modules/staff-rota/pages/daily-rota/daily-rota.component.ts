@@ -9,6 +9,8 @@ import { RotaSettingsService } from './../settings/services/rota-settings.servic
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from './../../../../core/services/snackbar/snackbar.service';
 import { DailyRotaService } from './../../services/daily-rota.service';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 
 @Component({
@@ -20,7 +22,7 @@ export class DailyRotaComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
-  rotaDayForm: FormArray;
+  dataLoaded = false;
 
   areaForm = this.fb.group({
     areas: new FormControl<number[] | undefined>(undefined),
@@ -30,9 +32,9 @@ export class DailyRotaComponent implements OnInit {
 
   areas: RotationArea[] = [];
 
-  get selectedAreas(): number[] {
-    return this.areaForm.get('areas')?.value || [];
-  }
+  offset = 0;
+
+  rotaDayForm: FormArray;
 
   rotaDays = new BehaviorSubject<RotaDay[]>([]);
   rotas : Observable<Rota[] | null>;
@@ -40,10 +42,10 @@ export class DailyRotaComponent implements OnInit {
 
   rotationPeriodId: number = -1;
 
+  selectedIndex = 0;
+
   startDate: Date | undefined;
   endDate: Date | undefined;
-
-  offset = 0;
 
   rightDisabled = true;
   leftDisabled = true;
@@ -53,6 +55,10 @@ export class DailyRotaComponent implements OnInit {
 
   get getRotaVersionId(): number | null | undefined{
     return this.areaForm.get('rotaVersionId')?.value;
+  } 
+
+  get selectedAreas(): number[] {
+    return this.areaForm.get('areas')?.value || [];
   }
 
 
@@ -63,6 +69,7 @@ export class DailyRotaComponent implements OnInit {
     private dailyRotaService: DailyRotaService,
     private userOptionsService: UserOptionsService,
     private snackbar: SnackbarService,
+    private printService: PrintTemplateService,
     private rotaSettings: RotaSettingsService
   ) {
 
@@ -122,8 +129,6 @@ export class DailyRotaComponent implements OnInit {
 
     this.rotaService.getRotationPeriods(rotaVersionId, limit, offset).then(result => {
 
-      console.log(result);
-
       if(!result){
         return;
       }
@@ -148,9 +153,9 @@ export class DailyRotaComponent implements OnInit {
       return;
     }
 
-    this.rotaService.getRotaDayAssignmentsByRotationPeriodId(this.rotationPeriodId).then(rotaDays => {
-
-      console.log(rotaDays);
+    this.rotaService.getRotaDayAssignmentsByRotationPeriodId(this.rotationPeriodId);
+    
+    this.rotaService.rotaDays$.subscribe(rotaDays => {
 
       if(!rotaDays) return;
 
@@ -165,26 +170,16 @@ export class DailyRotaComponent implements OnInit {
           if(foundRotaVersions){
             this.rotaVersions.next(foundRotaVersions);
             this.areaForm.get('rotaVersionId')?.enable();
-
-            this.areaForm.get('rotaVersionId')?.setValue(rotaDays.rotaVersionId);
-    
+            this.areaForm.get('rotaVersionId')?.setValue(rotaDays.rotaVersionId);    
             
           }
   
         })
 
       }
-
-      
-      // this.hydrateRotas(rotaDays.rotaId);
-      
-      //Let's give this a tick to update the rotaId
-      // setTimeout(() => {
-      //   
-        
-      // },1);
       
       this.processRotaDays(rotaDays);
+      this.dataLoaded = true;
       
     });
 
@@ -220,7 +215,7 @@ export class DailyRotaComponent implements OnInit {
     let rotaGroup = this.fb.group({
       rotaDayDate: [day.rotaDayDate],      
       rotaDayAssignments: this.fb.array([])
-    });    
+    });
 
     for(let assignment of day.rotaDayAssignments){
       
@@ -284,7 +279,21 @@ shiftRotationPeriod(direction: number) : void {
 }
 
 printRotaDay() : void {
-  console.log('printing');
+
+  const dayToPrint : string = this.rotaDayForm.controls.at(this.selectedIndex)?.get('rotaDayDate')?.value;
+
+  const rotaDayObject = {
+    selectedDate: dayToPrint
+  };
+
+  this.printService.sendRotaDayToPrinter(JSON.stringify(rotaDayObject));
+
+}
+
+
+
+tabChanged($event: MatTabChangeEvent) : void {
+  this.selectedIndex = $event.index;
 }
 
 

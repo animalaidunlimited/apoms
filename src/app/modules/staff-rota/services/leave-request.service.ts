@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { DisplayLeaveRequest, LeaveRequest, LeaveRequestProtocol, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
+import { DisplayLeaveRequest, Festival, LeaveRequest, LeaveRequestProtocol, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,29 +14,47 @@ export class LeaveRequestService extends APIService {
 
   leaveRequests = new BehaviorSubject<DisplayLeaveRequest[]>([]);
 
-  leaveRequestProtocol$! : Observable<LeaveRequestProtocol[]>;
+  leaveRequestProtocol$ = new BehaviorSubject<LeaveRequestProtocol[]>([]);
+
+  festivals: Festival[] = [];
 
 constructor(
-  http: HttpClient
+  http: HttpClient,
+  private dropdown: DropdownService
 ) {
   super(http);
   this.getLeaveRequests();
+
+  
+ }
+
+ async initialiseProtocol() {
+
+  this.getFestivals()
+
+  if(this.leaveRequestProtocol$.value.length > 0){
+    //Let's tell the resolver that we've already loaded the user list.
+    return Promise.resolve(true);
+  }
+
+  return this.getLeaveRequestProtocol().then((sortedResponse: LeaveRequestProtocol[]) => this.leaveRequestProtocol$.next(sortedResponse));
+
+ }
+
+ getFestivals() : void {
+
+  this.dropdown.getFestivals().subscribe(festivals => this.festivals = festivals);
+
  }
 
  // API Calls
 
- getLeaveRequestProtocol(): Observable<LeaveRequestProtocol[]> {
+ async getLeaveRequestProtocol(): Promise<LeaveRequestProtocol[]> {
   const request = '/GetLeaveRequestProtocol';
 
-  if (!this.leaveRequestProtocol$) {
-      this.leaveRequestProtocol$ = this.getObservable(request).pipe(
-          map((response: LeaveRequestProtocol[]) => {
-            
-            return response.sort((a,b) => a.sortOrder - b.sortOrder)}),
-      );
-  }
+  return this.get(request).then(response => response as LeaveRequestProtocol[])
+                  .then(response => response.sort((a,b) => a.sortOrder - b.sortOrder));
 
-  return this.leaveRequestProtocol$;
 }
 
 
@@ -64,6 +82,20 @@ saveLeaveRequest(leaveRequest: Partial<LeaveRequest>) : Promise<LeaveRequestSave
 deleteLeaveRequest(leaveRequest: LeaveRequest) : Promise<LeaveRequestSaveResponse> {
 
   return this.putSubEndpoint("/LeaveRequest", leaveRequest)
+
+}
+
+getNonFestivalNoticeDays(numberOfDays: number) : number {
+
+  return this.leaveRequestProtocol$.value
+  .sort((a,b) => a.dayRangeEnd - b.dayRangeEnd)
+  .find(element => numberOfDays <= element.dayRangeEnd)?.noticeDaysRequired || 0;
+
+}
+
+getFestivalNoticeDays(selectedFestival : number) : number {
+  
+  return this.festivals.find(festival => festival?.festivalId === selectedFestival)?.noticeDaysRequired || 30;
 
 }
 

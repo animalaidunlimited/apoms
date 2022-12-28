@@ -104,7 +104,7 @@ export const navRoutes: NavRoute[] = [
             .then(m => m.StaffRotaModule)
     },
     {
-        data: { title: 'Staff Rota', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
+        data: { title: 'Schedule', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
         icon: 'none',
         group: 'Staff Rota',
         path: 'staff-rotation',

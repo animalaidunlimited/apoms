@@ -160,14 +160,6 @@ updateSelectedUsers() : void {
 
 }
 
- findUser(userId: number) : string {
-
-  let foundUser = this.userList.value.find(user => user.userId === userId);
-
-  return foundUser ? `${foundUser.employeeNumber} - ${foundUser.firstName}` : '';
-
- }
-
  generateDateFromTime(inputTime: string) : Date {
 
   const timeArray = inputTime.split(":");
@@ -225,7 +217,7 @@ updateSelectedUsers() : void {
 
           result.push({
             userId: current.get('userId')?.value,
-            userCode: this.findUser(current.get('userId')?.value),
+            userCode: this.userDetailsService.getUserCode(current.get('userId')?.value),
             hours: utilisedHours,
             utilisation: utilisedHours.getHours() < 9 ? "under" : "over"
           });
