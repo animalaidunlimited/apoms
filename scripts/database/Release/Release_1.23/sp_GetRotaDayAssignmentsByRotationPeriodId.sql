@@ -2,10 +2,10 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotaDayAssignmentsByRotationPeriodId !!
 
--- CALL AAU.sp_GetRotaDayAssignmentsByRotationPeriodId(1);
+-- CALL AAU.sp_GetRotaDayAssignmentsByRotationPeriodId('Jim',1);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetRotaDayAssignmentsByRotationPeriodId( IN prm_RotationPeriodId INT)
+CREATE PROCEDURE AAU.sp_GetRotaDayAssignmentsByRotationPeriodId( IN prm_Username VARCHAR(45), IN prm_RotationPeriodId INT)
 BEGIN
 
 /*
@@ -15,11 +15,13 @@ Purpose: Retrieve the rotation period with an array of days, each day containing
 
 */
 
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE Username = prm_Username;
+
 With RotationRoleShiftSegmentsCTE AS (
 
 SELECT rrss.RotationRoleId,
-rr.RotationRole,
-rr.RotationAreaId,
 JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("startTime", rrss.StartTime),
@@ -29,14 +31,23 @@ JSON_ARRAYAGG(
 	)
 ) AS `rotationRoleShiftSegments`
 
-FROM AAU.RotaDayAssignment rda
-INNER JOIN AAU.RotationRole rr 	ON rr.RotationRoleId = rda.RotationRoleId AND rr.IsDeleted = 0
-INNER JOIN AAU.RotationRoleShiftSegment rrss ON rrss.RotationRoleId = rr.RotationRoleId
-WHERE rda.RotationPeriodId = prm_RotationPeriodId
-GROUP BY rrss.RotationRoleId,
-rr.RotationRole,
-rr.RotationAreaId
-
+FROM AAU.RotationRoleShiftSegment rrss
+WHERE rrss.IsDeleted = 0
+AND OrganisationId = vOrganisationId
+GROUP BY rrss.RotationRoleId
+),
+RoleAndAreaCTE AS
+(
+	SELECT rrss.RotationRoleId,
+	rr.RotationRole,
+	rr.RotationAreaId,
+	ra.RotationArea,
+	ra.SortOrder AS `RotationAreaSortOrder`,
+	ra.Colour AS `RotationAreaColour`,
+	rrss.rotationRoleShiftSegments
+	FROM RotationRoleShiftSegmentsCTE rrss
+	INNER JOIN AAU.RotationRole rr ON rr.RotationRoleId = rrss.RotationRoleId
+	INNER JOIN AAU.RotationArea ra ON ra.RotationAreaId = rr.RotationAreaId AND ra.IsDeleted = 0
 ),
 
 BaseCTE AS 
@@ -46,7 +57,6 @@ SELECT
 	rda.RotaDayDate,
 	rda.RotaDayId,
 	IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, rda.UserId) AS 'UserId',
-    IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, CONCAT(u.EmployeeNumber, ' - ', u.FirstName)) AS 'UserCode',
 	rda.RotationUserId,
 	lr.LeaveRequestId,
     CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -58,18 +68,14 @@ SELECT
     CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,
     rr.RotationRoleId,
 	rr.RotationRole,
-    ra.RotationAreaId,
-	ra.RotationArea,
-    ra.SortOrder AS `RotationAreaSortOrder`,
-    ra.Colour AS `RotationAreaColour`,
-    rr.rotationRoleShiftSegments,
-    rda.Notes,
-	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY rda.RotaDayDate, rda.Sequence) = 1,  
-					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY ra.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
-					0) AS `AreaRowSpan`
+    rr.RotationAreaId,
+	rr.RotationArea,
+    rr.RotationAreaSortOrder,
+    rr.RotationAreaColour,
+	rr.rotationRoleShiftSegments,
+    rda.Notes
 	FROM AAU.RotaDayAssignment rda
-	INNER JOIN RotationRoleShiftSegmentsCTE rr ON rr.RotationRoleId = rda.RotationRoleId
-    INNER JOIN AAU.RotationArea ra 				ON ra.RotationAreaId = rr.RotationAreaId AND ra.IsDeleted = 0
+	INNER JOIN RoleAndAreaCTE rr ON rr.RotationRoleId = rda.RotationRoleId    
 	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.RotationUserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
     LEFT JOIN AAU.User lu						ON lu.UserId = lr.UserId
     LEFT JOIN AAU.User u						ON u.UserId = rda.UserId
@@ -84,7 +90,6 @@ SELECT
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY),
 	-1,
 	lr.UserId,
-    '',
 	lr.UserId,
 	lr.LeaveRequestId,
 	CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -102,8 +107,7 @@ SELECT
 	
     NULL,
     
-	NULL,
-	IF(ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY lr.UserId DESC) = 1, ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY lr.UserId), 0)
+	NULL
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
 INNER JOIN AAU.RotationPeriod rp ON DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY) BETWEEN rp.StartDate AND rp.EndDate
@@ -118,7 +122,6 @@ SELECT
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY),
 	-1,
 	u.UserId,
-    '',
 	u.UserId,
 	lr.LeaveRequestId,
 	CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -136,8 +139,7 @@ SELECT
 	
     NULL,
     
-	NULL,
-	IF(ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY u.UserId DESC) = 1, ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY u.UserId), 0)
+	NULL
 FROM AAU.RotationPeriod rp
 INNER JOIN AAU.Tally t ON t.Id < 7
 INNER JOIN AAU.User u ON u.FixedDayOff = WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY))
@@ -154,9 +156,7 @@ SELECT RotationPeriodId,
 				JSON_ARRAYAGG(
 					JSON_MERGE_PRESERVE(
 						JSON_OBJECT("rotaDayId", RotaDayId),
-                        JSON_OBJECT("areaRowSpan", AreaRowSpan),
-						JSON_OBJECT("userId", UserID),
-                        JSON_OBJECT("userCode", UserCode),
+						JSON_OBJECT("userId", UserId),
 						JSON_OBJECT("rotationUserId", RotationUserId),
 						JSON_OBJECT("leaveRequestId", LeaveRequestId),
                         JSON_OBJECT("leaveGranted", LeaveGranted),
@@ -167,7 +167,7 @@ SELECT RotationPeriodId,
                         JSON_OBJECT("rotationArea", RotationArea),
                         JSON_OBJECT("rotationAreaColour", RotationAreaColour),
                         JSON_OBJECT("rotationAreaSortOrder", RotationAreaSortOrder),
-                        rotationRoleShiftSegments,
+                        JSON_OBJECT("rotationRoleShiftSegments", rotationRoleShiftSegments),
                         JSON_OBJECT("notes", Notes),
                         JSON_OBJECT("isAdded", CAST(0 AS JSON))
 					)
@@ -175,7 +175,7 @@ SELECT RotationPeriodId,
 			)
 		) AS `RotaDayAssignments`
 FROM BaseCTE
--- GROUP BY RotationPeriodId -- Commenting this for the moment as it causes a memory spill to disk
+GROUP BY RotationPeriodId, RotaDayDate -- Commenting this for the moment as it causes a memory spill to disk
 )
 
 SELECT

@@ -90,7 +90,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
       //We need to set this in order for the date picker to work with a date input
         this.dateAdapter.setLocale('fr-CA'); // yyyy-MM-dd
 
-        this.userList = this.userDetailsService.getUserList();
+        this.userList = this.userDetailsService.getScheduleUserList();
         this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
         this.festivals$ = this.dropdown.getFestivals();
         this.watchRequestDateChanges();        

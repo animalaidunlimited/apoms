@@ -23,6 +23,185 @@ DECLARE vResult JSON;
 END$$
 DELIMITER ;
 DELIMITER !!
+DROP PROCEDURE IF EXISTS AAU.sp_CheckEmergencyNumberExists !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_CheckEmergencyNumberExists(
+										IN prm_EmergencyNumber INT,
+										IN prm_EmergencyCaseId INT,
+										IN prm_Username VARCHAR(45))
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 02/03/2020
+Purpose: Used to check the existance of a emergency number
+*/
+
+DECLARE vOrganisationId INT;
+DECLARE vSuccess INT;
+DECLARE vEmergencyNumberCount INT;
+
+SET vEmergencyNumberCount = 0;
+SET vSuccess = 0;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1; 
+
+SELECT COUNT(1) INTO vEmergencyNumberCount FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_EmergencyNumber
+													AND OrganisationId = vOrganisationId
+                                                    AND EmergencyCaseId != IFNULL(prm_EmergencyCaseId,-1);
+                                                  
+                                                    
+IF vEmergencyNumberCount = 0 THEN
+        
+SELECT 0 INTO vSuccess;
+
+ELSEIF vEmergencyNumberCount = 1 THEN
+
+SELECT 1 INTO vSuccess;
+
+ELSEIF vEmergencyNumberCount > 1 THEN
+
+SELECT 2 INTO vSuccess;
+
+ELSE
+
+SELECT 3 INTO vSuccess;
+
+END IF;
+
+SELECT vSuccess AS `success`;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_DeletePatientById !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_DeletePatientById(IN prm_Username VARCHAR(64), IN prm_PatientId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 23/02/2020
+Purpose: Used to delete patient by id
+*/
+
+DECLARE vOrganisationId INT;
+DECLARE vPatientCount INT;
+DECLARE vSuccess INT;
+
+SET vPatientCount = 0;
+SET vSuccess = 0;
+
+SELECT COUNT(1) INTO vPatientCount FROM AAU.Patient WHERE PatientId = prm_PatientId;                                                    
+                                                    
+IF vPatientCount > 0 THEN
+
+UPDATE AAU.Patient SET
+IsDeleted = 1,
+DeletedDate = NOW()
+WHERE PatientId = prm_PatientId;
+		        
+SELECT 1 INTO vSuccess;
+
+  SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+  INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId,prm_Username,prm_PatientId,'Patient','Delete', NOW());
+    
+ELSE
+
+SELECT 3 INTO vSuccess;
+
+END IF;
+
+SELECT prm_PatientId AS `patientId`, vSuccess AS `success`;
+
+
+ENDDELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_DeletePatientProblems !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_DeletePatientProblems(IN prm_PatientId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 23/02/2020
+Purpose: Used to delete all animal problems by AnimalId
+*/
+
+DECLARE vPatientProblemCount INT;
+DECLARE vSuccess INT;
+SET vPatientProblemCount = 0;
+SET vSuccess = 0;
+
+SELECT COUNT(1) INTO vPatientProblemCount FROM AAU.PatientProblem WHERE PatientId = prm_PatientId;                                                    
+                                                    
+IF vPatientProblemCount > 0 THEN
+
+START TRANSACTION;
+
+DELETE FROM AAU.PatientProblem WHERE PatientId = prm_PatientId;
+		
+COMMIT;
+        
+SELECT 1 INTO vSuccess;
+
+ELSE
+
+SELECT 3 INTO vSuccess;
+
+END IF;
+
+SELECT vSuccess AS `success`;
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_DeleteUserById !!
+
+-- CALL AAU.sp_GetUsersByIdRange('Jim');
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_DeleteUserById(IN prm_UserId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 22/08/2018
+Purpose: Used to delete a user by UserId
+
+Modified By: Jim Mackenzie
+Modified On: 22/12/2022
+Modification: Changed to return a result set instead of an out parameter
+*/
+
+-- Check that the user actually exists first.
+
+DECLARE vUserExists INT;
+DECLARE vSuccess INT;
+
+SET vSuccess = 0;
+
+SELECT COUNT(1) INTO vUserExists FROM AAU.User WHERE UserId = prm_UserId;
+
+IF vUserExists = 1 THEN
+
+	UPDATE AAU.User SET IsDeleted = 1 WHERE UserId = prm_UserId;
+    SELECT 1 INTO vSuccess;
+ELSE 
+	SELECT -1 INTO vSuccess;
+END IF;
+
+SELECT vSuccess AS `success`;
+
+END$$
+DELIMITER ;
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetAreaShifts !!
 
@@ -62,6 +241,78 @@ Purpose: Retrieve a list of area shifts for a rota version.
     
 END$$
 
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetCallerById !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetCallerById( IN prm_CallerId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 23/02/2020
+Purpose: Used to return a Caller by ID.
+
+Modified By: Jim Mackenzie
+Modified On: 22/12/2022
+Modification: Removed unessecary success parameter
+*/
+SELECT	
+	ecr.CallerId,
+	c.Name,
+	c.PreferredName,
+	c.Number,
+	c.AlternativeNumber,
+	IF(ecr.PrimaryCaller = FALSE , 0 , 1) AS PrimaryCaller,
+	c.Email,
+	c.Address,
+	c.CreatedDate,
+	ecr.IsDeleted,
+	ecr.DeletedDate
+FROM AAU.Caller c
+INNER JOIN AAU.EmergencyCaller ecr ON ecr.CallerId = c.CallerId
+WHERE ecr.CallerId = prm_CallerId AND ecr.IsDeleted = 0;
+
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetCurrentPatientsByEmergencyCaseId !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetCurrentPatientsByEmergencyCaseId( IN prm_EmergencyCaseId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 23/02/2020
+Purpose: Used to return a patients by Emergency Case Id.
+
+Modified By: Jim Mackenzie
+Modified On: 28/02/2022
+Modification: Replacing Position with GUID.
+
+Modified By: Jim Mackenzie
+Modified On: 22/12/2022
+Modification: Removing out parameter
+*/
+
+SELECT
+p.PatientId,
+p.EmergencyCaseId,
+p.GUID,
+p.AnimalTypeId,
+p.TagNumber
+FROM AAU.Patient p
+WHERE p.EmergencyCaseId = prm_EmergencyCaseId;
+
+SELECT 1 AS `success`;
+
+
+END$$
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetDepartments !!
@@ -479,10 +730,10 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotaDayAssignmentsByRotationPeriodId !!
 
--- CALL AAU.sp_GetRotaDayAssignmentsByRotationPeriodId(1);
+-- CALL AAU.sp_GetRotaDayAssignmentsByRotationPeriodId('Jim',1);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetRotaDayAssignmentsByRotationPeriodId( IN prm_RotationPeriodId INT)
+CREATE PROCEDURE AAU.sp_GetRotaDayAssignmentsByRotationPeriodId( IN prm_Username VARCHAR(45), IN prm_RotationPeriodId INT)
 BEGIN
 
 /*
@@ -492,11 +743,13 @@ Purpose: Retrieve the rotation period with an array of days, each day containing
 
 */
 
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE Username = prm_Username;
+
 With RotationRoleShiftSegmentsCTE AS (
 
 SELECT rrss.RotationRoleId,
-rr.RotationRole,
-rr.RotationAreaId,
 JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("startTime", rrss.StartTime),
@@ -506,26 +759,32 @@ JSON_ARRAYAGG(
 	)
 ) AS `rotationRoleShiftSegments`
 
-FROM AAU.RotaDayAssignment rda
-INNER JOIN AAU.RotationRole rr 	ON rr.RotationRoleId = rda.RotationRoleId AND rr.IsDeleted = 0
-INNER JOIN AAU.RotationRoleShiftSegment rrss ON rrss.RotationRoleId = rr.RotationRoleId
-WHERE rda.RotationPeriodId = prm_RotationPeriodId
-AND rr.IsDeleted = 0
-GROUP BY rrss.RotationRoleId,
-rr.RotationRole,
-rr.RotationAreaId
-
+FROM AAU.RotationRoleShiftSegment rrss
+WHERE rrss.IsDeleted = 0
+AND OrganisationId = vOrganisationId
+GROUP BY rrss.RotationRoleId
+),
+RoleAndAreaCTE AS
+(
+	SELECT rrss.RotationRoleId,
+	rr.RotationRole,
+	rr.RotationAreaId,
+	ra.RotationArea,
+	ra.SortOrder AS `RotationAreaSortOrder`,
+	ra.Colour AS `RotationAreaColour`,
+	rrss.rotationRoleShiftSegments
+	FROM RotationRoleShiftSegmentsCTE rrss
+	INNER JOIN AAU.RotationRole rr ON rr.RotationRoleId = rrss.RotationRoleId
+	INNER JOIN AAU.RotationArea ra ON ra.RotationAreaId = rr.RotationAreaId AND ra.IsDeleted = 0
 ),
 
 BaseCTE AS 
 (
 SELECT
 	rda.RotationPeriodId,
-    p.RotaVersionId,
 	rda.RotaDayDate,
 	rda.RotaDayId,
 	IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, rda.UserId) AS 'UserId',
-    IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, CONCAT(u.EmployeeNumber, ' - ', u.FirstName)) AS 'UserCode',
 	rda.RotationUserId,
 	lr.LeaveRequestId,
     CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -537,37 +796,31 @@ SELECT
     CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,
     rr.RotationRoleId,
 	rr.RotationRole,
-    ra.RotationAreaId,
-	ra.RotationArea,
-    ra.SortOrder AS `RotationAreaSortOrder`,
-    ra.Colour AS `RotationAreaColour`,
-    rr.rotationRoleShiftSegments,
+    rr.RotationAreaId,
+	rr.RotationArea,
+    rr.RotationAreaSortOrder,
+    rr.RotationAreaColour,
+	rr.rotationRoleShiftSegments,
     rda.Notes,
-	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY rda.RotaDayDate, rda.Sequence) = 1,  
-					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, ra.RotationAreaId ORDER BY ra.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
+	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, rr.RotationAreaId ORDER BY rda.RotaDayDate, rda.Sequence) = 1,  
+					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, rr.RotationAreaId ORDER BY rr.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
 					0) AS `AreaRowSpan`
 	FROM AAU.RotaDayAssignment rda
-	INNER JOIN AAU.RotationPeriod p				ON p.RotationPeriodId = rda.RotationPeriodId AND p.IsDeleted = 0
-    INNER JOIN RotationRoleShiftSegmentsCTE rr ON rr.RotationRoleId = rda.RotationRoleId
-    INNER JOIN AAU.RotationArea ra 				ON ra.RotationAreaId = rr.RotationAreaId AND ra.IsDeleted = 0
+	INNER JOIN RoleAndAreaCTE rr ON rr.RotationRoleId = rda.RotationRoleId    
 	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.RotationUserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
     LEFT JOIN AAU.User lu						ON lu.UserId = lr.UserId
     LEFT JOIN AAU.User u						ON u.UserId = rda.UserId
-WHERE p.RotationPeriodId = prm_RotationPeriodId AND
-	  rda.IsDeleted = 0 AND
-	  p.IsDeleted = 0
+WHERE rda.RotationPeriodId = prm_RotationPeriodId
       
 UNION ALL
 
 -- Now let's add in any leave requests
 
 SELECT 
-	rp.RotationPeriodId,
-    rp.RotaVersionId,
+    rp.RotationPeriodId,
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY),
 	-1,
 	lr.UserId,
-    '',
 	lr.UserId,
 	lr.LeaveRequestId,
 	CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -598,11 +851,9 @@ UNION ALL
 -- Let's get all of the fixed off records
 SELECT
 	rp.RotationPeriodId,
-    rp.RotaVersionId,
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY),
 	-1,
 	u.UserId,
-    '',
 	u.UserId,
 	lr.LeaveRequestId,
 	CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -628,13 +879,10 @@ INNER JOIN AAU.User u ON u.FixedDayOff = WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 
-
-
 ),
 rotaDayAssignmentCTE AS
 (
 SELECT RotationPeriodId,
-RotaVersionId,
 		JSON_MERGE_PRESERVE(
 			JSON_OBJECT("rotaDayDate", RotaDayDate),
 			JSON_OBJECT("rotaDayAssignments", 
@@ -642,8 +890,7 @@ RotaVersionId,
 					JSON_MERGE_PRESERVE(
 						JSON_OBJECT("rotaDayId", RotaDayId),
                         JSON_OBJECT("areaRowSpan", AreaRowSpan),
-						JSON_OBJECT("userId", UserID),
-                        JSON_OBJECT("userCode", UserCode),
+						JSON_OBJECT("userId", UserId),
 						JSON_OBJECT("rotationUserId", RotationUserId),
 						JSON_OBJECT("leaveRequestId", LeaveRequestId),
                         JSON_OBJECT("leaveGranted", LeaveGranted),
@@ -654,7 +901,7 @@ RotaVersionId,
                         JSON_OBJECT("rotationArea", RotationArea),
                         JSON_OBJECT("rotationAreaColour", RotationAreaColour),
                         JSON_OBJECT("rotationAreaSortOrder", RotationAreaSortOrder),
-                        rotationRoleShiftSegments,
+                        JSON_OBJECT("rotationRoleShiftSegments", rotationRoleShiftSegments),
                         JSON_OBJECT("notes", Notes),
                         JSON_OBJECT("isAdded", CAST(0 AS JSON))
 					)
@@ -662,14 +909,14 @@ RotaVersionId,
 			)
 		) AS `RotaDayAssignments`
 FROM BaseCTE
-GROUP BY RotationPeriodId,
-		 RotaVersionId,
-		 RotaDayDate
+GROUP BY RotationPeriodId, RotaDayDate -- Commenting this for the moment as it causes a memory spill to disk
 )
 
 SELECT
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("rotationPeriodId", rd.RotationPeriodId),
+        JSON_OBJECT("startDate", p.StartDate),
+        JSON_OBJECT("endDate", p.EndDate),
         JSON_OBJECT("rotaId", rv.RotaId),
         JSON_OBJECT("rotaVersionId", rv.RotaVersionId),
 		JSON_OBJECT("rotaDays", 
@@ -679,8 +926,9 @@ SELECT
 		)
 	) AS `RotationPeriodAssignments`
 FROM rotaDayAssignmentCTE rd
-INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = rd.RotaVersionId
-GROUP BY rd.RotationPeriodId, rv.RotaId, rv.RotaVersionId;
+INNER JOIN AAU.RotationPeriod p ON p.RotationPeriodId = rd.RotationPeriodId
+INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = p.RotaVersionId
+GROUP BY rd.RotationPeriodId, p.StartDate, p.EndDate, rv.RotaId, rv.RotaVersionId;
 
 END$$
 
@@ -998,6 +1246,7 @@ FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArr
 					ORDER BY UserId ASC) jobTitle
 	ON jobTitle.UserId = u.UserId
     WHERE u.UserId <> -1
+    AND u.IsDeleted = 0
     AND u.OrganisationId = vOrganisationId) UserDetails;
         
 -- WHERE UserDetails.UserId BETWEEN prm_userIdStart AND prm_UserIdEnd;
@@ -1106,6 +1355,57 @@ SET vOrganisationId = 0;
     
 
 END$$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_InsertPatientProblem !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_InsertPatientProblem(
+IN prm_UserName VARCHAR(64),
+IN prm_PatientId INT,
+IN prm_ProblemId INT)
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 24/02/2020
+Purpose: Used to insert patient problems
+*/
+
+DECLARE vOrganisationId INT;
+DECLARE vPatientProblemCount INT;
+DECLARE vSuccess INT;
+
+SET vPatientProblemCount = 0;
+SET vSuccess = 0;
+
+SELECT COUNT(1) INTO vPatientProblemCount FROM AAU.PatientProblem WHERE PatientId = prm_PatientId
+													AND ProblemId = prm_ProblemId;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;                                                    
+                                                    
+IF vPatientProblemCount = 0 THEN
+
+INSERT INTO AAU.PatientProblem
+		(PatientId, OrganisationId, ProblemId)
+	VALUES
+		(prm_PatientId, vOrganisationId, prm_ProblemId);
+        		        
+SELECT 1 INTO vSuccess;
+
+ELSEIF vPatientProblemCount > 0 THEN
+
+SELECT 2 INTO vSuccess;
+
+ELSE
+
+SELECT 3 INTO vSuccess;
+
+END IF;
+
+SELECT vSuccess AS `success`;
+
+END$$
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
@@ -1308,6 +1608,7 @@ SET StatementVariable = 1;
 SELECT COUNT(1) INTO vUserCount FROM AAU.User WHERE FirstName = prm_FirstName
 													AND Surname = prm_Surname
                                                     AND Telephone = prm_Telephone;
+                                                    
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_User LIMIT 1;
                                                     
                                                     
@@ -1325,7 +1626,7 @@ INSERT INTO AAU.User (OrganisationId,
 						RoleId,
 						PermissionArray,
                         FixedDayOff,
-                        Department,
+                        DepartmentId,
                         LocalName
                         )
 				VALUES
@@ -1366,6 +1667,199 @@ SELECT vUserId, vSuccess;
 
 END$$
 
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyCase !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdateEmergencyCase(
+									IN prm_EmergencyCaseId INT,
+									IN prm_EmergencyNumber INT,
+									IN prm_CallDateTime DATETIME,
+									IN prm_DispatcherId INT,
+									IN prm_EmergencyCodeId INT,
+									-- IN prm_CallOutcomeId INT,
+                                    -- IN prm_SameAsNumber INT,
+                                    IN prm_Comments VARCHAR(650) CHARACTER SET UTF8MB4,
+									IN prm_Location VARCHAR(512),
+									IN prm_Latitude DECIMAL(11,8),
+									IN prm_Longitude DECIMAL(11,8),
+									-- IN prm_Rescuer1Id INT,
+									-- IN prm_Rescuer2Id INT,
+									IN prm_AmbulanceArrivalTime DATETIME,
+									IN prm_RescueTime DATETIME,
+									IN prm_AdmissionTime DATETIME,
+                                    IN prm_UpdateTime DATETIME,
+									IN prm_IsDeleted BOOLEAN,
+                                    IN prm_DeletedDate DATETIME,
+									IN prm_UserName VARCHAR(64),
+                                    IN prm_AssignedAmbulanceId INT,
+                                    IN prm_AmbulanceAssignmentTime DATETIME,
+                                    IN prm_SelfAdmission BOOLEAN)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 23/02/2020
+Purpose: Used to update a case.
+
+Modified by: Jim Mackenzie
+Modified On: 22/12/2022
+Modification: Removing out parameters
+*/
+
+DECLARE vOrganisationId INT;
+DECLARE vUpdateTime DATETIME;
+DECLARE vSuccess INT;
+DECLARE vSameAsEmergencyCaseId INT;
+DECLARE vSocketEndPoint VARCHAR(6);
+
+DECLARE vEmNoExists INT;
+SET vEmNoExists = 0;
+SET vSuccess = 0;
+
+SELECT COUNT(1) INTO vEmNoExists FROM AAU.EmergencyCase WHERE EmergencyCaseId <> prm_EmergencyCaseId AND EmergencyNumber = prm_EmergencyNumber;
+
+SELECT IFNULL(MAX(UpdateTime), '1901-01-01') INTO vUpdateTime FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+-- SELECT MAX(EmergencyCaseId) INTO vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsNumber;
+
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+IF vEmNoExists = 0 AND prm_UpdateTime >= vUpdateTime THEN
+
+	UPDATE AAU.EmergencyCase SET
+						EmergencyNumber        = prm_EmergencyNumber,
+						CallDateTime           = prm_CallDateTime,
+						DispatcherId           = prm_DispatcherId,
+						EmergencyCodeId        = prm_EmergencyCodeId,
+						-- CallOutcomeId          = prm_CallOutcomeId,
+                        -- SameAsEmergencyCaseId  = vSameAsEmergencyCaseId,
+						Location               = prm_Location,
+						Latitude               = prm_Latitude,
+						Longitude              = prm_Longitude,
+						-- Rescuer1Id             = prm_Rescuer1Id,
+						-- Rescuer2Id             = prm_Rescuer2Id,
+						AmbulanceArrivalTime   = prm_AmbulanceArrivalTime,
+						RescueTime             = prm_RescueTime,
+						AdmissionTime          = prm_AdmissionTime,
+						IsDeleted			   = prm_IsDeleted,
+                        DeletedDate			   = prm_DeletedDate,
+                        UpdateTime			   = prm_UpdateTime,
+                        Comments			   = prm_Comments,
+                        AssignedVehicleId    = prm_AssignedAmbulanceId,
+                        AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
+						selfAdmission           = prm_SelfAdmission
+			WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+    SELECT 1 INTO vSuccess;
+
+    INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update', NOW());  
+	
+
+ELSEIF vEmNoExists >= 1 THEN
+
+	SELECT 2 INTO vSuccess;
+
+ELSEIF prm_UpdateTime < vUpdateTime THEN
+
+	SELECT 3 INTO vSuccess; -- Already updated
+
+ELSEIF prm_UpdateTime > vUpdateTime THEN
+	SELECT 4 INTO vSuccess; -- Emergency record already updated another time.
+    
+ELSE
+	SELECT 5 INTO vSuccess; -- Other error   
+END IF;
+
+SELECT prm_EmergencyCaseId AS `emergencyCaseId`, vSuccess AS `success`, vSocketEndPoint AS `socketEndPoint`;
+
+CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, NULL, "Rescue");
+
+END$$
+DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateEmergencyRegisterOutcome !!
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdateEmergencyRegisterOutcome(
+IN prm_Username VARCHAR(128),
+IN prm_EmergencyCaseId INT,
+IN prm_CallOutcomeId INT,
+IN prm_SameAsNumber INT,
+IN prm_UpdateTime DATETIME)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 02/05/2020
+Purpose: Used to update a Call Outcome Id for a case.
+
+Modified by: Jim Mackenzie
+Modified On: 22/12/2022
+Modification: Removing out parameters
+*/
+
+DECLARE vOrganisationId INT;
+DECLARE vUpdateTime DATETIME;
+DECLARE vEmergencyCaseExists INT;
+DECLARE vSameAsEmergencyCaseId INT;
+DECLARE vSuccess INT;
+DECLARE vSocketEndPoint VARCHAR(6);
+
+DECLARE vEmNoExists INT;
+SET vEmNoExists = 0;
+SET vEmergencyCaseExists = 0;
+SET vSuccess = 0;
+
+SELECT COUNT(1), MAX(EmergencyCaseId) INTO vEmNoExists, vSameAsEmergencyCaseId FROM AAU.EmergencyCase WHERE EmergencyNumber = prm_SameAsNumber;
+
+SELECT IFNULL(MAX(UpdateTime), '1901-01-01'), COUNT(EmergencyCaseId) INTO vUpdateTime, vEmergencyCaseExists FROM AAU.EmergencyCase WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+SELECT o.OrganisationId, SocketEndPoint INTO vOrganisationId, vSocketEndPoint
+FROM AAU.User u 
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+IF vEmNoExists <= 1 AND vEmergencyCaseExists = 1 AND prm_UpdateTime >= vUpdateTime THEN
+
+START TRANSACTION;
+
+	UPDATE AAU.EmergencyCase SET
+						CallOutcomeId   		= prm_CallOutcomeId,
+                        SameAsEmergencyCaseId	= vSameAsEmergencyCaseId
+			WHERE EmergencyCaseId = prm_EmergencyCaseId;
+
+COMMIT;
+
+    SELECT 1 INTO vSuccess;
+
+    INSERT INTO AAU.Logging (OrganisationId, UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (vOrganisationId, prm_UserName,prm_EmergencyCaseId,'EmergencyCase','Update Outcome', NOW());
+
+ELSEIF vEmNoExists >= 1 THEN
+
+	SELECT 2 INTO vSuccess;
+
+ELSEIF prm_UpdateTime < vUpdateTime THEN
+
+	SELECT 3 INTO vSuccess; -- Already updated
+    
+ELSE
+	SELECT 4 INTO vSuccess; -- Other error   
+END IF;
+    
+	CALL AAU.sp_GetOutstandingRescueByEmergencyCaseId(prm_EmergencyCaseId, null);
+    
+    SELECT vSuccess AS `success`, vSocketEndPoint AS `socketEndPoint`;
+
+END$$
 DELIMITER ;
 DELIMITER !!
 
@@ -2014,6 +2508,7 @@ IF ( vRotationRoleShiftSegmentExists = 0 ) THEN
 
 INSERT INTO AAU.RotationRoleShiftSegment(	
 	RotationRoleId,
+  OrganisationId,
 	StartTime,
 	EndTime,
 	SameDay,
@@ -2022,6 +2517,7 @@ INSERT INTO AAU.RotationRoleShiftSegment(
 )
 VALUES(
 	prm_RotationRoleId,
+  vOrganisationId,
 	prm_StartTime,
 	prm_EndTime,
 	prm_SameDay,

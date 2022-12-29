@@ -45,10 +45,12 @@ JSON_OBJECT("jobTitle",UserDetails.JobTitle),
 JSON_OBJECT("permissionArray",UserDetails.PermissionArray),
 JSON_OBJECT("fixedDayOff",UserDetails.FixedDayOff),
 JSON_OBJECT("departmentId",UserDetails.DepartmentId),
+JSON_OBJECT("excludeFromScheduleUsers",UserDetails.ExcludeFromScheduleUsers),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted)
 ))  AS userDetails
 FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
-			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle,
+			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle, 
+            IF(u.ExcludeFromScheduleUsers, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS ExcludeFromScheduleUsers,
             u.FixedDayOff, u.DepartmentId,
             IF(u.IsDeleted, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS IsDeleted
 	FROM AAU.User u		

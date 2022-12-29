@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS `AAU`.`RotaMatrixItem`;
 DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
+DROP TABLE IF EXISTS `AAU`.`RotationRoleShiftSegment`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
 DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
-DROP TABLE IF EXISTS `AAU`.`RotationRoleShiftSegment`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
@@ -97,7 +97,7 @@ CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION,
 	INDEX `FK_RRShiftSegmentType_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
-	CONSTRAINT `FK_ShiftSegmentType_Organisation_OrganisationId`
+	CONSTRAINT `FK_RRShiftSegmentType_Organisation_OrganisationId`
 	FOREIGN KEY (`OrganisationId`)
 	REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
@@ -227,6 +227,50 @@ CREATE TABLE `AAU`.`RotationArea` (
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+    
+    INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour) VALUES
+(1,'A Kennel', 1,'#e06666'),
+(1,'B ken', 2,'#e06666'),
+(1,'Pup', 3,'#e06666'),
+(1,'PP-I', 4,'#e06666'),
+(1,'SA', 5,'#e06666'),
+(1,'Isolation', 6,'#e06666'),
+(1,'Cattle', 7,'#e06666'),
+(1,'Cat', 8,'#e06666'),
+(1,'Pig', 9,'#e06666'),
+(1,'Shelter', 10,'#e06666'),
+(1,'MHE', 11,'#0000ff'),
+(1,'Group hospital', 12,'#0b5394'),
+(1,'A KENNEL', 13,'#0b5394'),
+(1,'B KENNEL', 14,'#38761d'),
+(1,'PUPPY', 15,'#ed7d31'),
+(1,'PRE-ISO', 16,'#ff0000'),
+(1,'ISOLATION', 17,'#ff0000'),
+(1,'CATTLE', 18,'#ffc000'),
+(1,'CATS', 19,'#ffc000'),
+(1,'PIGEONS', 20,'#ffc000'),
+(1,'SHELTER FEEDING AM', 21,'#cfe2f3'),
+(1,'HANDY HEAVEN', 22,'#cfe2f3'),
+(1,'UPPER H. ', 23,'#cfe2f3'),
+(1,'SHELTER', 24,'#cfe2f3'),
+(1,'HOUSE KEEPING', 25,'#ed7d31'),
+(1,'MHN - MHE', 26,'#0000ff'),
+(1,'ABC Day', 27,'#ed7d31'),
+(1,'ABC Night', 28,'#ed7d31'),
+(1,'Operation Theathre', 29,'#e06666'),
+(1,'Emergency Dispatch', 30,'#3c78d8'),
+(1,'Ambulance', 31,'#3c78d8'),
+(1,'ABC', 32,'#3c78d8'),
+(1,'Street Treat', 33,'#3c78d8'),
+(1,'NN', 34,'#ed7d31'),
+(1,'Animal training', 35,'#ff00ff'),
+(1,'CALF FEEDING', 36,'#ffc000'),
+(1,'Learning session', 37,'#9900ff'),
+(1,'LSAs', 38,'#9900ff'),
+(1,'Admin and Facilities', 39,'#ed7d31'),
+(1,'AW', 40,'#ed7d31'),
+(1,'Cruelty', 41,'#ed7d31'),
+(1,'Video', 42,'#ed7d31');
         
 CREATE TABLE `AAU`.`RotaRotationArea` (
   `RotaRotationAreaId` INT NOT NULL AUTO_INCREMENT,  

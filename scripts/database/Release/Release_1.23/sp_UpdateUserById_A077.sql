@@ -16,7 +16,8 @@ CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
                                         IN prm_PermissionArray JSON,
                                         IN prm_FixedDayOff JSON,
                                         IN prm_DepartmentId INT,
-                                        IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4
+                                        IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4,
+                                        IN prm_ExcludeFromScheduleUsers TINYINT
 										)
 BEGIN                                    
 
@@ -55,19 +56,20 @@ SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND
 IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 
 	UPDATE AAU.User
-		SET	EmployeeNumber	= prm_EmployeeNumber,
-			FirstName		= prm_FirstName,
-			Surname			= prm_Surname,
-            Initials   		= prm_Initials,
-            Colour     		= prm_Colour,
-			Telephone		= prm_Telephone,
-            UserName		= prm_UserName,
-            Password		= IFNULL(prm_Password , vPassword),
-			RoleId			= prm_RoleId,
-            PermissionArray = prm_PermissionArray,
-            FixedDayOff		= prm_FixedDayOff,
-            DepartmentId 	= prm_DepartmentId,
-            LocalName		= prm_LocalName
+		SET	EmployeeNumber				= prm_EmployeeNumber,
+			FirstName					= prm_FirstName,
+			Surname						= prm_Surname,
+            Initials   					= prm_Initials,
+            Colour     					= prm_Colour,
+			Telephone					= prm_Telephone,
+            UserName					= prm_UserName,
+            Password					= IFNULL(prm_Password , vPassword),
+			RoleId						= prm_RoleId,
+            PermissionArray 			= prm_PermissionArray,
+            FixedDayOff					= prm_FixedDayOff,
+            DepartmentId 				= prm_DepartmentId,
+            LocalName					= prm_LocalName,
+            ExcludeFromScheduleUsers	= prm_ExcludeFromScheduleUsers
 	WHERE UserId = prm_UserId;
 
 

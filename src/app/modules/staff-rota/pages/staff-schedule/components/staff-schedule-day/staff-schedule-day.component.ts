@@ -4,12 +4,12 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { DailyRotaService } from './../../services/daily-rota.service';
+import { StaffScheduleService } from '../../../../services/staff-schedule.service';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AreaStaffCoverageComponent } from './../area-staff-coverage/area-staff-coverage.component';
+import { AreaStaffCoverageComponent } from '../../../../components/area-staff-coverage/area-staff-coverage.component';
 import { RotationRole } from 'src/app/core/models/rota';
-import { RotaSettingsService } from '../../pages/settings/services/rota-settings.service';
+import { RotaSettingsService } from '../../../settings/services/rota-settings.service';
 import { generateUUID } from 'src/app/core/helpers/utils';
 
 interface UserUtilisation{
@@ -25,11 +25,11 @@ interface AreaCount{
 }
 
 @Component({
-  selector: 'app-daily-rota-day',
-  templateUrl: './daily-rota-day.component.html',
-  styleUrls: ['./daily-rota-day.component.scss']
+  selector: 'app-staff-schedule-day',
+  templateUrl: './staff-schedule-day.component.html',
+  styleUrls: ['./staff-schedule-day.component.scss']
 })
-export class DailyRotaDayComponent implements OnInit, OnDestroy {
+export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
   @Input() inputRotaDayAssignments!: unknown;
   @Input() rotaDayDate!: string;
@@ -78,7 +78,7 @@ export class DailyRotaDayComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private dailyRotaService: DailyRotaService,
+    private staffScheduleService: StaffScheduleService,
     private userDetailsService: UserDetailsService,
     private snackbar: SnackbarService,
     private rotaSettingsService: RotaSettingsService,
@@ -92,7 +92,7 @@ export class DailyRotaDayComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.userList = this.userDetailsService.getUserList();
+    this.userList = this.userDetailsService.getScheduleUserList();
       
     this.initialiseForm();
     this.checkUnassignedStaff();
@@ -179,7 +179,7 @@ updateSelectedUsers() : void {
   for(let assignment of this.getAssignments.controls){
 
     if(!assignment.pristine){
-      this.dailyRotaService.saveAssignment(this.rotaDayDate, this.rotationPeriodId, assignment.value).then(response => {
+      this.staffScheduleService.saveAssignment(this.rotaDayDate, this.rotationPeriodId, assignment.value).then(response => {
 
         if(response.success === 1){
           this.snackbar.successSnackBar("Areas saved to preferences","OK");
@@ -363,7 +363,7 @@ toggleUserFilter() : void {
 
 addShift() : void {
 
-  const emptyAssignment = this.dailyRotaService.emptyAssignment();
+  const emptyAssignment = this.staffScheduleService.emptyAssignment();
 
   //Let's generate an ID we can use to remove newly added assignments
   emptyAssignment.get('guid')?.setValue(generateUUID());

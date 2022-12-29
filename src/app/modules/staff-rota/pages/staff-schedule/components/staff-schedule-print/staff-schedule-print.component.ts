@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
-import { RotaService } from '../../services/rota.service';
+import { RotaService } from '../../../../services/rota.service';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { Observable } from 'rxjs';
 import { UserAssignmentPrintItem } from 'src/app/core/models/rota';
@@ -11,13 +11,13 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   standalone: true,
-  selector: 'app-daily-rota-print',
+  selector: 'app-staff-schedule-print',
   imports: [CommonModule, MaterialModule],
   
-templateUrl: './daily-rota-print.component.html',
-  styleUrls: ['./daily-rota-print.component.scss']
+templateUrl: './staff-schedule-print.component.html',
+  styleUrls: ['./staff-schedule-print.component.scss']
 })
-export class DailyRotaPrintComponent implements OnInit {
+export class StaffSchedulePrintComponent implements OnInit {
 
   assignments: Observable<UserAssignmentPrintItem[]>;
   rotaService = inject(RotaService);
@@ -30,7 +30,7 @@ export class DailyRotaPrintComponent implements OnInit {
     private userDetails: UserDetailsService,
     private printService: PrintTemplateService
   ) { 
-    const day = JSON.parse(route.snapshot.params?.dailyRotaDay);
+    const day = JSON.parse(route.snapshot.params?.staffScheduleDay);
 
     this.rotaDayDate = new Date(day.selectedDate);
 
@@ -69,7 +69,7 @@ export class DailyRotaPrintComponent implements OnInit {
 
                                           }))
 
-    this.printService.onDataReady('print-daily-rota-day');
+    this.printService.onDataReady('print-staff-schedule-day');
   }
 
   ngOnInit() {

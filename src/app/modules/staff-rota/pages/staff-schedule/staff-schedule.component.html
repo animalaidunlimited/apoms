@@ -85,7 +85,7 @@
       <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" matTooltip="Unsaved changes" style="margin-left: 10px">error</mat-icon>
   </ng-template>    
 
-    <app-daily-rota-day [rotationPeriodId]="rotationPeriodId" [rotaDayDate]="day.get('rotaDayDate')?.value" [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-daily-rota-day>
+    <app-staff-schedule-day [rotationPeriodId]="rotationPeriodId" [rotaDayDate]="day.get('rotaDayDate')?.value" [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-staff-schedule-day>
   
   </mat-tab>
 </mat-tab-group>

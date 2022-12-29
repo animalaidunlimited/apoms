@@ -7,6 +7,7 @@ BEGIN
 	ALTER TABLE `AAU`.`User` ADD COLUMN `FixedDayOff` JSON NOT NULL AFTER `DateTimeOffsetHours`;
     ALTER TABLE `AAU`.`User` ADD COLUMN `DepartmentId` TINYINT NOT NULL AFTER `FixedDayOff`;
     ALTER TABLE `AAU`.`User` ADD COLUMN `LocalName` VARCHAR(64) CHARACTER SET UTF8MB4 NULL AFTER `DepartmentId`;
+	ALTER TABLE `AAU`.`User` ADD COLUMN `ExcludeFromScheduleUsers` TINYINT NULL AFTER `LocalName`;
     
   
 END //

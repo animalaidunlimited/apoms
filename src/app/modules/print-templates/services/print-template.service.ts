@@ -253,7 +253,7 @@ private toCamelCase(str:string) : string {
     this.router.navigate(['/',
     {
       outlets: {
-      'print-daily-rota-day': ['print-daily-rota-day', 'print-daily-rota-day', contentToPrint]
+      'print-staff-schedule-day': ['print-staff-schedule-day', 'print-staff-schedule-day', contentToPrint]
     }}]);
 
   }
@@ -283,8 +283,8 @@ private toCamelCase(str:string) : string {
       else if(printItemName === 'treatment-list'){
         this.router.navigate([{ outlets: { 'treatment-list': null }}]);
       }
-      else if(printItemName === 'print-daily-rota-day'){
-        this.router.navigate([{ outlets: { 'print-daily-rota-day': null }}]);
+      else if(printItemName === 'print-staff-schedule-day'){
+        this.router.navigate([{ outlets: { 'print-staff-schedule-day': null }}]);
       }
 
 

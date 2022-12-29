@@ -5,12 +5,12 @@ import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 import { RotaDayAssignment } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { BaseShiftSegment } from './../../../core/models/rota';
+import { BaseShiftSegment } from '../../../core/models/rota';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DailyRotaService extends APIService{
+export class StaffScheduleService extends APIService{
 
   endpoint = 'Rota';
 

@@ -25,6 +25,7 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
   @Input() showLabel: boolean = false;
   @Input() inputControl!: AbstractControl<number | null , number | null> | null;
   @Input() formField: boolean = true;
+  @Input() scheduleUsers: boolean = true;
   @Output() selectionMade = new EventEmitter<boolean>();
 
   ngUnsubscribe = new Subject();
@@ -54,7 +55,7 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
     private fb: UntypedFormBuilder
   ) {
 
-    this.userList = this.userDetails.getUserList();    
+    this.userList = this.scheduleUsers ? this.userDetails.getScheduleUserList() : this.userDetails.getUserList();    
    }
 
   ngOnInit() {

@@ -4,21 +4,21 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { RotaService } from '../../services/rota.service';
-import { Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotaVersion } from './../../../../core/models/rota';
-import { RotaSettingsService } from './../settings/services/rota-settings.service';
+import { Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotaVersion } from '../../../../core/models/rota';
+import { RotaSettingsService } from '../settings/services/rota-settings.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { SnackbarService } from './../../../../core/services/snackbar/snackbar.service';
-import { DailyRotaService } from './../../services/daily-rota.service';
+import { SnackbarService } from '../../../../core/services/snackbar/snackbar.service';
+import { StaffScheduleService } from '../../services/staff-schedule.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 
 
 @Component({
-  selector: 'app-daily-rota',
-  templateUrl: './daily-rota.component.html',
-  styleUrls: ['./daily-rota.component.scss']
+  selector: 'app-staff-schedule',
+  templateUrl: './staff-schedule.component.html',
+  styleUrls: ['./staff-schedule.component.scss']
 })
-export class DailyRotaComponent implements OnInit {
+export class StaffScheduleComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
@@ -66,7 +66,7 @@ export class DailyRotaComponent implements OnInit {
     route: ActivatedRoute,
     private fb: FormBuilder,
     private rotaService: RotaService,
-    private dailyRotaService: DailyRotaService,
+    private staffScheduleService: StaffScheduleService,
     private userOptionsService: UserOptionsService,
     private snackbar: SnackbarService,
     private printService: PrintTemplateService,
@@ -223,7 +223,7 @@ export class DailyRotaComponent implements OnInit {
         continue;        
       }
 
-      let newAssignment = this.dailyRotaService.generateNewAssignment(assignment);
+      let newAssignment = this.staffScheduleService.generateNewAssignment(assignment);
 
       //TODO - FIX THIS AFTER INTRODUCTION OF SHIFT SEGMENTS
       // if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){

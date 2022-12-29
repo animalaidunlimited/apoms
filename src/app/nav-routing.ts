@@ -109,8 +109,8 @@ export const navRoutes: NavRoute[] = [
         group: 'Staff Rota',
         path: 'staff-rotation',
         loadChildren: () =>
-            import('./modules/staff-rota/pages/daily-rota/daily-rota.module')
-            .then(m => m.DailyRotaModule)
+            import('./modules/staff-rota/pages/staff-schedule/staff-schedule.module')
+            .then(m => m.StaffScheduleModule)
     },
     {
         data: { title: 'Leave Request', permissionId:[17,18], componentPermissionLevel: new BehaviorSubject<number>(0)},
