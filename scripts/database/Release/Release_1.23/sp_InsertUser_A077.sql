@@ -14,7 +14,7 @@ CREATE PROCEDURE AAU.sp_InsertUser(IN prm_User VARCHAR(45),
 									IN prm_Password VARCHAR(255) CHARACTER SET UTF8MB4,
 									IN prm_RoleId INTEGER,
 									IN prm_PermissionArray JSON,
-									IN prm_FixedDayOff TINYINT,
+									IN prm_FixedDayOff JSON,
                                     IN prm_Department INT,
                                     IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4,
 									IN prm_ExcludeFromScheduleUsers TINYINT

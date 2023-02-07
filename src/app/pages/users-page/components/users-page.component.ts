@@ -169,7 +169,7 @@ export class UsersPageComponent implements OnInit {
 
     getRefreshTableData() {
 
-      this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
+      this.userDetailsService.getUsersByIdRange().then((userListData: UserDetails[])=>{
 
         this.userList = userListData;
         this.initialiseTable(this.userList);

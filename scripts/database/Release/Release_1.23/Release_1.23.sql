@@ -119,7 +119,8 @@ END IF;
 SELECT prm_PatientId AS `patientId`, vSuccess AS `success`;
 
 
-ENDDELIMITER !!
+END$$
+DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_DeletePatientProblems !!
 
@@ -621,6 +622,8 @@ LEFT JOIN AAU.LeaveRequest lrl ON	lrl.UserId = lr.UserId AND
                                     lrl.LeaveStartDate < lr.LeaveStartDate
 WHERE lr.OrganisationId = vOrganisationId
 AND lr.IsDeleted = 0
+AND lr.LeaveStartDate <= prm_EndDate
+AND lr.LeaveEndDate >= prm_StartDate
 )
 
 SELECT
@@ -649,8 +652,7 @@ SELECT
 			JSON_OBJECT("isDeleted", lr.IsDeleted)
 			)) AS `LeaveRequests`
 FROM RawCTE lr
-WHERE RNum = 1
-AND lr.LeaveStartDate BETWEEN prm_StartDate AND prm_EndDate;
+WHERE RNum = 1;
 
 END$$
 
@@ -801,10 +803,7 @@ SELECT
     rr.RotationAreaSortOrder,
     rr.RotationAreaColour,
 	rr.rotationRoleShiftSegments,
-    rda.Notes,
-	IF(ROW_NUMBER() OVER (PARTITION BY rda.RotaDayDate, rr.RotationAreaId ORDER BY rda.RotaDayDate, rda.Sequence) = 1,  
-					COUNT(1) OVER (PARTITION BY rda.RotaDayDate, rr.RotationAreaId ORDER BY rr.RotationAreaId ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
-					0) AS `AreaRowSpan`
+    rda.Notes
 	FROM AAU.RotaDayAssignment rda
 	INNER JOIN RoleAndAreaCTE rr ON rr.RotationRoleId = rda.RotationRoleId    
 	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.RotationUserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
@@ -838,8 +837,7 @@ SELECT
 	
     NULL,
     
-	NULL,
-	IF(ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY lr.UserId DESC) = 1, ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY lr.UserId), 0)
+	NULL
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
 INNER JOIN AAU.RotationPeriod rp ON DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY) BETWEEN rp.StartDate AND rp.EndDate
@@ -871,11 +869,10 @@ SELECT
 	
     NULL,
     
-	NULL,
-	IF(ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY u.UserId DESC) = 1, ROW_NUMBER() OVER (PARTITION BY t.Id ORDER BY u.UserId), 0)
+	NULL
 FROM AAU.RotationPeriod rp
 INNER JOIN AAU.Tally t ON t.Id < 7
-INNER JOIN AAU.User u ON u.FixedDayOff = WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY))
+INNER JOIN AAU.User u ON LOCATE(WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY)), u.FixedDayOff) > 0 AND u.fixedDayOff NOT LIKE '[-1]'
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 
@@ -889,7 +886,6 @@ SELECT RotationPeriodId,
 				JSON_ARRAYAGG(
 					JSON_MERGE_PRESERVE(
 						JSON_OBJECT("rotaDayId", RotaDayId),
-                        JSON_OBJECT("areaRowSpan", AreaRowSpan),
 						JSON_OBJECT("userId", UserId),
 						JSON_OBJECT("rotationUserId", RotationUserId),
 						JSON_OBJECT("leaveRequestId", LeaveRequestId),
@@ -1056,7 +1052,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
 
--- CALL AAU.sp_GetRotationPeriods(-1, 4, 0);
+-- CALL AAU.sp_GetRotationPeriods(2, 1, 0);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT)
@@ -1112,6 +1108,71 @@ Purpose: Retrieve a list of rotation periods for a rota version.
             JSON_OBJECT("endDate", rp.EndDate),
             JSON_OBJECT("locked", rp.`Locked`)
 			)))) AS `RotationPeriods`
+	FROM rotationPeriodsCTE rp
+    INNER JOIN minMaxCTE mm ON mm.RotaVersionId = rp.RotaVersionId
+    GROUP BY mm.FirstRotationPeriodGUID, mm.LastRotationPeriodGUID;
+    
+    
+END$$
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriod !!
+
+-- CALL AAU.sp_GetRotationPeriod(2, 1);
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetRotationPeriod( IN prm_RotaVersionId INT, IN prm_RotationPeriodId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 29/08/2022
+Purpose: Retrieve a list of rotation periods for a rota version.
+
+*/
+
+	WITH minMaxCTE AS (
+    SELECT 
+		rp.RotaVersionId,
+		FIRST_VALUE(rp.RotationPeriodGUID) OVER (ORDER BY StartDate ASC) AS `FirstRotationPeriodGUID`,
+		FIRST_VALUE(rp.RotationPeriodGUID) OVER (ORDER BY StartDate DESC) AS `LastRotationPeriodGUID`
+    FROM AAU.RotationPeriod rp
+    WHERE rp.RotaVersionId = prm_RotaVersionId
+    AND rp.IsDeleted = 0
+    LIMIT 1
+    ),
+    rotationPeriodsCTE AS (
+    SELECT
+		rp.RotationPeriodId,
+        rp.RotationPeriodGUID,
+        rp.RotaVersionId,
+        rp.`Name`,
+        rp.StartDate,
+        rp.EndDate,
+        IF(rp.locked = 1, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS `Locked`
+    FROM AAU.RotationPeriod rp
+    WHERE rp.RotationPeriodId = prm_RotationPeriodId
+    AND rp.IsDeleted = 0
+    )
+    
+	SELECT
+			JSON_MERGE_PRESERVE(
+			JSON_MERGE_PRESERVE(
+			JSON_OBJECT("firstRotationPeriodGUID", mm.FirstRotationPeriodGUID),
+            JSON_OBJECT("lastRotationPeriodGUID", mm.LastRotationPeriodGUID)
+            ),
+			JSON_OBJECT("rotationPeriods",
+			JSON_ARRAYAGG(
+			JSON_MERGE_PRESERVE(
+			JSON_OBJECT("rotationPeriodId", rp.RotationPeriodId),
+			JSON_OBJECT("rotationPeriodGUID", rp.RotationPeriodGUID),
+            JSON_OBJECT("rotaVersionId", rp.RotaVersionId),
+            JSON_OBJECT("name", rp.`Name`),
+            JSON_OBJECT("startDate", rp.StartDate),
+            JSON_OBJECT("endDate", rp.EndDate),
+            JSON_OBJECT("locked", rp.`Locked`)
+			)))) AS `RotationPeriod`
 	FROM rotationPeriodsCTE rp
     INNER JOIN minMaxCTE mm ON mm.RotaVersionId = rp.RotaVersionId
     GROUP BY mm.FirstRotationPeriodGUID, mm.LastRotationPeriodGUID;
@@ -1227,10 +1288,12 @@ JSON_OBJECT("jobTitle",UserDetails.JobTitle),
 JSON_OBJECT("permissionArray",UserDetails.PermissionArray),
 JSON_OBJECT("fixedDayOff",UserDetails.FixedDayOff),
 JSON_OBJECT("departmentId",UserDetails.DepartmentId),
+JSON_OBJECT("excludeFromScheduleUsers",UserDetails.ExcludeFromScheduleUsers),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted)
 ))  AS userDetails
 FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
-			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle,
+			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle, 
+            IF(u.ExcludeFromScheduleUsers, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS ExcludeFromScheduleUsers,
             u.FixedDayOff, u.DepartmentId,
             IF(u.IsDeleted, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS IsDeleted
 	FROM AAU.User u		
@@ -1579,7 +1642,8 @@ CREATE PROCEDURE AAU.sp_InsertUser(IN prm_User VARCHAR(45),
 									IN prm_PermissionArray JSON,
 									IN prm_FixedDayOff TINYINT,
                                     IN prm_Department INT,
-                                    IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4
+                                    IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4,
+									IN prm_ExcludeFromScheduleUsers TINYINT
 									)
 BEGIN                                    
 
@@ -1627,7 +1691,8 @@ INSERT INTO AAU.User (OrganisationId,
 						PermissionArray,
                         FixedDayOff,
                         DepartmentId,
-                        LocalName
+                        LocalName,
+                        ExcludeFromScheduleUsers
                         )
 				VALUES
 						(
@@ -1644,7 +1709,8 @@ INSERT INTO AAU.User (OrganisationId,
 						prm_PermissionArray,
                         prm_FixedDayOff,
                         prm_Department,
-                        prm_LocalName
+                        prm_LocalName,
+                        prm_ExcludeFromScheduleUsers
 						);
 
 
@@ -2004,7 +2070,8 @@ CREATE PROCEDURE AAU.sp_UpdateUserById(IN prm_UserId INT,
                                         IN prm_PermissionArray JSON,
                                         IN prm_FixedDayOff JSON,
                                         IN prm_DepartmentId INT,
-                                        IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4
+                                        IN prm_LocalName VARCHAR(64) CHARACTER SET UTF8MB4,
+                                        IN prm_ExcludeFromScheduleUsers TINYINT
 										)
 BEGIN                                    
 
@@ -2043,19 +2110,20 @@ SELECT COUNT(1) INTO vComboKeyCount FROM AAU.User WHERE UserId <> prm_UserId	AND
 IF vUserCount = 1 AND vUsernameCount = 0 AND vComboKeyCount = 0 THEN
 
 	UPDATE AAU.User
-		SET	EmployeeNumber	= prm_EmployeeNumber,
-			FirstName		= prm_FirstName,
-			Surname			= prm_Surname,
-            Initials   		= prm_Initials,
-            Colour     		= prm_Colour,
-			Telephone		= prm_Telephone,
-            UserName		= prm_UserName,
-            Password		= IFNULL(prm_Password , vPassword),
-			RoleId			= prm_RoleId,
-            PermissionArray = prm_PermissionArray,
-            FixedDayOff		= prm_FixedDayOff,
-            DepartmentId 	= prm_DepartmentId,
-            LocalName		= prm_LocalName
+		SET	EmployeeNumber				= prm_EmployeeNumber,
+			FirstName					= prm_FirstName,
+			Surname						= prm_Surname,
+            Initials   					= prm_Initials,
+            Colour     					= prm_Colour,
+			Telephone					= prm_Telephone,
+            UserName					= prm_UserName,
+            Password					= IFNULL(prm_Password , vPassword),
+			RoleId						= prm_RoleId,
+            PermissionArray 			= prm_PermissionArray,
+            FixedDayOff					= prm_FixedDayOff,
+            DepartmentId 				= prm_DepartmentId,
+            LocalName					= prm_LocalName,
+            ExcludeFromScheduleUsers	= prm_ExcludeFromScheduleUsers
 	WHERE UserId = prm_UserId;
 
 

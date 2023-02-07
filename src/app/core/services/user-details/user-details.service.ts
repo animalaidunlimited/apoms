@@ -35,7 +35,7 @@ export class UserDetailsService extends APIService{
       return Promise.resolve(true);
     }
 
-    return this.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[]) => {
+    return this.getUsersByIdRange().then((userListData: UserDetails[]) => {
       
       this.userList.next(userListData);
 
@@ -68,8 +68,8 @@ export class UserDetailsService extends APIService{
     }
   }
 
-  public getUsersByIdRange(username: string): Promise<any> {
-    const request = `/GetUsersByIdRange?username=${username}`;
+  public getUsersByIdRange(): Promise<any> {
+    const request = `/GetUsersByIdRange`;
     return this.get(request);
   }
 
