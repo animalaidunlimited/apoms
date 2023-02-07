@@ -110,7 +110,10 @@
                 {{element.get('leaveUser')?.value}}
               </div>    
 
-                <app-user-autocomplete formControlName="userId" [formField]="false" [showLabel]="false" [existingUsersList]="assignedUsers" (selectionMade)="updateSelectedUsers()"
+                <app-user-autocomplete formControlName="userId"
+                [formField]="false"
+                [scheduleUsers]="true"
+                [showLabel]="false" [existingUsersList]="assignedUsers" (selectionMade)="updateSelectedUsers()"
                 class="select-field"
                 style="min-width: 100px;">
 

@@ -16,7 +16,8 @@ export class UserDetailsService extends APIService{
   public permissionArray = new BehaviorSubject<number[]>([-1]);
   public permissionCheckComplete = new BehaviorSubject<boolean>(false);
 
-  userList = new BehaviorSubject<UserDetails[]>([])
+  userList = new BehaviorSubject<UserDetails[]>([]);
+  scheduleUserList = new BehaviorSubject<UserDetails[]>([]);
 
   constructor(
     public http: HttpClient,
@@ -35,7 +36,12 @@ export class UserDetailsService extends APIService{
 
     return this.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[]) => {
       
-      this.userList.next(userListData); 
+      this.userList.next(userListData);
+
+      const scheduleUsers = userListData.filter(user => !user.excludeFromScheduleUsers)
+
+      this.scheduleUserList.next(scheduleUsers)
+
   
     });
 
@@ -44,6 +50,12 @@ export class UserDetailsService extends APIService{
   public getUserList() : BehaviorSubject<UserDetails[]> {
 
     return this.userList;
+
+  }
+
+  public getScheduleUserList() : BehaviorSubject<UserDetails[]> {
+
+    return this.scheduleUserList;
 
   }
 

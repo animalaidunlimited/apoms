@@ -38,8 +38,8 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     requestDate: new FormControl< Date | null>(new Date(getCurrentDateString()), [Validators.required, maxDateTodayValidator()]),
     leaveRequestReasonId: new FormControl<any | null>(null, Validators.required),
     leaveRequestReason: [''],
-    leaveStartDate: new FormControl< Date | null>(null, Validators.required ),
-    leaveEndDate: new FormControl< Date | null>(null, Validators.required ),    
+    leaveStartDate: new FormControl< Date | string | null>(null, Validators.required ),
+    leaveEndDate: new FormControl< Date | string | null>(null, Validators.required ),    
     additionalInformation: [''],
     numberOfDays: [-1],
     granted: new FormControl<number | null>(null),
@@ -90,7 +90,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
       //We need to set this in order for the date picker to work with a date input
         this.dateAdapter.setLocale('fr-CA'); // yyyy-MM-dd
 
-        this.userList = this.userDetailsService.getUserList();
+        this.userList = this.userDetailsService.getScheduleUserList();
         this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
         this.festivals$ = this.dropdown.getFestivals();
         this.watchRequestDateChanges();        

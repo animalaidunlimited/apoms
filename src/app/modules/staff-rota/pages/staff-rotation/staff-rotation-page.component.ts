@@ -89,13 +89,13 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
       this.displayColumns = this.dataSource.pipe(skip(1), takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
 
-      this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));      
+      this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));
       
   }
 
   initialiseRotas() : void {
 
-    this.userList = this.userDetailsService.getUserList();
+    this.userList = this.userDetailsService.getScheduleUserList();
 
     this.rotaService.initialiseRotas().then(complete => {
 

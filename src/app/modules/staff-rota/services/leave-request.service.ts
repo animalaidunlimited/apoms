@@ -58,12 +58,19 @@ constructor(
 }
 
 
-getLeaveRequests(startDate?: string, endDate?: string) : void {
-  
-  this.get(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`).then(requests => {
+
+
+getLeaveRequests() : void {
+
+  this.getLeaveRequestsForPeriod().then(requests => 
     this.leaveRequests.next(requests as DisplayLeaveRequest[])
-  }
   )
+
+}
+
+getLeaveRequestsForPeriod(startDate?: string, endDate?: string) : Promise<LeaveRequest[] | null> {
+  
+  return this.get(`/GetLeaveRequests?startDate=${startDate}&endDate=${endDate}`);
 
 }
 

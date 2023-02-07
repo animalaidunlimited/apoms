@@ -103,7 +103,7 @@ export class RotaService extends APIService {
     private organisationDetails: OrganisationDetailsService) {
     super(http);
 
-    this.userList = this.userDetailsService.getUserList();
+    this.userList = this.userDetailsService.getScheduleUserList();
 
     this.organisationDetails.organisationDetail.subscribe(organisationSettings => {
 
@@ -210,6 +210,8 @@ public async generateTableDataSource() : Promise<void> {
 
   }
 
+  console.log(dataSource);
+
   this.dataSource.next(dataSource); 
 
 }
@@ -303,6 +305,12 @@ getRotationPeriods(rotaVersionId: number, periodsToShow?: number, offset?: numbe
   offset = offset || 0;
 
   return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${offset}`);
+
+}
+
+getRotationPeriod(rotaVersionId: number, rotationPeriodId: number) : Promise<RotationPeriodResponse | null> {  
+
+  return this.get(`/GetRotationPeriod?rotaVersionId=${rotaVersionId}&rotationPeriodId=${rotationPeriodId}`);
 
 }
 
@@ -809,11 +817,13 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
         userId: staff.userId
       }
 
-      this.putSubEndpoint("UpsertMatrix",assignedUser).then(result =>
+      this.putSubEndpoint("UpsertMatrix",assignedUser).then(result => {
 
-        console.log(result)
+        if(result.success=== -1){
+          this.snackbar.errorSnackBar("An error occurred saving the assigned user", "OK");
+        }
 
-      );
+    });
 
     }
 
@@ -1072,28 +1082,6 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   }
 
-  private getAreaCounts() : Map<string, number> {
-    let areaMap = new Map<string, number>();
-
-    this.getAreaShiftArray.controls.forEach(element => {
-
-      const currentArea = element.get('rotationArea')?.value || "";
-
-      if (areaMap.has(currentArea)) {
-
-        const currentCount = areaMap.get(currentArea) || 0;
-        areaMap.set(currentArea, currentCount + 1);
-
-      }
-      else {
-        areaMap.set(currentArea, 1);
-      }
-
-    });
-
-    return areaMap;
-  }
-
   resetRotaForm() : void {
 
     this.rotaForm.reset();  
@@ -1146,7 +1134,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     this.getAreaShiftArray.controls.forEach((element, index) => {
 
-      element.get("sortOrder")?.setValue(index + 1);
+      element.get("sequence")?.setValue(index + 1);
 
       this.upsertAreaShift(element?.value).then(result => {
 

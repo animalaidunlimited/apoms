@@ -81,6 +81,8 @@ LEFT JOIN AAU.LeaveRequest lrl ON	lrl.UserId = lr.UserId AND
                                     lrl.LeaveStartDate < lr.LeaveStartDate
 WHERE lr.OrganisationId = vOrganisationId
 AND lr.IsDeleted = 0
+AND lr.LeaveStartDate <= prm_EndDate
+AND lr.LeaveEndDate >= prm_StartDate
 )
 
 SELECT
@@ -109,8 +111,7 @@ SELECT
 			JSON_OBJECT("isDeleted", lr.IsDeleted)
 			)) AS `LeaveRequests`
 FROM RawCTE lr
-WHERE RNum = 1
-AND lr.LeaveStartDate BETWEEN prm_StartDate AND prm_EndDate;
+WHERE RNum = 1;
 
 END$$
 

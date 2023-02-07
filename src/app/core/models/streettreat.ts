@@ -203,3 +203,8 @@ export interface StreetTreatScoreCard {
     CompletedUrgentVisitsToday: number;
     NoVisits: number;
 }
+
+export interface StreetTreatRole {
+    roleId: number;
+    roleName: string;
+  }

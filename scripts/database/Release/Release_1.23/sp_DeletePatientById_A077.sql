@@ -44,4 +44,4 @@ END IF;
 SELECT prm_PatientId AS `patientId`, vSuccess AS `success`;
 
 
-END
+END$$

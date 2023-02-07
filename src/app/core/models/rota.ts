@@ -14,7 +14,7 @@ export interface RotationRoleResponse{
     shiftSegmentTypeId: number;    
     startTime: string;
     endTime: string;
-    sameDay: boolean;
+    sameDay: boolean;    
   }
 
 
@@ -228,8 +228,8 @@ export interface LeaveRequest {
   leaveRequestReasonId: number | null;
   leaveRequestReason: string;
   additionalInformation: string;
-  leaveStartDate: Date | null;
-  leaveEndDate: Date | null;
+  leaveStartDate: Date | string | null;
+  leaveEndDate: Date | string | null;
   numberOfDays: number;
   granted: number | null;
   commentReasonManagementOnly: string;

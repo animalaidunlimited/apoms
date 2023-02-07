@@ -16,30 +16,9 @@ import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { Department } from 'src/app/core/models/rota';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { ReturnStatement } from '@angular/compiler';
-
-
-interface StreetTreatRole {
-  roleId: number;
-  roleName: string;
-}
-
-interface PermissionObject {
-  groupId : number;
-  groupValue: number;
-}
-
-interface UserPermissions {
-  groupNameId: number;
-  groupName: string;
-  permissions: Permissions[];
-}
-
-interface Permissions {
-  permissionId : number;
-  permissionType: string;
-}
-
+import { UserPermissions } from 'src/app/core/models/permissions';
+import { StreetTreatRole } from 'src/app/core/models/streettreat';
+import { EvaluatePermissionService } from 'src/app/core/services/permissions/evaluate-permission.service';
 
 @Component({
     selector: 'app-users-page',
@@ -143,7 +122,8 @@ export class UsersPageComponent implements OnInit {
       permissionArray:[[0]],
       fixedDayOff: [[0]],
       departmentId: [0],
-      localName: ['']
+      localName: [''],
+      excludeFromScheduleUsers: [false]
     });
 
     userList!: UserDetails[];
@@ -157,31 +137,12 @@ export class UsersPageComponent implements OnInit {
       private fb : UntypedFormBuilder,
       private userDetailsService : UserDetailsService,
       private snackBar: SnackbarService,
+      private permissionService: EvaluatePermissionService,
       private route: ActivatedRoute) {
 
         this.departments$ = this.dropdown.getDepartments();
 
-        const emptyUser: UserDetails = {
-          userId : 0,
-          employeeNumber: '',
-          firstName: '',
-          surname: '',
-          initials: '',
-          colour: '#ffffff',
-          telephone: 0,
-          userName: '',
-          roleId: 0,
-          role: '',
-          jobTitleId: 0,
-          jobTitle: '',
-          permissionArray: [],
-          fixedDayOff: [0],
-          departmentId: 0,
-          localName: '',
-          isDeleted: false
-        };
-
-        this.dataSource = new MatTableDataSource([emptyUser]);
+        this.dataSource = new MatTableDataSource([this.userDetails.value as UserDetails]);
       }
 
 
@@ -196,109 +157,7 @@ export class UsersPageComponent implements OnInit {
 
     });
 
-      this.permissionGroupObject = [
-        {
-          groupNameId:1,
-          groupName: 'Emergency register',
-          permissions: [{
-            permissionId: 1,
-            permissionType: 'Read'
-          }, {
-            permissionId : 2,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 2,
-          groupName: 'Hospital manager',
-          permissions: [{
-            permissionId: 3,
-            permissionType: 'Read'
-          }, {
-            permissionId : 4,
-            permissionType: 'Write'
-          }]
-        }
-        ,{
-          groupNameId: 3,
-          groupName: 'Treatment list',
-          permissions: [{
-            permissionId: 7,
-            permissionType: 'Read'
-          }, {
-            permissionId : 8,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 4,
-          groupName: 'StreetTreat',
-          permissions: [{
-            permissionId: 5,
-            permissionType: 'Read'
-          }, {
-            permissionId : 6,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 5,
-          groupName: 'Vehicles',
-          permissions: [{
-            permissionId: 15,
-            permissionType: 'Read'
-          }, {
-            permissionId : 16,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 6,
-          groupName: 'Driver view',
-          permissions: [{
-            permissionId: 13,
-            permissionType: 'Read'
-          }, {
-            permissionId : 14,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 7,
-          groupName: 'Rota',
-          permissions: [{
-            permissionId: 17,
-            permissionType: 'Read'
-          }, {
-            permissionId : 18,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 8,
-          groupName: 'Reporting',
-          permissions: [{
-            permissionId: 9,
-            permissionType: 'Read'
-          }, {
-            permissionId : 10,
-            permissionType: 'Write'
-          }]
-        },
-        {
-          groupNameId: 9,
-          groupName: 'Settings',
-          permissions: [{
-            permissionId: 11,
-            permissionType: 'Read'
-          }, {
-            permissionId : 12,
-            permissionType: 'Write'
-          }]
-        }
-
-
-      ];
+      this.permissionGroupObject = this.permissionService.getPermissionsObject();
 
       this.dropdown.getUserJobType().pipe(takeUntil(this.ngUnsubscribe)).subscribe(jobType => {
         this.jobTypes = jobType;
@@ -450,22 +309,17 @@ export class UsersPageComponent implements OnInit {
 
       let userId = this.userDetails.get('userId')?.value;
 
-      if(!userId){
-        return;
-      }
+      if(!userId) return;
 
       this.userDetailsService.deleteUserById(userId).then(result => {
 
-        if(result.success === 1){
-          this.snackBar.successSnackBar('User deleted successfully.' , 'Ok');
-          this.afterSaveActions();
+      if(result.success === 1){
+        this.snackBar.successSnackBar('User deleted successfully.' , 'Ok');
+        this.afterSaveActions();
+        return;
+      }
 
-        }
-        else {
-          this.snackBar.errorSnackBar('Delete error, See admin. error: UPC:465','Ok');
-        }
-
-        
+      this.snackBar.errorSnackBar('Delete error, See admin. error: UPC:465','Ok');               
 
       });
     }

@@ -59,7 +59,7 @@
 
           <mat-form-field appearance="fill">
             <mat-label>Phone number</mat-label>             
-              <input type= "tel" formControlName= "telephone" matInput>
+              <input type="tel" formControlName="telephone" matInput>
           </mat-form-field>
 
         </div>
@@ -75,6 +75,10 @@
               <mat-label>Pick color</mat-label>
               <input type="color" formControlName="colour" matInput>
           </mat-form-field>
+
+          <div style="width: 212px;">
+            <mat-slide-toggle formControlName="excludeFromScheduleUsers">Exclude user from schedule users</mat-slide-toggle>
+          </div>
 
         </div>
 

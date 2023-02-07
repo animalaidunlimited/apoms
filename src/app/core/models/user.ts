@@ -30,6 +30,7 @@ export interface UserDetails {
     fixedDayOff: number[];
     departmentId: number;
     localName: string;
+    excludeFromScheduleUsers: boolean;
     isDeleted: boolean;
   }
 
@@ -53,3 +54,5 @@ export interface UserPreferences {
     clearSearchOnTabReturn? : boolean;
     rotaAreas?: number[];
 }
+
+

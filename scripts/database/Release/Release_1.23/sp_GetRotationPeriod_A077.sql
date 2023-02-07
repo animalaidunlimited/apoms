@@ -1,11 +1,11 @@
 DELIMITER !!
 
-DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
+DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriod !!
 
--- CALL AAU.sp_GetRotationPeriods(2, 1, 0);
+-- CALL AAU.sp_GetRotationPeriod(2, 1);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT)
+CREATE PROCEDURE AAU.sp_GetRotationPeriod( IN prm_RotaVersionId INT, IN prm_RotationPeriodId INT)
 BEGIN
 
 /*
@@ -35,13 +35,11 @@ Purpose: Retrieve a list of rotation periods for a rota version.
         rp.EndDate,
         IF(rp.locked = 1, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS `Locked`
     FROM AAU.RotationPeriod rp
-    WHERE rp.RotaVersionId = prm_RotaVersionId
+    WHERE rp.RotationPeriodId = prm_RotationPeriodId
     AND rp.IsDeleted = 0
-    ORDER BY StartDate DESC
-    LIMIT prm_Limit OFFSET prm_Offset
     )
     
-	SELECT 
+	SELECT
 			JSON_MERGE_PRESERVE(
 			JSON_MERGE_PRESERVE(
 			JSON_OBJECT("firstRotationPeriodGUID", mm.FirstRotationPeriodGUID),
@@ -57,7 +55,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
             JSON_OBJECT("startDate", rp.StartDate),
             JSON_OBJECT("endDate", rp.EndDate),
             JSON_OBJECT("locked", rp.`Locked`)
-			)))) AS `RotationPeriods`
+			)))) AS `RotationPeriod`
 	FROM rotationPeriodsCTE rp
     INNER JOIN minMaxCTE mm ON mm.RotaVersionId = rp.RotaVersionId
     GROUP BY mm.FirstRotationPeriodGUID, mm.LastRotationPeriodGUID;

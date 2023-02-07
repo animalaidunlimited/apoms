@@ -2,23 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { skip, take, takeUntil } from 'rxjs/operators';
 import { RotaService } from '../../services/rota.service';
-import { Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotaVersion } from './../../../../core/models/rota';
-import { RotaSettingsService } from './../settings/services/rota-settings.service';
+import { DisplayLeaveRequest, LeaveRequest, Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotationPeriodResponse, RotaVersion } from '../../../../core/models/rota';
+import { RotaSettingsService } from '../settings/services/rota-settings.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
-import { SnackbarService } from './../../../../core/services/snackbar/snackbar.service';
-import { DailyRotaService } from './../../services/daily-rota.service';
+import { SnackbarService } from '../../../../core/services/snackbar/snackbar.service';
+import { StaffScheduleService } from '../../services/staff-schedule.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
+import { LeaveRequestService } from '../../services/leave-request.service';
 
 
 @Component({
-  selector: 'app-daily-rota',
-  templateUrl: './daily-rota.component.html',
-  styleUrls: ['./daily-rota.component.scss']
+  selector: 'app-staff-schedule',
+  templateUrl: './staff-schedule.component.html',
+  styleUrls: ['./staff-schedule.component.scss']
 })
-export class DailyRotaComponent implements OnInit {
+export class StaffScheduleComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
@@ -31,6 +32,8 @@ export class DailyRotaComponent implements OnInit {
   });
 
   areas: RotationArea[] = [];
+
+  leaveRequests = new BehaviorSubject<LeaveRequest[] | null>(null);
 
   offset = 0;
 
@@ -65,8 +68,9 @@ export class DailyRotaComponent implements OnInit {
   constructor(
     route: ActivatedRoute,
     private fb: FormBuilder,
+    private requestService: LeaveRequestService,
     private rotaService: RotaService,
-    private dailyRotaService: DailyRotaService,
+    private staffScheduleService: StaffScheduleService,
     private userOptionsService: UserOptionsService,
     private snackbar: SnackbarService,
     private printService: PrintTemplateService,
@@ -79,8 +83,7 @@ export class DailyRotaComponent implements OnInit {
       
       if(route.snapshot.params.rotationPeriodId){
 
-          this.rotationPeriodId = Number(`${route.snapshot.params.rotationPeriodId}`);
-
+          this.rotationPeriodId = Number(`${route.snapshot.params.rotationPeriodId}`);          
       }
 
     });
@@ -95,14 +98,15 @@ export class DailyRotaComponent implements OnInit {
 
     this.setSelectedAreas();
     this.loadRotaDays();
-    this.watchRotaSelect()
+    this.watchRotaSelect();
+    this.watchLeaveRequests();
     
   }
 
   watchRotaSelect() : void
   {
     this.areaForm.get('rotaId')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(rotaId => 
-      
+     
       this.rotas.pipe(take(1)).subscribe(rotas => { 
 
         const foundRotaVersions = rotas?.find(element => element.rotaId === rotaId)?.rotaVersions;
@@ -127,31 +131,46 @@ export class DailyRotaComponent implements OnInit {
 
   getRotationPeriodForRotaVersion(rotaVersionId: number, limit?: number, offset?: number) : void {
 
-    this.rotaService.getRotationPeriods(rotaVersionId, limit, offset).then(result => {
+    this.rotaService.getRotationPeriods(rotaVersionId, limit, offset).then(response => {
 
-      if(!result){
+      if(!response){
         return;
       }
 
-      const currentPeriod = result?.rotationPeriods[0];
-
-      this.startDate = new Date(currentPeriod.startDate);
-      this.endDate = new Date(currentPeriod.endDate);
-
-      this.leftDisabled = currentPeriod.rotationPeriodGUID === result.firstRotationPeriodGUID;
-
-      this.rotationPeriodId = currentPeriod.rotationPeriodId;
-      this.loadRotaDays();
+      this.processRotationPeriodResponse(response, true);
+      
 
     })
 
   }
   
+  private processRotationPeriodResponse(response: RotationPeriodResponse | null, loadRotaDays: boolean) {
+
+    if(!response) return;
+
+    const currentPeriod = response?.rotationPeriods[0];
+
+    this.startDate = new Date(currentPeriod.startDate);
+    this.endDate = new Date(currentPeriod.endDate);
+
+    this.leftDisabled = currentPeriod.rotationPeriodGUID === response.firstRotationPeriodGUID;
+
+    this.rotationPeriodId = currentPeriod.rotationPeriodId;
+
+    this.requestService.getLeaveRequestsForPeriod(currentPeriod.startDate.toString(), currentPeriod.endDate.toString()).then(requests => {
+
+      this.leaveRequests.next(requests);
+
+      if(loadRotaDays) this.loadRotaDays();
+
+    });
+  }
+
   loadRotaDays() : void {
 
     if(this.rotationPeriodId === -1){
       return;
-    }
+    }    
 
     this.rotaService.getRotaDayAssignmentsByRotationPeriodId(this.rotationPeriodId);
     
@@ -170,13 +189,14 @@ export class DailyRotaComponent implements OnInit {
           if(foundRotaVersions){
             this.rotaVersions.next(foundRotaVersions);
             this.areaForm.get('rotaVersionId')?.enable();
-            this.areaForm.get('rotaVersionId')?.setValue(rotaDays.rotaVersionId);    
+            this.areaForm.get('rotaVersionId')?.setValue(rotaDays.rotaVersionId);
+            this.rotaService.getRotationPeriod(rotaDays.rotaVersionId, this.rotationPeriodId).then(response => this.processRotationPeriodResponse(response, false));
             
           }
   
         })
 
-      }
+      }  
       
       this.processRotaDays(rotaDays);
       this.dataLoaded = true;
@@ -192,6 +212,31 @@ export class DailyRotaComponent implements OnInit {
       this.areaForm.get('areas')?.setValue(preferences?.rotaAreas);
 
     })
+
+  }
+
+  watchLeaveRequests() : void {
+
+    this.leaveRequests.pipe(takeUntil(this.ngUnsubscribe), skip(1)).subscribe(requests => {
+
+      this.rotaDayForm.controls.forEach(day => {        
+
+        const date = new Date(day.get('rotaDayDate')?.value);
+        
+        const pendingRequests = requests?.filter(request => {
+
+          const startDate = new Date(request.leaveStartDate || day.get('rotaDayDate')?.value);
+          const endDate = new Date(request.leaveEndDate || day.get('rotaDayDate')?.value);
+
+          return date >= startDate && date <= endDate && request.granted === null;
+
+        });
+
+        day.get('leaveRequestCount')?.setValue(pendingRequests?.length);
+
+      })
+
+    });
 
   }
 
@@ -213,7 +258,8 @@ export class DailyRotaComponent implements OnInit {
   generateRotaDay(day: RotaDay) : FormGroup {
 
     let rotaGroup = this.fb.group({
-      rotaDayDate: [day.rotaDayDate],      
+      rotaDayDate: [day.rotaDayDate],
+      leaveRequestCount: [0],
       rotaDayAssignments: this.fb.array([])
     });
 
@@ -223,7 +269,7 @@ export class DailyRotaComponent implements OnInit {
         continue;        
       }
 
-      let newAssignment = this.dailyRotaService.generateNewAssignment(assignment);
+      let newAssignment = this.staffScheduleService.generateNewAssignment(assignment);
 
       //TODO - FIX THIS AFTER INTRODUCTION OF SHIFT SEGMENTS
       // if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){
@@ -294,6 +340,10 @@ printRotaDay() : void {
 
 tabChanged($event: MatTabChangeEvent) : void {
   this.selectedIndex = $event.index;
+}
+
+showLeaveRequestsForDay(leaveDate: string | Date) : void {
+  console.log(leaveDate);
 }
 
 
