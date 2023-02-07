@@ -61,7 +61,7 @@ export class CommentComponent implements OnInit, OnDestroy {
 
     this.loadComments();
 
-    this.userDetailsService.getUsersByIdRange(this.userOptionsService.getUserName()).then((userListData: UserDetails[])=>{
+    this.userDetailsService.getUsersByIdRange().then((userListData: UserDetails[])=>{
       this.mentionUsers = userListData;
     });
 
