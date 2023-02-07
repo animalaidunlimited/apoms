@@ -308,6 +308,12 @@ getRotationPeriods(rotaVersionId: number, periodsToShow?: number, offset?: numbe
 
 }
 
+getRotationPeriod(rotaVersionId: number, rotationPeriodId: number) : Promise<RotationPeriodResponse | null> {  
+
+  return this.get(`/GetRotationPeriod?rotaVersionId=${rotaVersionId}&rotationPeriodId=${rotationPeriodId}`);
+
+}
+
 getAreaShifts() : Promise<AreaShift[] | null> {
   
   const rotaVersionId = this.getCurrentRota.get("rotaVersionId")?.value || -1;

@@ -82,6 +82,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // this.defaultFilterPredicate = this.dataSource.filterPredicate;    
+    
   }
 
   ngOnDestroy() {

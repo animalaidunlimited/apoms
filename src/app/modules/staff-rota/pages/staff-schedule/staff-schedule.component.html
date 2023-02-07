@@ -83,6 +83,12 @@
     <ng-template mat-tab-label>
       <span>{{day.get('rotaDayDate')?.value | date : "EEE,dd/MMM"}}</span>
       <mat-icon *ngIf="!day.get('rotaDayAssignments')?.pristine" matTooltip="Unsaved changes" style="margin-left: 10px">error</mat-icon>
+      <mat-icon *ngIf="day.get('leaveRequestCount')?.value > 0"
+      [matBadge]="day.get('leaveRequestCount')?.value" matBadgeColor="warn"
+      matBadgeSize="small"
+      [matTooltip]="day.get('leaveRequestCount')?.value + ' pending leave request' + (day.get('leaveRequestCount')?.value > 1 ? 's' : '')" style="margin-left: 10px; pointer-events: all;"
+      (click)="showLeaveRequestsForDay(day.get('rotaDayDate')?.value)">perm_contact_calendar</mat-icon>
+
   </ng-template>    
 
     <app-staff-schedule-day [rotationPeriodId]="rotationPeriodId" [rotaDayDate]="day.get('rotaDayDate')?.value" [inputRotaDayAssignments]="day.get('rotaDayAssignments')"></app-staff-schedule-day>
