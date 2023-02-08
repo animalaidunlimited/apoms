@@ -25,7 +25,8 @@ export interface TreatmeantListObject{
 export interface TreatmentArea {
     areaId:number;
     areaName : string;
-    sortArea?: number;
+    sortOrder?: number;
+    isDeleted?: boolean;
     abbreviation?: string;
     mainArea?: boolean;
 }

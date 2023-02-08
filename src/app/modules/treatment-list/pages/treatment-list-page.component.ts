@@ -47,7 +47,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
     this.treatmentAreas = this.dropdown.getTreatmentAreas()
                               .pipe(
                                 take(1),
-                                map(result => result.sort((a,b) => (a?.sortArea || 0) < (b?.sortArea || 0) ? -1 : 1)));
+                                map(result => result.sort((a,b) => (a?.sortOrder || 0) < (b?.sortOrder || 0) ? -1 : 1)));
 
 
 

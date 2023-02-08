@@ -772,7 +772,7 @@ export class DropdownService extends APIService {
 
         const request = `/${dropdownName}`;
 
-        return this.getObservable(request).pipe(map((response: any) => {
+        return this.getObservable(request).pipe(map((response: any) => {            
 
             let sortedResponse = response.sort((a: any, b: any) => (a.SortOrder || 99) - (b.SortOrder || 99));
 
