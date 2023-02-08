@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ChangeDetectorRef, Component,  OnDestroy,  OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -8,7 +8,6 @@ import { map, takeUntil } from 'rxjs/operators';
 import { EditableDropdown } from 'src/app/core/models/dropdown';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { EditableDropdownService } from '../../../core/services/editable-dropdown/editable-dropdown.service';
-
 
  @Component({
   selector: 'aau-organisation-dropdown',
@@ -29,9 +28,7 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
   displayedColumns:string[] = ['value', 'isDeleted', 'sort', 'saving'];
 
-  dropdowns: Observable<EditableDropdown[]> | undefined;
-
-  
+  dropdowns: Observable<EditableDropdown[]> | undefined;  
   
   dropdownForm = this.fb.nonNullable.group({
     currentDropdown: [this.generateEmptyEditableDropdown()]
@@ -48,7 +45,6 @@ export class OrganisationDropdownComponent implements OnInit, OnDestroy {
 
   this.currentDropdownDataSource = this.eDropdownService.editableDropdownObject;
   this.refreshing = this.eDropdownService.refreshing;
-
 
 }
 

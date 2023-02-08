@@ -1,7 +1,7 @@
 
 <form [formGroup]="dropdownForm" class="flex-column flex-center-center">
 
-	<mat-form-field>
+	<mat-form-field style="max-width: 400px; width: 100%">
 		<mat-select placeholder="Select dropdown"
 			formControlName="currentDropdown">
 			<mat-option>None</mat-option>
@@ -17,8 +17,6 @@
 
 <fieldset class="form-sub-group" *ngIf="currentDisplayName">
 	<legend class="legend" i18n>{{currentDisplayName}}</legend>
-
-
 
 	<div>
 

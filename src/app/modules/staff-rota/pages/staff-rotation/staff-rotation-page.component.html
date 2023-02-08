@@ -207,7 +207,9 @@
                       [formGroupName]="(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)"
                       class="assigned-staff-wrapper">
       
-                        <div *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser'); let assignedUser">                                      
+                        <div *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser');
+                        let assignedUser"
+                        class="flex-row gap-10">                                      
       
                           <input matInput
                           type="text"
