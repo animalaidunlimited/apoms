@@ -118,7 +118,6 @@ END IF;
 
 SELECT prm_PatientId AS `patientId`, vSuccess AS `success`;
 
-
 END$$
 DELIMITER !!
 
@@ -797,12 +796,12 @@ SELECT
     END AS `LeaveGranted`,
     CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,
     rr.RotationRoleId,
-	rr.RotationRole,
+	  rr.RotationRole,
     rr.RotationAreaId,
-	rr.RotationArea,
+	  rr.RotationArea,
     rr.RotationAreaSortOrder,
     rr.RotationAreaColour,
-	rr.rotationRoleShiftSegments,
+	  rr.rotationRoleShiftSegments,
     rda.Notes
 	FROM AAU.RotaDayAssignment rda
 	INNER JOIN RoleAndAreaCTE rr ON rr.RotationRoleId = rda.RotationRoleId    

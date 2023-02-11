@@ -841,7 +841,13 @@ SELECT
 	NULL,
     -1,
 	'LEAVE',
-    NULL,    
+
+	-1,
+	'Leave',
+	-1,
+	'#999999',
+	
+    NULL,
 	NULL
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
@@ -866,8 +872,15 @@ SELECT
 		END AS `LeaveGranted`,	
 	NULL,
     -1,
-	'FIXED OFF',	
-    NULL,    
+
+	'FIXED OFF',
+	-2,
+	'Fixed Off',
+	-2,
+	'#999999',
+	
+    NULL,
+    
 	NULL
 FROM AAU.RotationPeriod rp
 INNER JOIN AAU.Tally t ON t.Id < 7
