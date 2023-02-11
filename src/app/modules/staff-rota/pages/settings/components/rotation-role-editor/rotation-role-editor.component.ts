@@ -22,7 +22,6 @@ export class RotationRoleEditorComponent implements OnInit {
 
   rotationRoleForm = this.fb.group({
     rotationRoleId: [],
-    rotationAreaId: ["", Validators.required],
     rotationRole: ["", Validators.required],
     colour: ["#ffffff"],
     shiftSegments: this.fb.array([]),
@@ -73,7 +72,6 @@ export class RotationRoleEditorComponent implements OnInit {
       return {
         rotationRoleId: value.rotationRoleId,
         rotationRole: value.rotationRole,
-        rotationAreaId: value.rotationAreaId,
         shiftSegments: value.shiftSegments,
         colour: value.colour,
         isDeleted: value.isDeleted,
@@ -182,7 +180,10 @@ export class RotationRoleEditorComponent implements OnInit {
 
     this.shiftSegments.clear();
 
-    emittedRole.shiftSegments.forEach(() => this.addShiftSegment());
+    if(emittedRole.shiftSegments){
+      emittedRole.shiftSegments.forEach(() => this.addShiftSegment());
+    }
+
 
     this.rotationRoleForm.patchValue(emittedRow.value);
   }

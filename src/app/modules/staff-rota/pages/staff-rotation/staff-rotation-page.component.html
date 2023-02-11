@@ -12,8 +12,9 @@
         (cdkDropListDropped)="rowDropped($event)"
         >
 
-        <ng-container matColumnDef="area" sticky>
-          <th mat-header-cell *matHeaderCellDef [attr.colspan]=2>
+        <ng-container matColumnDef="areaShift" sticky>
+          <!-- [attr.colspan]=2 -->
+          <th mat-header-cell *matHeaderCellDef >
             <div class="flex-row flex-center-center gap-20">
 
               <div formGroupName="currentRota" class="flex-column flex-center-center" style="margin-top: 10px;">
@@ -175,22 +176,30 @@
 
             </div>
           </th>
-          <td mat-cell *matCellDef="let element; let i = index"
+          <!-- <td mat-cell *matCellDef="let element; let i = index"
           [attr.rowspan]="(element.get('area')?.value.areaRowSpan)"
           [style.display]="element.get('area')?.value.areaRowSpan !== 0  ? '' : 'none'"
           class="area-header"
           [ngStyle]="{backgroundColor: element.get('area')?.value.rotationAreaColour}"
-          >{{element.get('area')?.value.rotationArea}}</td>
+          >
+          {{element.get('area')?.value.rotationArea}}</td> -->
+
+          <td mat-cell *matCellDef="let element"> 
+
+            <app-area-shift [inputAreaShift]="element.get('areaShift')"></app-area-shift>
+
+          </td>
+
         </ng-container>
 
-          <ng-container matColumnDef="areaShift" sticky>
+          <!-- <ng-container matColumnDef="areaShift" sticky>
             <th mat-header-cell *matHeaderCellDef style="display: none;"></th>
             <td mat-cell *matCellDef="let element"> 
 
               <app-area-shift [inputAreaShift]="element.get('areaShift')"></app-area-shift>
 
             </td>
-          </ng-container>
+          </ng-container> -->
         
           <div *ngFor="let period of (rotationPeriods | async); let i = index;">            
             

@@ -20,14 +20,13 @@ export interface RotationRoleResponse{
 
   export interface ShiftSegment extends BaseShiftSegment{
     rotationRoleShiftSegmentUUID: string;
-    shiftSegmentType: string;
+    shiftSegmentTypeId: number;
     isDeleted: boolean;
   }
 
   export interface BaseRotationRole{
     rotationRoleId: number | undefined;
     rotationRole: string;
-    rotationAreaId: number;
     shiftSegments: ShiftSegment[],
     colour: string;
     isDeleted: boolean;
@@ -104,10 +103,6 @@ export interface AreaShift{
   areaShiftId: number;
   colour: string;
   rotaVersionId: number;
-  rotationArea: string;
-  rotationAreaColour: string;
-  rotationAreaId: number;
-  rotationAreaSortOrder: number;
   rotationRoleId: number;
   sortOrder: number;
   roleName: string;
@@ -178,7 +173,7 @@ export interface UserAssignmentPrintItem {
   notes: string;
   startTime?: Date;
   endTime?: Date;
-  rotationArea: string;
+  // rotationArea: string;
   rotationRoleShiftSegments: BaseShiftSegment[];
 }
 
@@ -191,11 +186,7 @@ export interface RotaDayAssignment{
   leaveGranted: string;
   leaveUser: string;
   rotationRoleId: number;
-  rotationRole: string;
-  rotationAreaId: number;
-  rotationArea: string;  
-  rotationAreaColour: string;
-  rotationAreaSortOrder: number;
+  rotationRole: string;  
   rotationRoleShiftSegments: BaseShiftSegment[];
   notes: string;
   isAdded: boolean;

@@ -40,14 +40,9 @@ RoleAndAreaCTE AS
 (
 	SELECT rrss.RotationRoleId,
 	rr.RotationRole,
-	rr.RotationAreaId,
-	ra.RotationArea,
-	ra.SortOrder AS `RotationAreaSortOrder`,
-	ra.Colour AS `RotationAreaColour`,
 	rrss.rotationRoleShiftSegments
 	FROM RotationRoleShiftSegmentsCTE rrss
 	INNER JOIN AAU.RotationRole rr ON rr.RotationRoleId = rrss.RotationRoleId
-	INNER JOIN AAU.RotationArea ra ON ra.RotationAreaId = rr.RotationAreaId AND ra.IsDeleted = 0
 ),
 
 BaseCTE AS 
@@ -68,10 +63,7 @@ SELECT
     CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,
     rr.RotationRoleId,
 	rr.RotationRole,
-    rr.RotationAreaId,
-	rr.RotationArea,
-    rr.RotationAreaSortOrder,
-    rr.RotationAreaColour,
+    
 	rr.rotationRoleShiftSegments,
     rda.Notes
 	FROM AAU.RotaDayAssignment rda
@@ -100,13 +92,7 @@ SELECT
 	NULL,
     -1,
 	'LEAVE',
-	-1,
-	'Leave',
-	-1,
-	'#999999',
-	
-    NULL,
-    
+    NULL,    
 	NULL
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
@@ -131,14 +117,8 @@ SELECT
 		END AS `LeaveGranted`,	
 	NULL,
     -1,
-	'FIXED OFF',
-	-2,
-	'Fixed Off',
-	-2,
-	'#999999',
-	
-    NULL,
-    
+	'FIXED OFF',	
+    NULL,    
 	NULL
 FROM AAU.RotationPeriod rp
 INNER JOIN AAU.Tally t ON t.Id < 7
@@ -162,11 +142,7 @@ SELECT RotationPeriodId,
                         JSON_OBJECT("leaveGranted", LeaveGranted),
                         JSON_OBJECT("leaveUser", LeaveUser),
                         JSON_OBJECT("rotationRoleId", RotationRoleId),
-                        JSON_OBJECT("rotationRole", RotationRole),
-                        JSON_OBJECT("rotationAreaId", RotationAreaId),
-                        JSON_OBJECT("rotationArea", RotationArea),
-                        JSON_OBJECT("rotationAreaColour", RotationAreaColour),
-                        JSON_OBJECT("rotationAreaSortOrder", RotationAreaSortOrder),
+                        JSON_OBJECT("rotationRole", RotationRole),                        
                         JSON_OBJECT("rotationRoleShiftSegments", rotationRoleShiftSegments),
                         JSON_OBJECT("notes", Notes),
                         JSON_OBJECT("isAdded", CAST(0 AS JSON))

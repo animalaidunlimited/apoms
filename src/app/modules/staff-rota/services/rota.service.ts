@@ -210,8 +210,6 @@ public async generateTableDataSource() : Promise<void> {
 
   }
 
-  console.log(dataSource);
-
   this.dataSource.next(dataSource); 
 
 }
@@ -219,7 +217,7 @@ public async generateTableDataSource() : Promise<void> {
   private generateDataSourceRow(areaShift: AbstractControl) {
 
     let row = this.fb.group({
-      area: [this.extractAreaFromAreaShift(areaShift)],
+      // area: [this.extractAreaFromAreaShift(areaShift)],
       areaShift: areaShift
     });
 

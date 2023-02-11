@@ -11,10 +11,6 @@ CREATE PROCEDURE AAU.sp_InsertRotaDayAssignment(
 													IN prm_RotationPeriodId INT,
 													IN prm_RotationRoleId INT,
 													IN prm_UserId INT,
-													IN prm_ActualStartTime TIME,
-													IN prm_ActualEndTime TIME,
-													IN prm_ActualBreakStartTime TIME,
-													IN prm_ActualBreakEndTime TIME,
 													IN prm_RotationUserId INT,
 													IN prm_Notes VARCHAR(1024) CHARACTER SET UTF8MB4
 )
@@ -56,10 +52,6 @@ INSERT INTO AAU.RotaDayAssignment
 	RotationPeriodId,
 	RotationRoleId,
 	UserId,
-	ActualStartTime,
-	ActualEndTime,
-	ActualBreakStartTime,
-	ActualBreakEndTime,
 	RotationUserId,
 	Notes
 )
@@ -69,10 +61,6 @@ VALUES
 	prm_RotationPeriodId,
 	prm_RotationRoleId,
 	prm_UserId,
-	prm_ActualStartTime,
-	prm_ActualEndTime,
-	prm_ActualBreakStartTime,
-	prm_ActualBreakEndTime,
 	prm_RotationUserId,
 	prm_Notes
 );

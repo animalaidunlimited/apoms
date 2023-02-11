@@ -267,10 +267,10 @@ export class StaffScheduleComponent implements OnInit {
     for(let assignment of day.rotaDayAssignments){
 
 
-      
-      if(!this.selectedAreas.find(area => area === assignment.rotationAreaId) && assignment.rotationAreaId > 0){
-        continue;        
-      }
+      //TODO - Need to make sure that we can use this for the areas/shifts/tasks correctly
+      // if(!this.selectedAreas.find(area => area === assignment.rotationAreaId) && assignment.rotationAreaId > 0){
+      //   continue;        
+      // }
 
       let newAssignment = this.staffScheduleService.generateNewAssignment(assignment);
 

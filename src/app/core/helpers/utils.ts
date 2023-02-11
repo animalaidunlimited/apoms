@@ -99,10 +99,7 @@ export function convertAssignmentToSearchResponse(caseSearchResult:OutstandingAs
 
 export function fnSortBySortOrderAndRotationPeriodSortOrder(firstAreaShift: AreaShift | RotationRole, secondAreaShift: AreaShift | RotationRole) : number {
 
-    return firstAreaShift.rotationAreaSortOrder === secondAreaShift.rotationAreaSortOrder ?
-      firstAreaShift.sortOrder - (secondAreaShift.sortOrder || 999)
-      :
-      firstAreaShift.rotationAreaSortOrder - (secondAreaShift.rotationAreaSortOrder || -999);
+    return firstAreaShift.sortOrder - (secondAreaShift.sortOrder || 999);
   
   }
 

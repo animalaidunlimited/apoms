@@ -55,7 +55,7 @@ export class StaffSchedulePrintComponent implements OnInit {
                                                                       notes: assignment.notes,
                                                                       startTime: new Date(day.selectedDate + 'T' + workTime?.startTime),
                                                                       endTime: new Date(day.selectedDate + 'T' + workTime?.endTime),
-                                                                      rotationArea: assignment.rotationArea,
+                                                                      // rotationArea: assignment.rotationArea,
                                                                       rotationRoleShiftSegments: assignment.rotationRoleShiftSegments
                                                                     }
 

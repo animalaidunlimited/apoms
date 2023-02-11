@@ -85,12 +85,12 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
       this.dataSource = this.rotaService.dataSource;
 
-      this.rotationPeriods = this.dataSource.pipe(skip(1), takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 2)));
+      this.rotationPeriods = this.dataSource.pipe(skip(1), takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 1)));
 
       this.displayColumns = this.dataSource.pipe(skip(1), takeUntil(this.ngUnsubscribe),map(rotation => this.displayColumnsPipe(rotation, 0)));
 
       this.addAreaShiftDisabled$ = this.rotationPeriods.pipe(takeUntil(this.ngUnsubscribe),map(periods => periods.length === 0));
-      
+     
   }
 
   initialiseRotas() : void {
@@ -110,12 +110,15 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
   displayColumnsPipe(rotation: AbstractControl[], startIndex: number) : string[] {
 
     if(!rotation || rotation?.length === 0){
-      return startIndex === 0 ? ["area","areaShift","move"] : [];
+      return startIndex === 0 ? ["areaShift","move"] : [];
       }
 
+
+
       let columns = Object.keys(rotation[0].value)
-                    .map(control => (control === "areaShift" || control === "area") ? control : control.split("|")[1])
+                    .map(control => (control === "areaShift") ? control : control.split("|")[1])
                     .splice(startIndex);
+
 
       if(startIndex === 0){
         columns.push("move");
