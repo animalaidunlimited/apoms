@@ -14,23 +14,6 @@
             Role name already exists
           </mat-error>
         </mat-form-field>
-    
-        <mat-form-field>
-          <mat-label>Area</mat-label>
-          <mat-select
-            formControlName="rotationAreaId"
-            [errorStateMatcher]="errorMatcher">
-            <mat-option>N/A</mat-option>
-                <mat-option *ngFor="let area of rotationArea$ | async" [value]="area.rotationAreaId">
-                {{area.rotationArea}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-
-      </div>
-
-      <div class="form-row flex-row flex-wrap gap-10-0 flex-center-center">
 
         <mat-form-field>
           <mat-label>Sort order</mat-label>
@@ -58,9 +41,11 @@
                     <mat-label>Shift segment type</mat-label>
                     <mat-select formControlName="shiftSegmentTypeId"
                     [errorStateMatcher]="errorMatcher">
-                      <mat-option>N/A</mat-option>
-                      <mat-option *ngFor="let segmentType of shiftSegmentTypes" [value]="segmentType.segmentTypeId">
-                        {{segmentType.segmentType}}</mat-option>
+                      <mat-option [value]="-2">Lunch break</mat-option>
+                      <mat-option [value]="-1">Tea break</mat-option>
+                      <mat-option *ngFor="let area of rotationArea$ | async" [value]="area.rotationAreaId">
+                        {{area.rotationArea}}
+                      </mat-option>                      
                     </mat-select>
                   </mat-form-field>
 

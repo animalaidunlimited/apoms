@@ -6,7 +6,6 @@ DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertRotationRole(
 		IN prm_Username VARCHAR(45),
 		IN prm_RotationRoleId INT,
-        IN prm_RotationAreaId INT,
         IN prm_RotationRole VARCHAR(45),
         IN prm_Colour VARCHAR(10),
 		IN prm_SortOrder INT,        
@@ -39,7 +38,6 @@ IF ( vRotationRoleIdExists = 0 ) THEN
 INSERT INTO AAU.RotationRole(	
 	OrganisationId,
 	RotationRole,
-    RotationAreaId,
 	Colour,
 	SortOrder,
 	IsDeleted
@@ -47,7 +45,6 @@ INSERT INTO AAU.RotationRole(
 VALUES(
 	vOrganisationId,
 	prm_RotationRole,
-    prm_RotationAreaId,
     prm_Colour,
 	prm_SortOrder,
     prm_Deleted
@@ -64,7 +61,6 @@ ELSEIF ( vRotationRoleIdExists = 1  AND prm_RotationRoleId IS NOT NULL ) THEN
 UPDATE AAU.RotationRole SET
 	OrganisationId		= vOrganisationId,    
 	RotationRole		= prm_RotationRole,
-    RotationAreaId		= prm_RotationAreaId,
     Colour				= prm_Colour,
     SortOrder			= prm_SortOrder,    
 	IsDeleted			= prm_Deleted,

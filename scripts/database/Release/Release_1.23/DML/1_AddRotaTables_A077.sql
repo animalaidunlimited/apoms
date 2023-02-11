@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS `AAU`.`RotaDayAssignment`;
 DROP TABLE IF EXISTS `AAU`.`AreaShift`;
 DROP TABLE IF EXISTS `AAU`.`RotationRoleShiftSegment`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
-DROP TABLE IF EXISTS `AAU`.`ShiftSegmentType`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
@@ -48,30 +47,8 @@ CREATE TABLE `AAU`.`RotationRole` (
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-    
-CREATE TABLE `AAU`.`ShiftSegmentType` (
-	`ShiftSegmentTypeId` INT NOT NULL AUTO_INCREMENT,
-    `OrganisationId` INT NOT NULL,
-    `ShiftSegmentType` VARCHAR(256),
-	`SortOrder` INT NULL,  
-	`IsDeleted` TINYINT NOT NULL DEFAULT 0,
-	`DeletedDate` DATETIME NULL,
-	`CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`ShiftSegmentTypeId`),
-	INDEX `FK_ShiftSegmentType_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
-	CONSTRAINT `FK_ShiftSegmentType_Organisation_OrganisationId`
-	FOREIGN KEY (`OrganisationId`)
-	REFERENCES `AAU`.`Organisation` (`OrganisationId`)
-	ON DELETE NO ACTION
-	ON UPDATE NO ACTION);
-    
-INSERT INTO `AAU`.`ShiftSegmentType` (OrganisationId, ShiftSegmentType, SortOrder) VALUES
-(1,'Working time',1),
-(1,'Lunch break',2),
-(1,'Tea break',3);
-
-  
+    ON UPDATE NO ACTION);    
+ 
 CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 	`RotationRoleShiftSegmentId` INT NOT NULL AUTO_INCREMENT,
     `OrganisationId` INT NOT NULL,
@@ -88,12 +65,6 @@ CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 	  CONSTRAINT `FK_RotationRoleShiftSegment_RotationRole_RotationRoleId`
 		FOREIGN KEY (`RotationRoleId`)
 		REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
-		ON DELETE NO ACTION
-		ON UPDATE NO ACTION,
-    INDEX `FK_RRShiftSegment_ShiftSegmentType_ShiftSegmentTypeId_idx` (`ShiftSegmentTypeId` ASC) VISIBLE,
-	  CONSTRAINT `FK_RotationRoleShiftSegment_ShiftSegmentType_ShiftSegmentType`
-		FOREIGN KEY (`ShiftSegmentTypeId`)
-		REFERENCES `AAU`.`ShiftSegmentType` (`ShiftSegmentTypeId`)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION,
 	INDEX `FK_RRShiftSegmentType_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
@@ -228,6 +199,48 @@ CREATE TABLE `AAU`.`RotationArea` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
     
+INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (1,'A Kennel',1, '#e06666', 0),
+(1,'ABC',2, '#1c4587', 0),
+(1,'ABC Day',3, '#ed7d31', 0),
+(1,'ABC Night',4, '#ed7d31', 0),
+(1,'Admin And Facilities',5, '#ed7d31', 0),
+(1,'Ambulance',6, '#1c4587', 0),
+(1,'Animal Training',7, '#ff00ff', 0),
+(1,'AW',8, '#ed7d31', 0),
+(1,'B Ken',9, '#e06666', 0),
+(1,'B Kennel',10, '#38761d', 0),
+(1,'Calf Feeding',11, '#ffc000', 0),
+(1,'Cat',12, '#e06666', 0),
+(1,'Cats',13, '#ffc000', 0),
+(1,'Cattle',14, '#e06666', 0),
+(1,'Cruelty',15, '#ed7d31', 0),
+(1,'Emergency Dispatch',16, '#1c4587', 0),
+(1,'Group Hospital',17, '#0b5394', 0),
+(1,'Handy Heaven',18, '#cfe2f3', 0),
+(1,'House Keeping',19, '#ed7d31', 0),
+(1,'Isolation',20, '#e06666', 0),
+(1,'Learning Session',21, '#9900ff', 0),
+(1,'LSAs',22, '#9900ff', 0),
+(1,'MHE',23, '#0000ff', 0),
+(1,'MHN - MHE',24, '#0000ff', 0),
+(1,'NN',25, '#ed7d31', 0),
+(1,'Operation Theathre',26, '#e06666', 0),
+(1,'Pig',27, '#e06666', 0),
+(1,'Pigeons',28, '#ffc000', 0),
+(1,'PP-I',29, '#e06666', 0),
+(1,'Pre-Iso',30, '#ff0000', 0),
+(1,'Pup',31, '#e06666', 0),
+(1,'Puppy',32, '#ed7d31', 0),
+(1,'SA',33, '#e06666', 0),
+(1,'Shelter',34, '#e06666', 0),
+(1,'Shelter Feeding Am',35, '#cfe2f3', 0),
+(1,'Street Treat',36, '#1c4587', 0),
+(1,'Upper H. ',37, '#cfe2f3', 0),
+(1,'Video',38, '#ed7d31', 0);
+
+
+
+    
     INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour) VALUES
 (1,'A Kennel', 1,'#e06666'),
 (1,'B ken', 2,'#e06666'),
@@ -352,10 +365,6 @@ CREATE TABLE `AAU`.`RotaDayAssignment` (
 `RotationPeriodId` INTEGER NOT NULL,
 `RotationRoleId` INTEGER NOT NULL,
 `UserId` INTEGER NULL,
-`ActualStartTime` TIME NULL,
-`ActualEndTime` TIME NULL,
-`ActualBreakStartTime` TIME NULL,
-`ActualBreakEndTime` TIME NULL,
 `RotationUserId` INTEGER NULL,
 `Notes` VARCHAR(1024) CHARACTER SET UTF8MB4 NULL,
 `Sequence` INTEGER NOT NULL,
