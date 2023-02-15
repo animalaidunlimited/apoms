@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { fnSortBySortOrderAndRotationPeriodSortOrder } from 'src/app/core/helpers/utils';
-import { RotationArea, RotationAreaResponse, RotationRole, RotationRoleResponse } from 'src/app/core/models/rota';
+import { GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationAreaResponse, RotationRole, RotationRoleResponse } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
 
 @Injectable({
@@ -43,6 +43,37 @@ export class RotaSettingsService extends APIService {
     const request = `/GetRotationAreas?includeDeleted=${includeDeleted}`;
 
     return this.getObservable(request).pipe(map((response: RotationArea[]) => response));    
+  
+  }
+  
+  getRotationAreaPositions(includeDeleted: boolean) : Observable<RotationAreaPosition[]> {
+
+    const request = `/GetRotationAreaPositions?includeDeleted=${includeDeleted}`;
+
+    return this.getObservable(request).pipe(map((response: RotationAreaPosition[]) => response));    
+  
+  }
+  
+  getGroupedRotationAreaPositions(includeDeleted: boolean) : Observable<GroupedRotationAreaPosition[]> {
+
+    const request = `/GetRotationAreaPositions?includeDeleted=${includeDeleted}`;
+
+    return this.getObservable(request).pipe(map((response: RotationAreaPosition[]) => 
+      
+      response.reduce((returnValue, current) => {    
+  
+        let foundAreaGroup = returnValue.find((element:GroupedRotationAreaPosition) => element.rotationAreaId === current.rotationAreaId);
+        
+        !foundAreaGroup ?
+          returnValue.push({rotationArea: current.rotationArea, rotationAreaId: current.rotationAreaId, positions: [current]})
+        :
+          foundAreaGroup.positions.push(current);  
+        
+        return returnValue;
+        
+      },[] as GroupedRotationAreaPosition[])
+    
+    ));    
   
   }
 

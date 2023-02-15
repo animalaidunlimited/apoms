@@ -8,6 +8,7 @@ import { RotationRoleEditorComponent } from './components/rotation-role-editor/r
 import { GenericTableComponent } from './components/generic-table/generic-table.component';
 import { GenericColumnHeadingFormatterPipe } from './pipes/generic-column-heading-formatter.pipe';
 import { GenericColumnCellPipe } from './pipes/generic-column-cell.pipe';
+import { RotationPositionEditorComponent } from './components/rotation-position-editor/rotation-position-editor.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { GenericColumnCellPipe } from './pipes/generic-column-cell.pipe';
     RotaSettingsComponent,
     RotationRoleEditorComponent,
     RotationAreaEditorComponent,
+    RotationPositionEditorComponent,
     GenericTableComponent,
     GenericColumnHeadingFormatterPipe,
     GenericColumnCellPipe

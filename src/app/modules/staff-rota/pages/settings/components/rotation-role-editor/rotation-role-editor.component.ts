@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UntypedFormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { BaseRotationRole, RotationArea, RotationRole } from 'src/app/core/models/rota';
+import { BaseRotationRole, GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationRole } from 'src/app/core/models/rota';
 import { Observable } from 'rxjs';
 import { RotaSettingsService } from './../../services/rota-settings.service';
 import { SnackbarService } from './../../../../../../core/services/snackbar/snackbar.service';
@@ -30,24 +30,9 @@ export class RotationRoleEditorComponent implements OnInit {
     isDeleted: [],
   });
 
-  rotationArea$!: Observable<RotationArea[]>;
+  groupedRotationAreaPosition$!: Observable<GroupedRotationAreaPosition[]>;
   rotationRoles$!: Observable<RotationRole[]>;
   rotationRolesForGenericTable$!: Observable<BaseRotationRole[]>;
-
-  shiftSegmentTypes = [
-    {
-      segmentTypeId: 1,
-      segmentType: 'Working time'
-    },
-    {
-      segmentTypeId: 2,
-      segmentType: 'Lunch break'
-    },
-    {
-      segmentTypeId: 3,
-      segmentType: 'Tea break'
-    }
-  ]
 
   get shiftSegments() : FormArray {
     return this.rotationRoleForm.get("shiftSegments") as FormArray;
@@ -65,7 +50,7 @@ export class RotationRoleEditorComponent implements OnInit {
   }
 
   private loadDropdowns() {
-    this.rotationArea$ = this.rotaSettingsService.getRotationAreas(false);
+    this.groupedRotationAreaPosition$ = this.rotaSettingsService.getGroupedRotationAreaPositions(false);
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(true);
     this.rotationRolesForGenericTable$ = this.rotationRoles$.pipe(map(values => values?.map(value => {
 
@@ -87,6 +72,8 @@ export class RotationRoleEditorComponent implements OnInit {
 
     this.updateSortOrder();
     this.rotaSettingsService.rotationAreasUpdated.subscribe(() => this.loadDropdowns());
+    
+    this.groupedRotationAreaPosition$.subscribe(val => console.log(val));
 
   }
 
@@ -183,7 +170,6 @@ export class RotationRoleEditorComponent implements OnInit {
     if(emittedRole.shiftSegments){
       emittedRole.shiftSegments.forEach(() => this.addShiftSegment());
     }
-
 
     this.rotationRoleForm.patchValue(emittedRow.value);
   }

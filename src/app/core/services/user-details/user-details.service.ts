@@ -5,7 +5,6 @@ import { BehaviorSubject } from 'rxjs';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { UserDetails } from '../../models/user';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

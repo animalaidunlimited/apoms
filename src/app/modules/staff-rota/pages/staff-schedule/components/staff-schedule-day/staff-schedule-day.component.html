@@ -1,5 +1,15 @@
 <form [formGroup]="rotaDayForm">  
 
+    <div class="user-search flex-row flex-space-between-center" *ngIf="showUserFilter" >
+      <mat-form-field >
+        <!-- (keyup.enter)="showUserFilter=!showUserFilter" -->
+        <input matInput type="text" (keyup)="searchUsers($event)" #userSearchInput autocomplete="off">
+        <button type="button" matSuffix mat-icon-button aria-label="Clear" (click)="userSearchInput.value = ''; clearAndCloseUserSearch()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field> 
+    </div>
+
   <table  mat-table [dataSource]="dataSource" class="day-rota-table" formArrayName="rotaDayAssignments">    
 
         <ng-container matColumnDef="rotationArea">
@@ -9,10 +19,12 @@
               <mat-icon>save</mat-icon>
             </button>
           </th>
+
           <td mat-cell *matCellDef="let element"
-          class="area-header first-column"
           [attr.rowspan]="element.get('areaRowSpan')?.value"
           [style.display]="element.get('areaRowSpan')?.value !== 0  ? '' : 'none'"
+          class="area-header first-column"
+
           
           [ngStyle]="{backgroundColor: element.get('rotationAreaColour')?.value}">
 
@@ -36,13 +48,13 @@
           </td>
         </ng-container>
       
-        <ng-container matColumnDef="rotationRole">
-          <th mat-header-cell *matHeaderCellDef> Rotation Role </th>
+        <ng-container matColumnDef="rotationAreaPosition">
+          <th mat-header-cell *matHeaderCellDef> Position </th>
           <td mat-cell *matCellDef="let element; let i = index">
             
             <div *ngIf="!element.get('isAdded')?.value"
               style="width: 76px;">
-              {{element.get('rotationRole')?.value}}
+              {{element.get('rotationAreaPosition')?.value || element.get('plannedRotationAreaPosition')?.value}}
             </div>         
 
             <div [formGroupName]="i" *ngIf="element.get('isAdded')?.value"
@@ -51,11 +63,11 @@
 
               <mat-select
               style="text-align: center;"
-              (selectionChange)="roleSelected($event.value, element)"
+              (selectionChange)="areaSelected($event.value, element)"
               [errorStateMatcher]="errorMatcher">
                 <mat-option>N/A</mat-option>
-                    <mat-option *ngFor="let role of rotationRoles$ | async" [value]="role">
-                    {{role.rotationRole}}
+                    <mat-option *ngFor="let area of rotationAreas$ | async" [value]="area">
+                    {{area.rotationArea}}
                 </mat-option>
               </mat-select>
 
@@ -88,17 +100,6 @@
                 
               </div>
 
-              <div class="user-search flex-row flex-space-between-center" *ngIf="showUserFilter" >
-                <mat-form-field >
-                  <input matInput type="text" (keyup)="searchUsers($event)" #userSearchInput autocomplete="off">
-                  <button matSuffix mat-icon-button aria-label="Clear" (click)="userSearchInput.value = ''; clearAndCloseUserSearch()">
-                    <mat-icon>clear</mat-icon>
-                  </button>
-                </mat-form-field> 
-              </div>
-              
-
-
           </th>
           <td mat-cell *matCellDef="let element; let i = index;" style="max-width: 200px;"> 
 
@@ -108,15 +109,16 @@
               <div *ngIf="element.get('leaveUser')?.value && element.get('leaveGranted')?.value === 'Granted'"
               class="granted-leave-user">
                 {{element.get('leaveUser')?.value}}
-              </div>    
-
-                <app-user-autocomplete formControlName="userId"
-                [formField]="false"
-                [scheduleUsers]="true"
-                [showLabel]="false" [existingUsersList]="assignedUsers" (selectionMade)="updateSelectedUsers()"
-                class="select-field"
-                style="min-width: 100px;">
-
+              </div>
+                <app-user-autocomplete
+                  formControlName="userId"
+                  [formField]="false"
+                  [scheduleUsers]="true"
+                  [showLabel]="false"
+                  [backgroundColour]="element.get('shiftSegmentCount')?.value > 1 ? '#FCE8B2' : ''"
+                  (selectionMade)="updateSelectedUsers()"
+                  class="select-field"                  
+                  style="min-width: 100px; position: relative; background-color: black">
                   <mat-icon 
                   *ngIf="element.get('leaveGranted')?.value === 'Pending' || element.get('leaveGranted')?.value === 'Denied'; let leave"
                   matTooltipClass="leave-tooltip"
@@ -126,32 +128,31 @@
                   matSuffix >event_busy</mat-icon>
 
                 </app-user-autocomplete>
+                
 
             </div>
-          
-            
           
           </td>
         </ng-container>
       
-        <!-- <ng-container matColumnDef="plannedStartTime">
-          <th mat-header-cell *matHeaderCellDef> Start time </th>
-          <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedShiftStartTime')?.value}}</span></td>
+        <ng-container matColumnDef="plannedStartTime">
+          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Start time </th>
+          <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedStartTime')?.value}}</span></td>
         </ng-container>
       
         <ng-container matColumnDef="plannedEndTime">
-          <th mat-header-cell *matHeaderCellDef> End time </th>
-          <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedShiftEndTime')?.value}}</span></td>
+          <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> End time </th>
+          <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedEndTime')?.value}}</span></td>
         </ng-container>
       
         <ng-container matColumnDef="actualStartTime">
           <th mat-header-cell *matHeaderCellDef> Real start </th>
-          <td mat-cell *matCellDef="let element; let i = index;">
+          <td mat-cell *matCellDef="let element; let i = index;">           
             <div [formGroupName]="i" class="time-field" *ngIf="element.get('rotationAreaId')?.value !== -2">
               <input matInput class="non-form-field-input" autocomplete="off"
               #shiftStart
-              [ngClass]=" element.get('actualShiftStartTime')?.errors ? 'time-error' : ''"
-              formControlName="actualShiftStartTime" type="time" (blur)="checkActualTimes(element, shiftStart, 'actualShiftStartTime', 'actualShiftEndTime')"/>  
+              [ngClass]=" element.get('actualStartTime')?.errors ? 'time-error' : ''"
+              formControlName="actualStartTime" type="time" (blur)="checkActualTimes(element, shiftStart, 'actualStartTime', 'actualEndTime')"/>  
             </div>  
           </td>
         </ng-container>
@@ -162,15 +163,15 @@
             <div [formGroupName]="i" class="time-field" *ngIf="element.get('rotationAreaId')?.value !== -2">
               <input matInput class="non-form-field-input" autocomplete="off"
               #shiftEnd
-              [ngClass]="element.get('actualShiftEndTime')?.errors ? 'time-error' : ''"
-              formControlName="actualShiftEndTime" type="time" (blur)="checkActualTimes(element, shiftEnd, 'actualShiftEndTime', 'actualShiftStartTime')"/>
+              [ngClass]="element.get('actualEndTime')?.errors ? 'time-error' : ''"
+              formControlName="actualEndTime" type="time" (blur)="checkActualTimes(element, shiftEnd, 'actualEndTime', 'actualStartTime')"/>
             </div>
           </td>
         </ng-container>
 
 
 
-        <ng-container matColumnDef="plannedBreakStartTime">
+        <!-- <ng-container matColumnDef="plannedBreakStartTime">
           <th mat-header-cell *matHeaderCellDef> Break start </th>
           <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedBreakStartTime')?.value}}</span></td>
         </ng-container>
@@ -245,7 +246,7 @@
   
       <div *ngFor="let user of utilisation | async"  style="margin-bottom: 10px;">
         <div *ngIf="user.utilisation === 'under'">
-          {{ user.userCode + ": " + (user.hours | date: 'HH:mm')}}
+          {{ user.userCode + ": " + (user.hours | date: 'hh:mm')}}
         </div>
       </div>
 
@@ -253,7 +254,7 @@
   
       <div *ngFor="let user of utilisation | async">
         <div *ngIf="user.utilisation === 'over'">
-          {{ user.userCode + ": " + (user.hours | date: 'HH:mm')}}
+          {{ user.userCode + ": " + (user.hours | date: 'hh:mm')}}
         </div>
       </div>
   

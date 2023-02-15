@@ -14,6 +14,9 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns | async"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns | async;" (click)="emitRow(row)" style="cursor: pointer;"></tr>
 
+  <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns1;" (click)="emitRow(row)" style="cursor: pointer;"></tr> -->
+
 
 </table>
 

@@ -1,4 +1,4 @@
-<form [formGroup]="rotationRoleForm" autocomplete="off" class="rotation-tole-form">
+<form [formGroup]="rotationRoleForm" autocomplete="off" class="rotation-role-form">
 
   <fieldset class="form-sub-group">
     <legend class="legend" i18n>Add new rotation area</legend>
@@ -42,10 +42,17 @@
                     <mat-select formControlName="shiftSegmentTypeId"
                     [errorStateMatcher]="errorMatcher">
                       <mat-option [value]="-2">Lunch break</mat-option>
-                      <mat-option [value]="-1">Tea break</mat-option>
-                      <mat-option *ngFor="let area of rotationArea$ | async" [value]="area.rotationAreaId">
-                        {{area.rotationArea}}
-                      </mat-option>                      
+                      <mat-option [value]="-3">Tea break</mat-option>
+
+                      <mat-optgroup *ngFor="let group of groupedRotationAreaPosition$ | async" [label]="group.rotationArea">
+                      <mat-option *ngFor="let position of group.positions" [value]="position.rotationAreaPositionId">
+                        {{position.rotationAreaPosition}}
+                      </mat-option>
+                    </mat-optgroup>
+
+                      <!-- <mat-option *ngFor="let position of groupedRotationAreaPosition$ | async" [value]="position.rotationAreaPositionId">
+                        {{position.position}}
+                      </mat-option>                       -->
                     </mat-select>
                   </mat-form-field>
 
@@ -130,6 +137,7 @@
   <app-generic-table
   [data]="rotationRolesForGenericTable$"
   class="role-table"
+  [displayColumns]="['rotationRole','colour','sortOrder','isDeleted']"
   dataName="rotationRoles"
   [excludeColumns]="['shiftSegments']"
   (clickedRow)="hydrateRotationRoleForEdit($event)"></app-generic-table>

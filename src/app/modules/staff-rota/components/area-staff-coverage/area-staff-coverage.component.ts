@@ -75,7 +75,23 @@ export class AreaStaffCoverageComponent implements OnInit {
 
   ngOnInit() {
 
-    for(let assignment of this.data.assignments){
+    for(let assignment of this.data.assignments){      
+
+      this.data.assignments.sort((a,b) => {
+        
+        // return this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b) ?
+        // a.get('employeeNumber')?.value - b.get('employeeNumber')?.value : -1;
+
+        if(this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b)){
+
+          console.log(a.get('employeeNumber')?.value)
+
+          return a.get('employeeNumber')?.value - b.get('employeeNumber')?.value;
+        }
+
+        return this.getMillisecondsFromStartTime(a) - this.getMillisecondsFromStartTime(b);
+      
+      });
 
       const assignmentGroup = <FormGroup>assignment;
 
@@ -92,57 +108,33 @@ export class AreaStaffCoverageComponent implements OnInit {
     console.log(val);
   }
 
- /** START - Functions for getting the 'start', 'break start', 'break end', and 'end' of a shift. */
+  /** START - Functions for getting the 'start' and 'end' of a shift. */
 
- getRealShiftStartTime(element: AbstractControl<any, any>) : string {
+  getRealShiftStartTime(element: AbstractControl<any, any>) : string {
 
-  return element.get('actualShiftStartTime')?.value || element.get('plannedShiftStartTime')?.value;
+    return element.get('actualStartTime')?.value || element.get('plannedStartTime')?.value;
 
- }
+  }
 
- getRealBreakStartTime(element: AbstractControl<any, any>) : string {
+  getRealShiftEndTime(element: AbstractControl<any, any>) : string {
 
-  return element.get('actualBreakStartTime')?.value || element.get('plannedBreakStartTime')?.value;
+    return element.get('actualEndTime')?.value || element.get('plannedEndTime')?.value;
 
- }
+  }
 
- getRealBreakEndTime(element: AbstractControl<any, any>) : string {
+  getMillisecondsFromStartTime(element: AbstractControl<any, any>){
 
-  return element.get('actualBreakEndTime')?.value || element.get('plannedBreakEndTime')?.value;
+    const time = this.getRealShiftStartTime(element);
 
- }
+    return new Date(`${this.today} ${time}`).getTime();
 
- getRealShiftEndTime(element: AbstractControl<any, any>) : string {
-
-  return element.get('actualShiftEndTime')?.value || element.get('plannedShiftEndTime')?.value;
-
- }
+  }
 
   getShiftStart(element: AbstractControl<any, any>) : number {
 
     const startTime = this.getRealShiftStartTime(element);
 
     return new Date(`${this.today} ${startTime}`).getTime();
-
-  }
-
-  getBreakStartTime(element: AbstractControl<any, any>, hoursToAdd: number) : number {
-
-    const breakStartTime = this.getRealBreakStartTime(element);
-
-    const breakTime = new Date(`${this.today} ${breakStartTime}`).getTime();
-
-    return breakTime ? breakTime : this.getShiftStart(element) + (hoursToAdd * 60 * 60 * 1000);
-
-  }
-
-  getBreakEndTime(element: AbstractControl<any, any>, hoursToAdd: number) : number {
-
-    const breakEndTime = this.getRealBreakEndTime(element);
-
-    const breakTime = new Date(`${this.today} ${breakEndTime}`).getTime();
-
-    return breakTime ? breakTime : this.getBreakStartTime(element, this.breakHoursAfterStart) + (hoursToAdd * 60 * 60 * 1000);
 
   }
 
@@ -158,33 +150,13 @@ export class AreaStaffCoverageComponent implements OnInit {
 
 
   /** START - These functions return the width of the 'start' section of the shift, the 'break' section, and the 'end' section of the shift */
-  generateShiftStart(element: AbstractControl<any, any>) : number {
+  generateShift(element: AbstractControl<any, any>) : number {
 
     const shiftStart = this.getShiftStart(element);
 
-    const shiftBreakStartTime = this.getBreakStartTime(element, this.breakHoursAfterStart);
+    const shiftEndTime = this.getShiftEnd(element);
 
-    return getShiftLengthAsPercentageOf24Hours(shiftBreakStartTime, shiftStart, this.hours);
-
-  }
-
-  generateBreak(element: AbstractControl<any, any>) : number {
-
-    const shiftBreakStartTime = this.getBreakStartTime(element, this.breakHoursAfterStart);
-
-    const shiftBreakEndTime = this.getBreakEndTime(element, this.breakLength);
-
-    return getShiftLengthAsPercentageOf24Hours(shiftBreakEndTime, shiftBreakStartTime, this.hours);
-
-  }
-
-  generateShiftEnd(element: AbstractControl<any, any>) : number {
-
-    const shiftEnd = this.getShiftEnd(element);
-
-    const shiftBreakEndTime = this.getBreakEndTime(element, this.breakLength);
-
-    return getShiftLengthAsPercentageOf24Hours(shiftEnd, shiftBreakEndTime, this.hours);
+    return getShiftLengthAsPercentageOf24Hours(shiftEndTime, shiftStart, this.hours);
 
   }
 
@@ -205,19 +177,13 @@ export class AreaStaffCoverageComponent implements OnInit {
 
   generateShiftStartTiming(element: AbstractControl<any, any>) : string {
 
-    return `${this.getRealShiftStartTime(element)} - ${this.getRealBreakStartTime(element)}`;
-
-  }
-
-  generateBreakTiming(element: AbstractControl<any, any>) : string {
-
-    return `${this.getRealBreakStartTime(element)} - ${this.getRealBreakEndTime(element)}`;
+    return `${this.getRealShiftStartTime(element)} - ${this.getRealShiftEndTime(element)}`;
 
   }
 
   generateShiftEndTiming(element: AbstractControl<any, any>) : string {
 
-    return `${this.getRealBreakEndTime(element)} - ${this.getRealShiftEndTime(element)}`;
+    return `${this.getRealShiftStartTime(element)} - ${this.getRealShiftEndTime(element)}`;
 
   }
 
@@ -242,14 +208,11 @@ export class AreaStaffCoverageComponent implements OnInit {
         const currentQuarterHour = new Date(`${this.today} ${hour}`).getTime();
 
         const shiftStart = this.getShiftStart(assignment);
-        const shiftBreakStartTime = this.getBreakStartTime(assignment, this.breakHoursAfterStart);
-
-        const shiftBreakEndTime = this.getBreakEndTime(assignment, this.breakLength)
         const shiftEnd = this.getShiftEnd(assignment);
 
         if(
-            (currentQuarterHour >= shiftStart && currentQuarterHour < shiftBreakStartTime) || 
-            (currentQuarterHour >= shiftBreakEndTime && currentQuarterHour < shiftEnd)) {
+            (currentQuarterHour >= shiftStart && currentQuarterHour < shiftEnd) || 
+            (currentQuarterHour >= shiftEnd && currentQuarterHour < shiftEnd)) {
 
               value++;
         }

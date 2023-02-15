@@ -24,12 +24,16 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
  			JSON_MERGE_PRESERVE(
  			JSON_OBJECT("rotationAreaId", ra.`RotationAreaId`),
  			JSON_OBJECT("rotationArea", ra.`RotationArea`),
+            JSON_OBJECT("scheduleManagerId", ra.`ScheduleManagerId`),
+            JSON_OBJECT("scheduleManager", CONCAT(u.`EmployeeNumber`,' - ', u.`FirstName`)),
 			JSON_OBJECT("sortOrder", ra.`SortOrder`),
 			JSON_OBJECT("isDeleted", ra.`IsDeleted`),
 			JSON_OBJECT("colour", ra.`Colour`) 
  			)) AS `RotationAreas`
      FROM AAU.RotationArea ra
+     LEFT JOIN AAU.User u ON u.UserId = ra.ScheduleManagerId
      WHERE ra.OrganisationId = vOrganisationId
+     AND ra.`RotationAreaId` > 0
      AND (IFNULL(ra.IsDeleted,0) = prm_IncludeDeleted OR prm_IncludeDeleted = 1);
     
 END$$

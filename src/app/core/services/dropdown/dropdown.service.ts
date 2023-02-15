@@ -14,7 +14,7 @@ import {
 } from '../../models/responses';
 import { APIService } from '../http/api.service';
 import { HttpClient } from '@angular/common/http';
-import { User, ReleaseManager } from '../../models/user';
+import { User, ReleaseManager, ScheduleManager } from '../../models/user';
 import { PaperDimensions, PrintElement } from '../../models/print-templates';
 import { Antibiotic } from '../../models/patients';
 import { UserJobType } from '../../models/user';
@@ -54,6 +54,7 @@ export class DropdownService extends APIService {
     festivals$!: Observable<Festival[]>;
     isoReasons$!: any[];
     jobTypes$!: Observable<UserJobType[]>;
+    leaveRequestReasons$!: Observable<LeaveRequestReason[]>;
     nasalDischarge$!: KeyValue<number, string>[];
     officeStaff$!: Observable<User[]>;
     paperDimensions$!: Observable<PaperDimensions[]>;
@@ -63,8 +64,8 @@ export class DropdownService extends APIService {
 	priority$!:Observable<Priority[]>;
     problems$!: Observable<ProblemDropdownResponse[]>;    
     releaseManagers$!: Observable<ReleaseManager[]>;
-    rescuers$!: Observable<User[]>;
-    leaveRequestReasons$!: Observable<LeaveRequestReason[]>;
+    rescuers$!: Observable<User[]>;    
+    scheduleManagers$!: Observable<ScheduleManager[]>;
     surgeons$!: Observable<User[]>;
     surgerySites$!: Observable<SurgerySite[]>;
     surgeryTypes$!: Observable<SurgeryType[]>;    
@@ -666,6 +667,20 @@ export class DropdownService extends APIService {
 
         return this.releaseManagers$;
 
+    }
+
+    getScheduleManagers(): Observable<ScheduleManager[]> {
+        const request = '/GetScheduleManagers';
+
+        if(!this.scheduleManagers$) {
+            this.scheduleManagers$ = this.getObservable(request).pipe(
+                map((response: ScheduleManager[])=>{
+                    return response;
+                })
+            );
+        }
+
+        return this.scheduleManagers$;
 
     }
 

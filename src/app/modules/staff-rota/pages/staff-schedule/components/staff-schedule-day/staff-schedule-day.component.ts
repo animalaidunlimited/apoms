@@ -8,12 +8,13 @@ import { StaffScheduleService } from '../../../../services/staff-schedule.servic
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AreaStaffCoverageComponent } from '../../../../components/area-staff-coverage/area-staff-coverage.component';
-import { RotationRole } from 'src/app/core/models/rota';
+import { RotationArea, RotationRole, GroupedRotationAreaPosition } from 'src/app/core/models/rota';
 import { RotaSettingsService } from '../../../settings/services/rota-settings.service';
-import { generateUUID } from 'src/app/core/helpers/utils';
+import { generateUUID, getCurrentDateString } from 'src/app/core/helpers/utils';
 
 interface UserUtilisation{
   userId: number;
+  employeeNumber: string;
   userCode: string;
   hours: Date;
   utilisation: "under" | "over"
@@ -44,9 +45,9 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
   dataSource: BehaviorSubject<AbstractControl[]> = new BehaviorSubject<AbstractControl[]>([this.fb.group({})]);
 
 
-  // "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime",
+  // 
   // "plannedBreakStartTime", "plannedBreakEndTime", "actualBreakStartTime", "actualBreakEndTime",
-  displayedColumns = ["rotationArea", "rotationRole", "userId", "notes"];
+  displayedColumns = ["rotationArea", "rotationAreaPosition", "userId", "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime", "notes"];
   
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -60,7 +61,8 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
     rotaDayAssignments: this.fb.array([])
   });
 
-  rotationRoles$!:Observable<RotationRole[]>;
+  rotationAreas$:Observable<RotationArea[]>;
+  rotationAreaPositions$:Observable<GroupedRotationAreaPosition[]>;
 
   showEmptyShifts = false;
   showUserFilter = false;
@@ -86,7 +88,8 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
     private fb: FormBuilder
   ) {
 
-    this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(false);
+    this.rotationAreas$ = this.rotaSettingsService.getRotationAreas(false);
+    this.rotationAreaPositions$ = this.rotaSettingsService.getGroupedRotationAreaPositions(false);
 
   }
 
@@ -97,6 +100,7 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
     this.initialiseForm();
     this.checkUnassignedStaff();
     this.watchUnassignedStaff();
+    this.recalculateTaskCountByUser();
 
   }
 
@@ -114,24 +118,26 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
     
     this.rotaDayAssignments = (this.inputRotaDayAssignments as FormArray)?.controls;
 
-    this.rotaDayAssignments.sort((a,b) => a.get('rotationAreaId')?.value === b.get('rotationAreaId')?.value ?
-                                            b.get('areaRowSpan')?.value - a.get('areaRowSpan')?.value  :
-                                            a.get('rotationAreaId')?.value - b.get('rotationAreaId')?.value
-    )
+    this.rotaDayAssignments.sort((a,b) => a.get('sequence')?.value - b.get('sequence')?.value);
 
     this.resetRotaDayAssignments();    
 
     this.rotaDayForm?.setControl('rotaDayAssignments', <FormArray>this.inputRotaDayAssignments);
     this.rotaDayForm.markAsPristine();
     
+    this.updateUtilisation();
+    
   }
 
   private resetRotaDayAssignments() {
 
-    this.filteredRotaDayAssignments = this.rotaDayAssignments.map(assignment => assignment);
+    //Let's remove the tea and lunch breaks
+    this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment =>  assignment.get('rotationAreaPositionId')?.value > -2 )
+                                                             .map(assignment => assignment);
 
-    this.filteredRotaDayAssignments = this.reassignAreaRowSpans(this.filteredRotaDayAssignments);
+    this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments);
 
+    console.log(this.filteredRotaDayAssignments);
     this.dataSource.next(this.filteredRotaDayAssignments);
   }
 
@@ -162,12 +168,7 @@ updateSelectedUsers() : void {
 
  generateDateFromTime(inputTime: string) : Date {
 
-  const timeArray = inputTime.split(":");
-
-  let returnDate = new Date();
-  returnDate.setHours(Number(timeArray[0]), Number(timeArray[1]), Number(timeArray[2] || "00"));
-
-  return returnDate;
+  return new Date(`${getCurrentDateString()} ${inputTime}`);
 
  }
 
@@ -199,37 +200,55 @@ updateSelectedUsers() : void {
 }
 
   private updateUtilisation() {
-    let utilisation = this.getAssignments.controls.filter(assignment => assignment.get('actualShiftStartTime')?.value || assignment.get('actualShiftEndTime')?.value)
-      .reduce((result, current) => {
 
-        if (result.find(element => element.userId === current.get('userId')?.value)) {
-          console.log(current.get('actualShiftStartTime')?.value);
-          console.log(current.get('actualShiftEndTime')?.value);
-        }
-        else {
-          let start = this.generateDateFromTime(current.get('actualShiftStartTime')?.value);
-          let end = this.generateDateFromTime(current.get('actualShiftEndTime')?.value);
+    let currentAssignments = this.getAssignments.controls
+    .reduce((returnValue, current) => {
 
-          let utilisedHours = new Date();
-          utilisedHours.setHours(0, 0, 0);
+      if(current.get('plannedRotationAreaId')?.value < 0) return returnValue;
 
-          utilisedHours.setMilliseconds((end.getTime() - start.getTime()));
+      let foundUser = returnValue.find(element => element.userId === current.get('userId')?.value);
 
-          result.push({
-            userId: current.get('userId')?.value,
-            userCode: this.userDetailsService.getUserCode(current.get('userId')?.value),
-            hours: utilisedHours,
-            utilisation: utilisedHours.getHours() < 9 ? "under" : "over"
-          });
+      let start = this.generateDateFromTime(current.get('actualStartTime')?.value || current.get('plannedStartTime')?.value);
+      let end = this.generateDateFromTime(current.get('actualEndTime')?.value || current.get('plannedEndTime')?.value);
+      
+      if(!foundUser){
 
-        }
+        const utilisedHours = new Date();
+        utilisedHours.setHours(0, 0, 0);
+        utilisedHours.setMilliseconds((end.getTime() - start.getTime() + (1000 * 60 * 60 * 1.5)));
 
+        // console.log(current.value);
 
-        return result;
+        returnValue.push({
+          userId: current.get('userId')?.value,
+          employeeNumber: current.get('employeeNumber')?.value,
+          userCode: this.userDetailsService.getUserCode(current.get('userId')?.value),
+          hours: utilisedHours,
+          utilisation: this.getUtilisation(utilisedHours)
+        });
+      }
+      else {              
 
-      }, [] as UserUtilisation[]);
+        foundUser.hours = new Date(foundUser.hours.getTime() + (end.getTime() - start.getTime()));
+        foundUser.utilisation = this.getUtilisation(foundUser.hours);
 
-    this.utilisation.next(utilisation);
+      }
+
+      return returnValue;
+
+    }, [] as UserUtilisation[]);
+    
+    currentAssignments.sort((a,b) => a.employeeNumber.localeCompare(
+      b.employeeNumber,
+      undefined,
+      {numeric : true, sensitivity: 'base'}
+    ));
+ 
+    this.utilisation.next(currentAssignments);
+  }
+
+  private getUtilisation(utilisedHours: Date): "under" | "over" {
+    return utilisedHours.getHours() < 9 ? "under" : "over";
   }
 
 watchUnassignedStaff() : void {    
@@ -237,9 +256,25 @@ watchUnassignedStaff() : void {
   this.getAssignments.valueChanges.subscribe(() => {
 
     this.checkUnassignedStaff();
+    this.recalculateTaskCountByUser();
 
   });
     
+}
+
+private recalculateTaskCountByUser() : void {
+
+  this.getAssignments.controls.forEach(staffTask => {
+
+    const shiftSegmentCount = this.getAssignments.controls.filter(element => element.get('userId')?.value === staffTask.get('userId')?.value
+                                                                              && element.get('rotationAreaPositionId')?.value > 0);
+
+    
+
+    staffTask.get('shiftSegmentCount')?.setValue(shiftSegmentCount.length, {emitEvent: false});
+
+  })
+
 }
 
 private checkUnassignedStaff() {
@@ -278,13 +313,22 @@ showEmptyShiftsOnly() : void {
   this.filteredRotaDayAssignments = this.showEmptyShifts ?  this.rotaDayAssignments.filter(assignment => !assignment.get('userId')?.value) :
                                                             this.rotaDayAssignments;
 
-  this.filteredRotaDayAssignments = this.reassignAreaRowSpans(this.filteredRotaDayAssignments)
+  
 
+  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments); 
+
+  console.log('showEmptyShiftsOnly');
   this.dataSource.next(this.filteredRotaDayAssignments);
 
 }
 
-searchUsers(event: any) : void {
+searchUsers(event: KeyboardEvent) : void {
+
+  if(event.key === "Enter"){
+    this.showUserFilter = !this.showUserFilter;
+    return;
+  }
+
   this.userSearch = (event.target as HTMLInputElement).value;
 
   const foundUsers = this.userList.value.filter(element => element.firstName.toLowerCase()
@@ -293,56 +337,13 @@ searchUsers(event: any) : void {
 
   this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment => foundUsers.includes(assignment.get('userId')?.value));
 
-  this.filteredRotaDayAssignments = this.reassignAreaRowSpans(this.filteredRotaDayAssignments)
+  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments)
 
+  console.log('searchUsers');
   this.dataSource.next(this.filteredRotaDayAssignments);
 }
 
-reassignAreaRowSpans(assignments: AbstractControl[]) : AbstractControl[] {
 
-  let areaCounts = assignments.reduce((result, current) => {
-
-    let foundArea = result.find(area => area.area === current.get('rotationArea')?.value)
-
-    if(foundArea){
-
-      foundArea.count++;
-
-    }
-    else {
-      result.push({
-        area: current.get('rotationArea')?.value,
-        count: 1
-      })
-    }
-
-    return result;
-
-  }, [] as AreaCount[]);
-
-  assignments = assignments.map((element, index) => {
-
-    if(index === 0){
-
-      const foundAreaCount = areaCounts.find(area => area.area === element.get('rotationArea')?.value);
-
-      element.get('areaRowSpan')?.setValue(foundAreaCount?.count);
-    }
-    else if(assignments[index - 1].get('rotationArea')?.value === element.get('rotationArea')?.value){
-      element.get('areaRowSpan')?.setValue(0);
-    }
-    else {
-      const foundAreaCount = areaCounts.find(area => area.area === element.get('rotationArea')?.value);
-
-      element.get('areaRowSpan')?.setValue(foundAreaCount?.count);
-    }
-
-    return element;
-  });
-
-  return assignments;
-
-}
 
 clearAndCloseUserSearch() : void {
 
@@ -356,7 +357,10 @@ toggleUserFilter() : void {
 
   if(this.showUserFilter){
     //Let's wait a tick for change detection to run and the element to be added to the DOM.
-    setTimeout(() => this.userSearchInput.nativeElement.value = this.userSearch, 1);
+    setTimeout(() => {
+      this.userSearchInput.nativeElement.value = this.userSearch;
+      this.userSearchInput.nativeElement.focus();
+    }, 1);
   }
 
 }
@@ -371,6 +375,7 @@ addShift() : void {
   this.filteredRotaDayAssignments.push(emptyAssignment);
   this.getAssignments.push(emptyAssignment);
 
+  console.log('addShift');
   this.dataSource.next(this.filteredRotaDayAssignments);
 
 }
@@ -382,12 +387,13 @@ deleteShift(shift: AbstractControl) : void {
   let foundIndex = this.getAssignments.controls.findIndex(element => element.get('guid')?.value !== shift.get('guid')?.value);
   this.getAssignments.removeAt(foundIndex);
 
+  console.log('deleteShift');
   this.dataSource.next(this.filteredRotaDayAssignments);
 }
 
-roleSelected(role: RotationRole, shift: AbstractControl) : void {
+areaSelected(area: RotationArea, shift: AbstractControl) : void {
 
-  shift.patchValue(role);
+  shift.patchValue(area);
 
   // shift.get('plannedShiftStartTime')?.setValue(role.startTime);
   // shift.get('plannedShiftEndTime')?.setValue(role.endTime);

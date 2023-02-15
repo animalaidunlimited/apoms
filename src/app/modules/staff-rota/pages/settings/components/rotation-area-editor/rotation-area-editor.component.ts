@@ -6,6 +6,8 @@ import { Observable, Subject } from 'rxjs';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { takeUntil } from 'rxjs/operators';
+import { ScheduleManager } from 'src/app/core/models/user';
+import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-rotation-area-editor',
@@ -21,22 +23,27 @@ export class RotationAreaEditorComponent implements OnInit {
       rotationAreaId: [],
       organisationId: [],
       rotationArea: ["", Validators.required],
+      scheduleManagerId: [],
+      scheduleManager: [""],
       sortOrder: [, Validators.required],
       colour: ["#ffffff"],
       isDeleted: [false]
     });
 
   rotationAreas$!: Observable<RotationArea[]>;
-
+  
   rotationAreaUnsubscribe = new Subject();
+  scheduleManagers$: Observable<ScheduleManager[]>;
 
   constructor(
     private fb: UntypedFormBuilder,
     private rotaSettingsService: RotaSettingsService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private dropdown: DropdownService
   ) {
 
     this.loadRotationAreas();
+    this.scheduleManagers$ = this.dropdown.getScheduleManagers();
    }
 
   private loadRotationAreas() {

@@ -6,6 +6,8 @@ DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpdateRotaDayAssignment( 	IN prm_UserName VARCHAR(45),
 													IN prm_rotaDayId INTEGER,
                                                     IN prm_userId INTEGER,
+													IN prm_actualStartTime TIME,
+													IN prm_actualEndTime TIME,
 													IN prm_notes VARCHAR(1024))
 BEGIN
 
@@ -28,6 +30,8 @@ SET vSuccess = 0;
 
 	UPDATE AAU.RotaDayAssignment SET
 		UserId = prm_userId,
+		ActualStartTime = prm_actualStartTime,
+		ActualEndTime = prm_actualEndTime,
 		Notes = prm_notes
 	WHERE RotaDayId = prm_rotaDayId;
     

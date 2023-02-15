@@ -4,7 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { skip, take, takeUntil } from 'rxjs/operators';
 import { RotaService } from '../../services/rota.service';
-import { DisplayLeaveRequest, LeaveRequest, Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotationPeriodResponse, RotaVersion } from '../../../../core/models/rota';
+import { DisplayLeaveRequest, LeaveRequest, Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotationPeriodResponse, RotaVersion,
+         ScheduleAuthorisation, ScheduleAuthorisationDay, ScheduleManagerAuthorisation } from '../../../../core/models/rota';
 import { RotaSettingsService } from '../settings/services/rota-settings.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { SnackbarService } from '../../../../core/services/snackbar/snackbar.service';
@@ -46,6 +47,11 @@ export class StaffScheduleComponent implements OnInit {
   rotationPeriodId: number = -1;
 
   selectedIndex = 0;
+
+  scheduleAuthorisation : ScheduleManagerAuthorisation | null = null;
+  currentScheduleAuthorisation = new BehaviorSubject<ScheduleAuthorisation[]>([]);
+
+  showScheduleAuthorisation = false;
 
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -200,7 +206,19 @@ export class StaffScheduleComponent implements OnInit {
       
       this.processRotaDays(rotaDays);
       this.dataLoaded = true;
+
+      this.loadScheduleManagerAuthorisation();
       
+    });
+
+  }
+
+  loadScheduleManagerAuthorisation() : void {
+
+    this.staffScheduleService.getScheduleManagerAuthorisation(this.rotationPeriodId).then(authorisation => {
+
+      this.scheduleAuthorisation = authorisation;
+
     });
 
   }
@@ -274,17 +292,6 @@ export class StaffScheduleComponent implements OnInit {
 
       let newAssignment = this.staffScheduleService.generateNewAssignment(assignment);
 
-      //TODO - FIX THIS AFTER INTRODUCTION OF SHIFT SEGMENTS
-      // if(assignment.actualShiftStartTime || assignment.actualShiftEndTime){
-      //   newAssignment.get('actualShiftStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-      //   newAssignment.get('actualShiftEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-      // }
-
-      // if(assignment.actualBreakStartTime || assignment.actualBreakEndTime){
-      //   newAssignment.get('actualBreakStartTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-      //   newAssignment.get('actualBreakEndTime')?.setValidators([Validators.required, Validators.pattern(/[\S]/)]);
-      // }
-
       (rotaGroup.get('rotaDayAssignments') as FormArray)?.push(newAssignment);
 
     }
@@ -303,7 +310,7 @@ export class StaffScheduleComponent implements OnInit {
 
         response.success === 1 ?
         this.snackbar.successSnackBar("Areas saved to preferences","OK") :
-        this.snackbar.errorSnackBar("Save failed - error: DRC-161","OK");
+        this.snackbar.errorSnackBar("Save failed - error: SSC-313","OK");
       });
 
     })
@@ -329,13 +336,36 @@ shiftRotationPeriod(direction: number) : void {
 
 printRotaDay() : void {
 
-  const dayToPrint : string = this.rotaDayForm.controls.at(this.selectedIndex)?.get('rotaDayDate')?.value;
-
   const rotaDayObject = {
-    selectedDate: dayToPrint
+    selectedDate: this.getSelectedRotaDay()
   };
 
   this.printService.sendRotaDayToPrinter(JSON.stringify(rotaDayObject));
+
+}
+
+showAuthorisation() : void {
+
+  this.showScheduleAuthorisation = !this.showScheduleAuthorisation;
+
+  let foundRotaDay = this.getCurrentScheduleAuthorisation()
+
+  if(foundRotaDay){
+    this.currentScheduleAuthorisation.next(foundRotaDay.authorisation)
+  }
+
+
+}
+
+getCurrentScheduleAuthorisation() : ScheduleAuthorisationDay | undefined{
+
+  return this.scheduleAuthorisation?.scheduleAuthorisation.find(rotaDay => rotaDay.rotaDayDate === this.getSelectedRotaDay());
+
+}
+
+getSelectedRotaDay() : string {
+
+  return this.rotaDayForm.controls.at(this.selectedIndex)?.get('rotaDayDate')?.value;
 
 }
 
@@ -343,12 +373,32 @@ printRotaDay() : void {
 
 tabChanged($event: MatTabChangeEvent) : void {
   this.selectedIndex = $event.index;
+  this.showScheduleAuthorisation = false;
 }
 
 showLeaveRequestsForDay(leaveDate: string | Date) : void {
   console.log(leaveDate);
 }
 
+updateManagerAuthorisation(authorisation: ScheduleAuthorisation) : void {
 
+  const currentAuthorisation = this.getCurrentScheduleAuthorisation();
+
+  let foundAuthorisation = currentAuthorisation?.authorisation.find(element => element.scheduleManagerId === authorisation.scheduleManagerId);
+
+  if(foundAuthorisation && currentAuthorisation){
+
+    foundAuthorisation.authorised = !authorisation.authorised;
+
+    this.staffScheduleService.updateScheduleManagerAuthorisation(currentAuthorisation).then(response => {
+
+      if(response.success === -1){
+        this.snackbar.errorSnackBar("Save failed - error: SSC-392","OK");
+      }
+
+    })
+  }
+
+}
 
 }

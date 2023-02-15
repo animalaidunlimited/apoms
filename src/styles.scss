@@ -105,7 +105,7 @@ $standard-width: 180px;
 
 .single-hour{
   text-align: center;
-  height: 25px;
+  min-height: 25px;
   line-height: 25px;
   border-radius: 2px;
   border: 1px solid darkgray;
@@ -123,6 +123,7 @@ $standard-width: 180px;
   font-family: Roboto, Arial, sans-serif;
   height: 30px;
   padding: 0 5px;
+  width: 100%;
 }
 
 
