@@ -3,6 +3,14 @@
     .isPrinting > * { display: none; }
     .mat-dialog-container { display: none !important; }
     .cdk_overlay_pane > * { display: none !important; }
+
+    .rota-day-print-header{
+        font-size: 20pt;
+        width: 100%;
+        text-align: center;
+        font-family: Roboto, Arial, sans-serif;
+        padding-bottom: 10px;
+    }
     
     .schedule-table{
         width: 90%;

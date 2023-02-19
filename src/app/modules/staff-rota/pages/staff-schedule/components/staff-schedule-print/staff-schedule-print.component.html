@@ -1,8 +1,8 @@
 <ng-container *ngIf="(assignments | async) as dataSource">
 
-  <h2>
+  <div class="rota-day-print-header">
     {{rotaDayDate | date : "EEEE, d MMM y"}}
-  </h2>  
+  </div>
 
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 schedule-table">
 

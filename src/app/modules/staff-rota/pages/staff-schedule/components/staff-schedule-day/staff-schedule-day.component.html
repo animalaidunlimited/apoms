@@ -1,4 +1,4 @@
-<form [formGroup]="rotaDayForm">  
+<form [formGroup]="filteredRotaDayForm">  
 
     <div class="user-search flex-row flex-space-between-center" *ngIf="showUserFilter" >
       <mat-form-field >
@@ -10,7 +10,7 @@
       </mat-form-field> 
     </div>
 
-  <table  mat-table [dataSource]="dataSource" class="day-rota-table" formArrayName="rotaDayAssignments">    
+  <table  mat-table [dataSource]="dataSource" class="day-rota-table" formArrayName="filteredRotaDayAssignments">    
 
         <ng-container matColumnDef="rotationArea">
           <th mat-header-cell *matHeaderCellDef class="first-column">

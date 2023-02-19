@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
-import { FormArray, AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, AbstractControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -53,12 +53,16 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
   filteredUsers!: Observable<UserDetails[]> | undefined;
 
-  filteredRotaDayAssignments!: AbstractControl[];
+  // filteredRotaDayAssignments!: AbstractControl[];
 
-  rotaDayAssignments!: AbstractControl[];
+  // rotaDayAssignments!: AbstractControl[];
 
   rotaDayForm = this.fb.group({    
     rotaDayAssignments: this.fb.array([])
+  });
+
+  filteredRotaDayForm = this.fb.group({    
+    filteredRotaDayAssignments: this.fb.array([])
   });
 
   rotationAreas$:Observable<RotationArea[]>;
@@ -75,8 +79,36 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
   utilisation = new BehaviorSubject<UserUtilisation[]>([]);
 
-  public get getAssignments() : FormArray {
-    return this.rotaDayForm.get('rotaDayAssignments') as FormArray;
+  public get rotaDayAssignments() : AbstractControl[] {
+    return (this.rotaDayForm.get('rotaDayAssignments') as FormArray)?.controls;
+  }
+
+  public set rotaDayAssignments(incomingValue: AbstractControl[]) {
+
+    let assignments:FormArray = this.fb.array([]);
+
+    for(let value of incomingValue){
+      assignments.push(value);
+    }
+
+    this.rotaDayForm.setControl("rotaDayAssignments", assignments);
+
+  }
+
+  public get filteredRotaDayAssignments() : AbstractControl[] {
+    return (this.filteredRotaDayForm.get('filteredRotaDayAssignments') as FormArray)?.controls;
+  }
+
+  public set filteredRotaDayAssignments(incomingValue: AbstractControl[]) {
+
+    let assignments:FormArray = this.fb.array([]);
+
+    for(let value of incomingValue){
+      assignments.push(value);
+    }
+
+    this.filteredRotaDayForm.setControl("filteredRotaDayAssignments", assignments);
+
   }
 
   constructor(
@@ -137,13 +169,12 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
     this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments);
 
-    console.log(this.filteredRotaDayAssignments);
     this.dataSource.next(this.filteredRotaDayAssignments);
   }
 
 showAreaStaffCoverage( department: string, rotationAreaId: number) : void {
 
-  const assignments = this.getAssignments.controls.filter(assignment => assignment.get('rotationAreaId')?.value === rotationAreaId);
+  const assignments = this.rotaDayAssignments.filter(assignment => assignment.get('rotationAreaId')?.value === rotationAreaId);
 
   this.dialog.open(AreaStaffCoverageComponent, {
     height: '98vh',
@@ -160,7 +191,7 @@ showAreaStaffCoverage( department: string, rotationAreaId: number) : void {
 
 updateSelectedUsers() : void {
 
-  const currentUsers =  this.getAssignments?.controls.map(element => Number(element.get('userId')?.value || element.get('rotationUserId')?.value));
+  const currentUsers =  this.rotaDayAssignments.map(element => Number(element.get('userId')?.value || element.get('rotationUserId')?.value));
 
   this.assignedUsers.next(currentUsers);
 
@@ -177,7 +208,7 @@ updateSelectedUsers() : void {
   //Let's find all of the users that have an actual start and end time. Then let's find out who is under or over utilised
   this.updateUtilisation();
   
-  for(let assignment of this.getAssignments.controls){
+  for(let assignment of this.rotaDayAssignments){
 
     if(!assignment.pristine){
       this.staffScheduleService.saveAssignment(this.rotaDayDate, this.rotationPeriodId, assignment.value).then(response => {
@@ -201,7 +232,7 @@ updateSelectedUsers() : void {
 
   private updateUtilisation() {
 
-    let currentAssignments = this.getAssignments.controls
+    let currentAssignments = this.rotaDayAssignments
     .reduce((returnValue, current) => {
 
       if(current.get('plannedRotationAreaId')?.value < 0) return returnValue;
@@ -253,7 +284,7 @@ updateSelectedUsers() : void {
 
 watchUnassignedStaff() : void {    
 
-  this.getAssignments.valueChanges.subscribe(() => {
+  this.rotaDayForm.get('rotaDayAssignments')?.valueChanges.subscribe(() => {
 
     this.checkUnassignedStaff();
     this.recalculateTaskCountByUser();
@@ -264,9 +295,9 @@ watchUnassignedStaff() : void {
 
 private recalculateTaskCountByUser() : void {
 
-  this.getAssignments.controls.forEach(staffTask => {
+  this.rotaDayAssignments.forEach(staffTask => {
 
-    const shiftSegmentCount = this.getAssignments.controls.filter(element => element.get('userId')?.value === staffTask.get('userId')?.value
+    const shiftSegmentCount = this.rotaDayAssignments.filter(element => element.get('userId')?.value === staffTask.get('userId')?.value
                                                                               && element.get('rotationAreaPositionId')?.value > 0);
 
     
@@ -279,7 +310,7 @@ private recalculateTaskCountByUser() : void {
 
 private checkUnassignedStaff() {
 
-  const unassigned = this.userList.value.filter(user => !(this.getAssignments.controls.some(element => element.get('userId')?.value === user.userId)));
+  const unassigned = this.userList.value.filter(user => !(this.rotaDayAssignments.some(element => element.get('userId')?.value === user.userId)));
 
   this.unassignedStaff.next(unassigned);
 
@@ -373,7 +404,7 @@ addShift() : void {
   emptyAssignment.get('guid')?.setValue(generateUUID());
 
   this.filteredRotaDayAssignments.push(emptyAssignment);
-  this.getAssignments.push(emptyAssignment);
+  this.rotaDayAssignments.push(emptyAssignment);
 
   console.log('addShift');
   this.dataSource.next(this.filteredRotaDayAssignments);
@@ -384,8 +415,8 @@ deleteShift(shift: AbstractControl) : void {
 
   this.filteredRotaDayAssignments = this.filteredRotaDayAssignments.filter(element => element.get('guid')?.value !== shift.get('guid')?.value);
 
-  let foundIndex = this.getAssignments.controls.findIndex(element => element.get('guid')?.value !== shift.get('guid')?.value);
-  this.getAssignments.removeAt(foundIndex);
+  let foundIndex = this.rotaDayAssignments.findIndex(element => element.get('guid')?.value !== shift.get('guid')?.value);
+  this.rotaDayAssignments.slice(foundIndex, 1);
 
   console.log('deleteShift');
   this.dataSource.next(this.filteredRotaDayAssignments);

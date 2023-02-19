@@ -317,6 +317,8 @@ export interface ScheduleAuthorisation
 export interface ScheduleAuthorisationDay{
   rotaDayDate: string;
   rotaDayAuthorisationId: number;
+  managerCount: number;
+  authorisedCount: number;
   authorisation: ScheduleAuthorisation[];
 }
 

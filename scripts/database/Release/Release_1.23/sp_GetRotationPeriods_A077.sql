@@ -5,7 +5,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
 -- CALL AAU.sp_GetRotationPeriods(2, 1, 0);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT)
+CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT, IN prm_IsLocked TINYINT)
 BEGIN
 
 /*
@@ -23,6 +23,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
     FROM AAU.RotationPeriod rp
     WHERE rp.RotaVersionId = prm_RotaVersionId
     AND rp.IsDeleted = 0
+    AND (rp.Locked = prm_IsLocked OR prm_IsLocked = 0)
     LIMIT 1
     ),
     rotationPeriodsCTE AS (
@@ -37,6 +38,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
     FROM AAU.RotationPeriod rp
     WHERE rp.RotaVersionId = prm_RotaVersionId
     AND rp.IsDeleted = 0
+    AND (rp.Locked = prm_IsLocked OR prm_IsLocked = 0)
     ORDER BY StartDate DESC
     LIMIT prm_Limit OFFSET prm_Offset
     )

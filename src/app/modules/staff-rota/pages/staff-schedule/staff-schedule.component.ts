@@ -49,7 +49,7 @@ export class StaffScheduleComponent implements OnInit {
   selectedIndex = 0;
 
   scheduleAuthorisation : ScheduleManagerAuthorisation | null = null;
-  currentScheduleAuthorisation = new BehaviorSubject<ScheduleAuthorisation[]>([]);
+  currentScheduleAuthorisation = new BehaviorSubject<ScheduleAuthorisationDay>({} as ScheduleAuthorisationDay);
 
   showScheduleAuthorisation = false;
 
@@ -137,7 +137,7 @@ export class StaffScheduleComponent implements OnInit {
 
   getRotationPeriodForRotaVersion(rotaVersionId: number, limit?: number, offset?: number) : void {
 
-    this.rotaService.getRotationPeriods(rotaVersionId, limit, offset).then(response => {
+    this.rotaService.getRotationPeriods(rotaVersionId, limit, offset, 1).then(response => {
 
       if(!response){
         return;
@@ -218,8 +218,11 @@ export class StaffScheduleComponent implements OnInit {
     this.staffScheduleService.getScheduleManagerAuthorisation(this.rotationPeriodId).then(authorisation => {
 
       this.scheduleAuthorisation = authorisation;
+      this.setCurrentScheduleAuthorisation();
 
     });
+
+    
 
   }
 
@@ -348,28 +351,45 @@ showAuthorisation() : void {
 
   this.showScheduleAuthorisation = !this.showScheduleAuthorisation;
 
-  let foundRotaDay = this.getCurrentScheduleAuthorisation()
+  this.setCurrentScheduleAuthorisation();
 
-  if(foundRotaDay){
-    this.currentScheduleAuthorisation.next(foundRotaDay.authorisation)
+
+}
+
+private setCurrentScheduleAuthorisation() {
+  let foundRotaDay = this.getCurrentScheduleAuthorisation();
+
+  if (foundRotaDay) {
+    this.currentScheduleAuthorisation.next(foundRotaDay);
   }
-
-
 }
 
 getCurrentScheduleAuthorisation() : ScheduleAuthorisationDay | undefined{
 
-  return this.scheduleAuthorisation?.scheduleAuthorisation.find(rotaDay => rotaDay.rotaDayDate === this.getSelectedRotaDay());
+  let foundScheduleAuthorisation = this.scheduleAuthorisation?.scheduleAuthorisation.find(rotaDay => rotaDay.rotaDayDate === this.getSelectedRotaDay());
+
+  this.setAuthorisedCounts(foundScheduleAuthorisation);
+
+  console.log(foundScheduleAuthorisation);
+
+  return foundScheduleAuthorisation;
 
 }
+
+  private setAuthorisedCounts(foundScheduleAuthorisation: ScheduleAuthorisationDay | undefined) {
+    if (foundScheduleAuthorisation) {
+
+      foundScheduleAuthorisation.managerCount = foundScheduleAuthorisation?.authorisation.length || 0;
+      foundScheduleAuthorisation.authorisedCount = foundScheduleAuthorisation?.authorisation.filter(element => element.authorised)?.length || 0;
+
+    }
+  }
 
 getSelectedRotaDay() : string {
 
   return this.rotaDayForm.controls.at(this.selectedIndex)?.get('rotaDayDate')?.value;
 
 }
-
-
 
 tabChanged($event: MatTabChangeEvent) : void {
   this.selectedIndex = $event.index;
@@ -389,6 +409,7 @@ updateManagerAuthorisation(authorisation: ScheduleAuthorisation) : void {
   if(foundAuthorisation && currentAuthorisation){
 
     foundAuthorisation.authorised = !authorisation.authorised;
+    this.setAuthorisedCounts(currentAuthorisation);
 
     this.staffScheduleService.updateScheduleManagerAuthorisation(currentAuthorisation).then(response => {
 

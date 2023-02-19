@@ -234,7 +234,9 @@ CREATE TABLE `AAU`.`RotationArea` (
     ON UPDATE NO ACTION
     );
     
-INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff'),
+INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff');
+    
+INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES 
 (1,'A Kennel',1, '#e06666', 0),
 (1,'ABC',2, '#1c4587', 0),
 (1,'ABC Day',3, '#ed7d31', 0),
@@ -298,8 +300,11 @@ CREATE TABLE `AAU`.`RotationAreaPosition` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
+INSERT INTO `AAU`.`RotationAreaPosition` (RotationAreaPositionId, OrganisationId, RotationAreaId, RotationAreaPosition, SortOrder) VALUES
+('-2', '1', '-1', 'Lunch break', '-1'),
+('-3', '1', '-1', 'Tea break', '-1');
+
 INSERT INTO `AAU`.`RotationAreaPosition` (OrganisationId, RotationAreaId, RotationAreaPosition, SortOrder) VALUES
-('-1', '1', '-1', 'Lunch break', '-1'),('-2', '1', '-1', 'Tea break', '-1') ,
 (1,1,'Medical 1',1),(1,1,'Medical 2',2),(1,1,'Medical 3',3),(1,1,'Medical 4',4),(1,1,'Medical 5',5),(1,9,'Medical 1',6),(1,9,'Medical 2',7),
 (1,9,'Medical 3',8),(1,31,'Medical 1',9),(1,31,'Medical 2',10),(1,31,'Medical 3',11),(1,29,'Medical 1',12),(1,29,'Medical 2',13),(1,29,'Medical 3',14),
 (1,33,'Medical 1',15),(1,33,'Medical 2',16),(1,20,'Medical 1',17),(1,20,'Medical 2',18),(1,20,'Medical 3',19),(1,20,'Medical 4',20),(1,14,'Medical 1',21),

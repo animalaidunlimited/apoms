@@ -46,8 +46,6 @@ export class StaffSchedulePrintComponent implements OnInit {
 
                                                                     let user = this.userDetails.getUser(assignment.userId);
 
-                                                                    console.log(assignment);
-
                                                                     return {
                                                                       userId: assignment.userId,
                                                                       employeeNumber: user?.employeeNumber || "",
@@ -60,11 +58,7 @@ export class StaffSchedulePrintComponent implements OnInit {
                                                                     }
 
                                                                   })
-                                                                  .sort((a,b) => a.employeeNumber.localeCompare(
-                                                                    b.employeeNumber,
-                                                                    undefined,
-                                                                    {numeric : true, sensitivity: 'base'}
-                                                                  ))
+                                                                  .sort(this.sortUserAssignments)
 
 
                                           }))
@@ -73,6 +67,23 @@ export class StaffSchedulePrintComponent implements OnInit {
   }
 
   ngOnInit() {
+
+  }
+
+
+  private sortUserAssignments(a: UserAssignmentPrintItem, b: UserAssignmentPrintItem) : number {
+
+    const employeeNumberCompare =  a.employeeNumber.localeCompare(
+      b.employeeNumber,
+      undefined,
+      {numeric : true, sensitivity: 'base'}
+    );
+
+    if(employeeNumberCompare !== 0){
+      return employeeNumberCompare;
+    }    
+
+    return new Date(`2023-01-01 ${a.startTime}`).getTime() - new Date(`2023-01-01 ${b.startTime}`).getTime()
 
   }
 

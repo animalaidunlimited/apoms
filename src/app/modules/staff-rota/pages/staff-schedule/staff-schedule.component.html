@@ -71,14 +71,21 @@
 
     <div>
 
-      <button mat-mini-fab color="primary" [disabled]="!dataLoaded" (click)="showAuthorisation()" matTooltip="Check complete">
+      <!-- [ngStyle]="{ 'backgroundColor': (currentScheduleAuthorisation | async)?.managerCount === (currentScheduleAuthorisation | async)?.authorisedCount ? 'green' : 
+      (currentScheduleAuthorisation | async)?.authorisedCount !== 0 ? 'orange' : ''}" -->
+      <button mat-mini-fab color="primary" [disabled]="!dataLoaded" (click)="showAuthorisation()" matTooltip="Check complete"
+      
+      [ngStyle]="{ 'backgroundColor': ((currentScheduleAuthorisation | async)?.authorisedCount || 0) === 0 ? '' :
+      (currentScheduleAuthorisation | async)?.managerCount === (currentScheduleAuthorisation | async)?.authorisedCount ? 'green' : 'orange' }"
+
+      >
         <mat-icon>fact_check</mat-icon>
       </button>
 
       <div style="position: relative;">
 
         <div *ngIf="showScheduleAuthorisation" class="schedule-authorisation flex-column flex-start-start">
-          <div class="flex-row flex-center-start gap-10" *ngFor="let manager of (currentScheduleAuthorisation | async)">
+          <div class="flex-row flex-center-start gap-10" *ngFor="let manager of (currentScheduleAuthorisation | async)?.authorisation">
             <mat-slide-toggle (change)="updateManagerAuthorisation(manager)" style="margin-bottom: 15px" [checked]="manager.authorised">{{manager.scheduleManager}}</mat-slide-toggle>        
             <mat-icon *ngIf="manager.areaList" [matTooltip]="manager.areaList" style="color: lightslategray">info</mat-icon>
           </div>
