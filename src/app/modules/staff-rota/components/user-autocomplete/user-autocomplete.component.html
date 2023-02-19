@@ -6,7 +6,9 @@
     [errorStateMatcher]="errorMatcher"
     type="text"
     (focus)="setSelectedUsers()"
+    style="width: 100%;"
     formControlName="userId"
+    [ngStyle]="{'backgroundColor' : backgroundColour}"
     [matAutocomplete]="auto">
 
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
@@ -28,6 +30,7 @@
     class="non-form-field-input"
     [errorStateMatcher]="errorMatcher"
     type="text"
+    [ngStyle]="{'backgroundColor' : backgroundColour}"
     (focus)="setSelectedUsers()"
     formControlName="userId"
     [matAutocomplete]="auto">

@@ -5,7 +5,9 @@ DROP TABLE IF EXISTS `AAU`.`RotationRoleShiftSegment`;
 DROP TABLE IF EXISTS `AAU`.`RotationRole`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequest`;
 DROP TABLE IF EXISTS `AAU`.`LeaveRequestReason`;
+DROP TABLE IF EXISTS `AAU`.`RotaDayAuthorisation`;
 DROP TABLE IF EXISTS `AAU`.`RotaRotationArea`;
+DROP TABLE IF EXISTS `AAU`.`RotationAreaPosition`;
 DROP TABLE IF EXISTS `AAU`.`RotationArea`;
 DROP TABLE IF EXISTS `AAU`.`RotationPeriod`;
 DROP TABLE IF EXISTS `AAU`.`RotaVersion`;
@@ -51,12 +53,12 @@ CREATE TABLE `AAU`.`RotationRole` (
  
 CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 	`RotationRoleShiftSegmentId` INT NOT NULL AUTO_INCREMENT,
-    `OrganisationId` INT NOT NULL,
+  `OrganisationId` INT NOT NULL,
 	`RotationRoleId` INT NOT NULL,    
 	`StartTime` TIME NOT NULL,
 	`EndTime` TIME NOT NULL,
 	`SameDay` TINYINT NULL,
-    `ShiftSegmentTypeId` INT NOT NULL,
+  `ShiftSegmentTypeId` INT NOT NULL,
 	`IsDeleted` TINYINT NOT NULL DEFAULT 0,
 	`DeletedDate` DATETIME NULL,
 	`CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -161,6 +163,31 @@ INDEX `FK_LeaveRequest_Organisation_OrganisationId_idx` (`OrganisationId` ASC) V
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
+
+CREATE TABLE `AAU`.`RotaDayAuthorisation` (
+  `RotaDayAuthorisationId` INT NOT NULL AUTO_INCREMENT,
+  `OrganisationId` INT NOT NULL,
+  `RotationPeriodId` INT NOT NULL,
+  `RotaDayDate` DATE NOT NULL,
+  `ManagerAuthorisation` JSON NOT NULL,
+  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RotaDayAuthorisationId`),
+  INDEX `IX_RotaDayAuthorisation_Organisation` (`OrganisationId` ASC) VISIBLE,
+  INDEX `IX_RotaDayAuthorisation_RotationPeriodId_idx` (`RotationPeriodId` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_RotationPeriod_RotaDayDate` (`RotaDayDate` ASC, `RotationPeriodId` ASC) VISIBLE,
+  CONSTRAINT `FK_RotaDayAuthorisation_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RotaDayAuthorisation_RotationPeriod_RotationPeriodId`
+    FOREIGN KEY (`RotationPeriodId`)
+    REFERENCES `AAU`.`RotationPeriod` (`RotationPeriodId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
       
 CREATE TABLE `AAU`.`RotationPeriod` (
   `RotationPeriodId` INT NOT NULL AUTO_INCREMENT,
@@ -186,6 +213,7 @@ CREATE TABLE `AAU`.`RotationArea` (
   `RotationAreaId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `RotationArea`  VARCHAR(32) NOT NULL,
+  `ScheduleManagerId` INT NULL,
   `SortOrder`  INT NOT NULL,
   `Colour` VARCHAR(20) NOT NULL,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
@@ -197,9 +225,19 @@ CREATE TABLE `AAU`.`RotationArea` (
     FOREIGN KEY (`OrganisationId`)
     REFERENCES `AAU`.`Organisation` (`OrganisationId`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION,
+    INDEX `FK_RotationArea_User_ScheduleManagerId_idx` (`ScheduleManagerId` ASC) VISIBLE,
+    CONSTRAINT `FK_RotationArea_User_ScheduleManagerId`
+    FOREIGN KEY (`ScheduleManagerId`)
+    REFERENCES `AAU`.`User` (`UserId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    );
     
-INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (1,'A Kennel',1, '#e06666', 0),
+INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff');
+    
+INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES 
+(1,'A Kennel',1, '#e06666', 0),
 (1,'ABC',2, '#1c4587', 0),
 (1,'ABC Day',3, '#ed7d31', 0),
 (1,'ABC Night',4, '#ed7d31', 0),
@@ -239,51 +277,62 @@ INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, I
 (1,'Video',38, '#ed7d31', 0);
 
 
+CREATE TABLE `AAU`.`RotationAreaPosition` (
+  `RotationAreaPositionId` INT NOT NULL AUTO_INCREMENT,
+  `OrganisationId` INT NOT NULL,
+  `RotationAreaId` INT NOT NULL,  
+  `RotationAreaPosition`  VARCHAR(32) NOT NULL,
+  `SortOrder`  INT NOT NULL,
+  `Colour` VARCHAR(20) NULL,
+  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RotationAreaPositionId`),
+    INDEX `FK_RotationAreaPosition_RotationArea_RotationAreaId_idx` (`RotationAreaId` ASC) VISIBLE,
+  CONSTRAINT `FK_RotationAreaPosition_RotationArea_RotationAreaId`
+    FOREIGN KEY (`RotationAreaId`)
+    REFERENCES `AAU`.`RotationArea` (`RotationAreaId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  INDEX `FK_RotationAreaPosition_Organisation_OrganisationId_idx` (`OrganisationId` ASC) VISIBLE,
+    CONSTRAINT `FK_RotationAreaPosition_Organisation_OrganisationId`
+    FOREIGN KEY (`OrganisationId`)
+    REFERENCES `AAU`.`Organisation` (`OrganisationId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
-    
-    INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour) VALUES
-(1,'A Kennel', 1,'#e06666'),
-(1,'B ken', 2,'#e06666'),
-(1,'Pup', 3,'#e06666'),
-(1,'PP-I', 4,'#e06666'),
-(1,'SA', 5,'#e06666'),
-(1,'Isolation', 6,'#e06666'),
-(1,'Cattle', 7,'#e06666'),
-(1,'Cat', 8,'#e06666'),
-(1,'Pig', 9,'#e06666'),
-(1,'Shelter', 10,'#e06666'),
-(1,'MHE', 11,'#0000ff'),
-(1,'Group hospital', 12,'#0b5394'),
-(1,'A KENNEL', 13,'#0b5394'),
-(1,'B KENNEL', 14,'#38761d'),
-(1,'PUPPY', 15,'#ed7d31'),
-(1,'PRE-ISO', 16,'#ff0000'),
-(1,'ISOLATION', 17,'#ff0000'),
-(1,'CATTLE', 18,'#ffc000'),
-(1,'CATS', 19,'#ffc000'),
-(1,'PIGEONS', 20,'#ffc000'),
-(1,'SHELTER FEEDING AM', 21,'#cfe2f3'),
-(1,'HANDY HEAVEN', 22,'#cfe2f3'),
-(1,'UPPER H. ', 23,'#cfe2f3'),
-(1,'SHELTER', 24,'#cfe2f3'),
-(1,'HOUSE KEEPING', 25,'#ed7d31'),
-(1,'MHN - MHE', 26,'#0000ff'),
-(1,'ABC Day', 27,'#ed7d31'),
-(1,'ABC Night', 28,'#ed7d31'),
-(1,'Operation Theathre', 29,'#e06666'),
-(1,'Emergency Dispatch', 30,'#3c78d8'),
-(1,'Ambulance', 31,'#3c78d8'),
-(1,'ABC', 32,'#3c78d8'),
-(1,'Street Treat', 33,'#3c78d8'),
-(1,'NN', 34,'#ed7d31'),
-(1,'Animal training', 35,'#ff00ff'),
-(1,'CALF FEEDING', 36,'#ffc000'),
-(1,'Learning session', 37,'#9900ff'),
-(1,'LSAs', 38,'#9900ff'),
-(1,'Admin and Facilities', 39,'#ed7d31'),
-(1,'AW', 40,'#ed7d31'),
-(1,'Cruelty', 41,'#ed7d31'),
-(1,'Video', 42,'#ed7d31');
+INSERT INTO `AAU`.`RotationAreaPosition` (RotationAreaPositionId, OrganisationId, RotationAreaId, RotationAreaPosition, SortOrder) VALUES
+('-2', '1', '-1', 'Lunch break', '-1'),
+('-3', '1', '-1', 'Tea break', '-1');
+
+INSERT INTO `AAU`.`RotationAreaPosition` (OrganisationId, RotationAreaId, RotationAreaPosition, SortOrder) VALUES
+(1,1,'Medical 1',1),(1,1,'Medical 2',2),(1,1,'Medical 3',3),(1,1,'Medical 4',4),(1,1,'Medical 5',5),(1,9,'Medical 1',6),(1,9,'Medical 2',7),
+(1,9,'Medical 3',8),(1,31,'Medical 1',9),(1,31,'Medical 2',10),(1,31,'Medical 3',11),(1,29,'Medical 1',12),(1,29,'Medical 2',13),(1,29,'Medical 3',14),
+(1,33,'Medical 1',15),(1,33,'Medical 2',16),(1,20,'Medical 1',17),(1,20,'Medical 2',18),(1,20,'Medical 3',19),(1,20,'Medical 4',20),(1,14,'Medical 1',21),
+(1,14,'Medical 2',22),(1,14,'Medical 3',23),(1,12,'Medical 1',24),(1,12,'Medical 2',25),(1,27,'Medical 1',26),(1,27,'Medical 2',27),(1,34,'Medical 1',28),
+(1,34,'Medical 2',29),(1,23,'Medical 1',30),(1,23,'Medical 2',31),(1,17,'Group hospital',32),(1,1,'7AM Care Giver',33),(1,1,'10AM Care Giver',34),
+(1,1,'In training',35),(1,1,'Others',36),(1,10,'7AM Care Giver',37),(1,10,'10AM Care Giver',38),(1,32,'7AM Care Giver',39),(1,32,'Care Giver',40),
+(1,32,'10AM Care Giver',41),(1,30,'7AM Care Giver',42),(1,30,'10AM Care Giver',43),(1,20,'AM Care Giver - I05',44),(1,20,'AM Care Giver - I06',45),
+(1,20,'AM Care Giver - I07',46),(1,20,'AM Care Giver - I08',47),(1,20,'AM Care Giver - Ix1',48),(1,20,'AM Care Giver - Ix3',49),(1,20,'PM Care Giver - Ix2',50),
+(1,20,'PM Care Giver - I01',51),(1,20,'PM Care Giver - I02',52),(1,20,'In training',53),(1,20,'PM Care Giver',54),(1,14,'Area Manager',55),(1,14,'Area coordinator',56),
+(1,14,'Care giver 1 - C01',57),(1,14,'Care giver 2 - C02',58),(1,14,'Care giver 3 - C03',59),(1,14,'Care giver 4 - C04',60),(1,14,'In training',61),
+(1,14,'Other',62),(1,14,'LSA',63),(1,14,'Care Giver',64),(1,13,'Care Giver',65),(1,28,'Care Giver',66),(1,35,'Group Shelter',67),(1,18,'Care giver 1',68),
+(1,18,'Care giver 2',69),(1,18,'Care giver 3',70),(1,18,'Care giver 4',71),(1,18,'LSA',72),(1,37,'Care giver 1',73),(1,37,'Care giver 2',74),(1,37,'Care giver 3',75),
+(1,37,'Care giver 4',76),(1,37,'LSA',77),(1,34,'Care giver 1',78),(1,34,'Care giver 2',79),(1,34,'Care giver 3',80),(1,34,'Care giver 4',81),(1,34,'LSA',82),
+(1,19,'Kitchen 1',83),(1,19,'Kitchen 2',84),(1,19,'Clothes 1',85),(1,19,'Clothes 2',86),(1,19,'Clothes 3',87),(1,19,'Clothes 4',88),(1,19,'Cleaner',89),
+(1,24,'Care Giver - N01',90),(1,24,'Care Giver - N02',91),(1,24,'Care Giver - N03',92),(1,24,'Care Giver - N04',93),(1,24,'Care Giver - N05',94),(1,24,'Care Giver - N06',95),
+(1,24,'Care Giver - N07',96),(1,3,'Medical assistant',97),(1,3,'Care Giver 1',98),(1,3,'Care Giver 2',99),(1,4,'Care Giver 1',100),(1,4,'Care Giver 2',101),
+(1,26,'Surgeon 1',102),(1,26,'Surgeon 2',103),(1,26,'Compounder 1',104),(1,26,'Compounder 2',105),(1,26,'Surgery Care 1',106),(1,26,'Surgery Care 2',107),
+(1,26,'Autoclave',108),(1,16,'ED 1',109),(1,16,'ED 2',110),(1,16,'ED 3',111),(1,16,'ED 4',112),(1,16,'ED 5',113),(1,16,'ED 6',114),(1,16,'ED 7',115),
+(1,16,'ED 8',116),(1,16,'ED 9',117),(1,16,'ED 10',118),(1,16,'ED 11',119),(1,16,'ED 12',120),(1,16,'ED 13',121),(1,16,'ED 14',122),(1,6,'Team 1',123),
+(1,6,'Team 2',124),(1,6,'Team 3',125),(1,6,'Team 4',126),(1,6,'Team 5',127),(1,6,'Team 6',128),(1,6,'Team 7',129),(1,2,'Team 1',130),(1,36,'Team 1',131),
+(1,36,'Team 2',132),(1,25,'Rescuer',133),(1,25,'Care giver',134),(1,7,'Animal Training (ED 8AM)',135),(1,7,'Animal Training (ED 9AM)',136),(1,7,'Animal Training (ED 10AM)',137),
+(1,7,'Animal Training (ED 12PM)',138),(1,7,'Animal Training ',139),(1,7,'Animal Training',140),(1,11,'Calf feeding',141),(1,11,'Calf feeding - LSA',142),
+(1,21,'Learning session - LSA',143),(1,22,'Compounder in training',144),(1,5,'Office 1',145),(1,5,'Office 2',146),(1,5,'Office 3',147),(1,5,'Junior Developer',148),
+(1,5,'Software Developer',149),(1,5,'HR generalist',150),(1,5,'Staff Coordinator',151),(1,5,'HR Coordinator',152),(1,5,'HR assistant 2',153),(1,5,'HR assistant 3',154),
+(1,5,'Staff Training',155),(1,5,'Accountant',156),(1,5,'Account Assistant',157),(1,5,'Medicine room',158),(1,5,'Stock assistant',159),(1,5,'Stock coordinator',160),
+(1,5,'Vehicle mnt/Driver',161),(1,5,'Facilities Coordinator',162),(1,5,'FDR 1',163),(1,5,'FDR 2',164),(1,5,'FDR 3',165),(1,8,'Vol Cord 1',166),(1,8,'Vol Cord 2',167),
+(1,8,'Vol Cord 6',168),(1,15,'Cruelty officer 1',169),(1,15,'Cruelty officer 2',170),(1,38,'Camera 1',171);
         
 CREATE TABLE `AAU`.`RotaRotationArea` (
   `RotaRotationAreaId` INT NOT NULL AUTO_INCREMENT,  
@@ -363,8 +412,11 @@ CREATE TABLE `AAU`.`RotaDayAssignment` (
 `RotaDayId` INTEGER AUTO_INCREMENT NOT NULL,
 `RotaDayDate` DATE NOT NULL,
 `RotationPeriodId` INTEGER NOT NULL,
-`RotationRoleId` INTEGER NOT NULL,
+`RotationRoleShiftSegmentId` INTEGER NOT NULL,
 `UserId` INTEGER NULL,
+`RotationAreaPositionId` INTEGER NULL,
+`ActualStartTime` TIME NULL,
+`ActualEndTime` TIME NULL,
 `RotationUserId` INTEGER NULL,
 `Notes` VARCHAR(1024) CHARACTER SET UTF8MB4 NULL,
 `Sequence` INTEGER NOT NULL,
@@ -390,10 +442,10 @@ INDEX `FK_RotaDayAssignment_RotationPeriod_RotationPeriodId_idx` (`RotationPerio
     REFERENCES `AAU`.`RotationPeriod` (`RotationPeriodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-INDEX `FK_RotaDayAssignment_RotationRole_RotationRoleId_idx` (`RotationRoleId` ASC) VISIBLE,
-  CONSTRAINT `FK_RotaDayAssignment_RotationRole_RotationRoleId`
-    FOREIGN KEY (`RotationRoleId`)
-    REFERENCES `AAU`.`RotationRole` (`RotationRoleId`)
+INDEX `FK_RotaDayAssignment_RAreaPosition_RAreaPositionId_idx` (`RotationAreaPositionId` ASC) VISIBLE,
+  CONSTRAINT `FK_RotaDayAssignment_RotationAreaPosition_RotationAreaPositionId`
+    FOREIGN KEY (`RotationAreaPositionId`)
+    REFERENCES `AAU`.`RotationAreaPosition` (`RotationAreaPositionId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
@@ -491,17 +543,52 @@ INSERT INTO AAU.LeaveRequestProtocol (OrganisationId, DayRangeStart, DayRangeEnd
     
 /*
 
-INSERT INTO `AAU`.`RotationArea` (OrganisationId, RotationArea, SortOrder, Colour) VALUES
-(1,'A Kennel', 1, '#ffb6c1'),
-(1,'B Kennel', 2, '#add8e6');
 
-INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, RotationAreaId, startTime, EndTime, BreakStartTime, BreakEndTime, SortOrder) VALUES
-('N01','#90ee90',1,1,'08:00','17:00','13:00','14:00',1),
-('N02','#add8e6',1,1,'09:00','18:00','14:00','15:00',2),
-('N03','#e0ffff',1,1,'10:00','19:00','15:00','16:00',3),
-('HX1','#20b2aa',1,2,'11:00','20:00','16:00','14:00',4),
-('HX2','#ffffe0',1,2,'12:00','21:00','17:00','18:00',5),
-('HX3','#ffa07a',1,2,'06:00','15:00','11:00','12:00',6);
+SELECT *
+FROM `AAU`.`RotationRole`
+
+INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, RotationAreaId, SortOrder) VALUES
+('N01','#90ee90',1,1,1),
+('N02','#add8e6',1,1,2),
+('N03','#e0ffff',1,1,3),
+('HX1','#20b2aa',1,2,4),
+('HX2','#ffffe0',1,2,5),
+('HX3','#ffa07a',1,2,6);
+
+SELECT *
+FROM AAU.RotationRoleShiftSegment;
+
+INSERT INTO AAU.RotationRoleShiftSegment (OrganisationId, RotationRoleId, StartTime, EndTime, SameDay, ShiftSegmentTypeId, IsDeleted) VALUES
+(1,1,'09:00','11:00',0,1,0),
+(1,1,'11:00','11:15',0,-1,0),
+(1,1,'11:15','13:00',0,2,0),
+(1,1,'13:00','14:00',0,-2,0),
+(1,1,'14:00','18:00',0,3,0),
+(1,2,'09:00','11:00',0,1,0),
+(1,2,'11:00','11:15',0,-1,0),
+(1,2,'11:15','13:00',0,2,0),
+(1,2,'13:00','14:00',0,-2,0),
+(1,2,'14:00','18:00',0,3,0),
+(1,3,'08:00','10:00',0,4,0),
+(1,3,'10:00','10:15',0,-1,0),
+(1,3,'10:15','12:00',0,5,0),
+(1,3,'12:00','13:00',0,-2,0),
+(1,3,'13:00','17:00',0,6,0),
+(1,4,'08:00','10:00',0,4,0),
+(1,4,'10:00','10:15',0,-1,0),
+(1,4,'10:15','12:00',0,5,0),
+(1,4,'12:00','13:00',0,-2,0),
+(1,4,'13:00','17:00',0,6,0),
+(1,5,'08:00','10:00',0,7,0),
+(1,5,'10:00','10:15',0,-1,0),
+(1,5,'10:15','12:00',0,8,0),
+(1,5,'12:00','13:00',0,-2,0),
+(1,5,'13:00','17:00',0,8,0),
+(1,6,'08:00','10:00',0,9,0),
+(1,6,'10:00','10:15',0,-1,0),
+(1,6,'10:15','12:00',0,9,0),
+(1,6,'12:00','13:00',0,-2,0),
+(1,6,'13:00','17:00',0,10,0);
 
 INSERT INTO `AAU`.`Rota` (`OrganisationId`,`RotaName`,`DefaultRota`) VALUES (1, 'Hospital Staff', 1), (1, 'Desk Staff', 0);
 INSERT INTO `AAU`.`RotaVersion` (`OrganisationId`,`RotaVersionName`,`DefaultRotaVersion`, `RotaId`) VALUES
@@ -509,9 +596,15 @@ INSERT INTO `AAU`.`RotaVersion` (`OrganisationId`,`RotaVersionName`,`DefaultRota
 (1, 'Desk Version MkI', 0, 2), (1, 'Desk Version MkII', 1, 2);
 
 
-INSERT INTO `AAU`.`LeaveRequest` (`DepartmentId`, `UserId`, `RequestDate`, `RequestReason`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES ('1', '1', '2022-01-10', 'Family Trip', '2022-10-01', '2022-10-03', '1');
-INSERT INTO `AAU`.`LeaveRequest` (`DepartmentId`, `UserId`, `RequestDate`, `RequestReason`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES ('1', '4', '2022-10-03', 'Wedding', '2022-10-05', '2022-10-06', '1');
-INSERT INTO `AAU`.`LeaveRequest` (`DepartmentId`, `UserId`, `RequestDate`, `RequestReason`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES ('1', '6', '2022-10-03', 'Visit', '2022-10-09', '2022-10-14', '1');
+SELECT *
+FROM AAU.LeaveRequest
+
+ALTER TABLE AAU.LeaveRequest DROP COLUMN WithinProtocol;
+
+
+INSERT INTO `AAU`.`LeaveRequest` (OrganisationId, `UserId`, `RequestDate`, `LeaveRequestReasonId`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES (1 ,1 , '2022-12-10', 1, '2023-02-09', '2023-02-19', '1');
+INSERT INTO `AAU`.`LeaveRequest` (OrganisationId, `UserId`, `RequestDate`, `LeaveRequestReasonId`, `LeaveStartDate`, `LeaveEndDate`, `Granted`) VALUES (1, 1, '2022-12-10', 2, '2023-02-09', '2023-02-11', '0');
+INSERT INTO `AAU`.`LeaveRequest` (OrganisationId, `UserId`, `RequestDate`, `LeaveRequestReasonId`, `LeaveStartDate`, `LeaveEndDate`) VALUES (1, 1, '2022-12-10', 3, '2023-02-11', '2023-02-13');
 
 
 */

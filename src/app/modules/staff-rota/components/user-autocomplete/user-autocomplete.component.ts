@@ -26,6 +26,7 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
   @Input() inputControl!: AbstractControl<number | null , number | null> | null;
   @Input() formField: boolean = true;
   @Input() scheduleUsers: boolean = true;
+  @Input() backgroundColour: string = "";
   @Output() selectionMade = new EventEmitter<boolean>();
 
   ngUnsubscribe = new Subject();
@@ -59,7 +60,6 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
    }
 
   ngOnInit() {
-
   }
 
   /* START VALUE ACCESSOR METHODS */
@@ -93,19 +93,19 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   /* END VALUE ACCESSOR METHODS */
 
-setSelectedUsers() : void {
+  setSelectedUsers() : void {
 
-  this.selectionMade.emit(true);
-  this.ngUnsubscribe.next();
+    this.selectionMade.emit(true);
+    this.ngUnsubscribe.next();
 
-  this.filteredUsers = this.currentUser?.valueChanges.pipe(
-    takeUntil(this.ngUnsubscribe),
-    startWith(''),
-    map(value => this._filter(value)),
-  );
-  
+    this.filteredUsers = this.currentUser?.valueChanges.pipe(
+      takeUntil(this.ngUnsubscribe),
+      startWith(''),
+      map(value => this._filter(value)),
+    );
+    
 
-}
+  }
 
   get displayFn() {
     return (userId:number) => this.userDetails.getUserCode(userId);

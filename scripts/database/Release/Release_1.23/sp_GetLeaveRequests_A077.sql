@@ -18,7 +18,7 @@ Purpose: Retrieve a list of leave requests
 
 DECLARE vOrganisationId INT;
 
-SELECT IF(prm_StartDate IS NULL, CURRENT_DATE(), prm_StartDate) INTO prm_StartDate;
+SELECT IF(prm_StartDate IS NULL, DATE_ADD(CURRENT_DATE(), INTERVAL -2 DAY), prm_StartDate) INTO prm_StartDate;
 SELECT IF(prm_EndDate IS NULL, DATE_ADD(CURRENT_DATE(), INTERVAL 2 YEAR), prm_EndDate) INTO prm_EndDate; 
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
@@ -85,7 +85,7 @@ AND lr.LeaveStartDate <= prm_EndDate
 AND lr.LeaveEndDate >= prm_StartDate
 )
 
-SELECT
+SELECT 
 			JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
 			JSON_OBJECT("leaveRequestId", lr.LeaveRequestId),

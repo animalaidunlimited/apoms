@@ -2,8 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
--- CALL AAU.sp_InsertRotaDayAssignments(1);
--- TRUNCATE TABLE AAU.RotaDayAssignment
+-- CALL AAU.sp_InsertRotaDayAssignments('Jim', 1);
+-- TRUNCATE TABLE AAU.RotaDayAssignment;
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertRotaDayAssignments( IN prm_UserName VARCHAR(45), IN prm_RotationPeriodId INT)
@@ -28,17 +28,25 @@ IF vRotationPeriodExists = 0 THEN
 
 UPDATE AAU.RotationPeriod SET `Locked` = 1 WHERE RotationPeriodId = prm_RotationPeriodId;
 
-INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleId, UserId, RotationUserId, Sequence)
-SELECT DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
+-- SELECT * FROM AAU.RotaDayAssignment;
+
+INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleShiftSegmentId, RotationAreaPositionId, UserId, RotationUserId, Sequence )
+SELECT
+DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
 p.RotationPeriodId,
-a.RotationRoleId,
+rrss.RotationRoleShiftSegmentId,
+rap.RotationAreaPositionId,
 NULLIF(NULLIF(rmi.UserId, -1), lr.LeaveRequestId IS NOT NULL) AS `UserId`,
 NULLIF(rmi.UserId, -1) AS `RotationUserId`,
-a.Sequence
+ROW_NUMBER() OVER (PARTITION BY DATE_ADD(p.StartDate, INTERVAL t.Id DAY) ORDER BY ra.SortOrder, rap.SortOrder, u.EmployeeNumber)
 FROM AAU.RotaMatrixItem rmi
 INNER JOIN AAU.RotationPeriod p ON p.RotationPeriodGUID = rmi.RotationPeriodGUID AND p.IsDeleted = 0
 INNER JOIN AAU.AreaShift a ON a.AreaShiftGUID = rmi.AreaShiftGUID AND a.IsDeleted = 0
+INNER JOIN AAU.RotationRoleShiftSegment rrss ON rrss.rotationRoleId = a.rotationRoleId
+INNER JOIN AAU.RotationAreaPosition rap ON rap.RotationAreaPositionId = rrss.ShiftSegmentTypeId
+INNER JOIN AAU.RotationArea ra ON ra.RotationAreaId = rap.RotationAreaId
 INNER JOIN AAU.Tally t ON t.Id <= (DATEDIFF(p.EndDate, p.StartDate))
+LEFT JOIN AAU.User u ON u.UserId = rmi.UserId
 LEFT JOIN AAU.LeaveRequest lr ON lr.UserId = rmi.UserId AND DATE_ADD(p.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE p.RotationPeriodId = prm_RotationPeriodId;
 

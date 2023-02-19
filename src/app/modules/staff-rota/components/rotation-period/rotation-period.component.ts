@@ -10,6 +10,7 @@ import { RotationPeriodSaveResponse } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { RotaService } from '../../services/rota.service';
+import { StaffScheduleService } from '../../services/staff-schedule.service';
 
 @Component({
   selector: 'app-rotation-period',
@@ -29,6 +30,7 @@ export class RotationPeriodComponent implements OnInit {
 
   constructor(
     private rotaService: RotaService,
+    private scheduleService: StaffScheduleService,
     public dialog: MatDialog,
     private router: Router,
     private snackbarService: SnackbarService,
@@ -165,11 +167,23 @@ export class RotationPeriodComponent implements OnInit {
     this.rotaService.insertRotaDayAssignments(period).then((result:SuccessOnlyResponse) => {
 
       if(result.success === 1){
-        this.snackbarService.successSnackBar("Rota created for all days in the period", "OK");        
-        this.rotaService.updateRotationPeriodLocked(period.get('rotationPeriodId')?.value, true);
+        this.snackbarService.successSnackBar("Rota created for all days in the period", "OK");    
+        
+        const rotationPeriodId = period.get('rotationPeriodId')?.value;
+        
+        this.rotaService.updateRotationPeriodLocked(rotationPeriodId, true);
+
+        this.scheduleService.insertScheduleManagerAuthorisation(rotationPeriodId).then((result:SuccessOnlyResponse) => {
+
+          if(result.success !== 1){
+            this.snackbarService.errorSnackBar("ERR: RPC-179: Error generating rota day authorisation, please see administrator", "OK");
+          }
+
+          
+        });
       }
       else {
-        this.snackbarService.errorSnackBar("ERR: RPC-163: Error generating rota day assignments, please see administrator", "OK");
+        this.snackbarService.errorSnackBar("ERR: RPC-186: Error generating rota day assignments, please see administrator", "OK");
       }
 
     })

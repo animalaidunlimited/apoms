@@ -44,6 +44,15 @@ export interface ReleaseManager {
     FirstName: string;
 }
 
+export interface ScheduleManager {
+    userId: number;
+    employeeNumber: string;
+    firstName: string;
+    surname: string;
+    initials: string;
+    colour: string;
+}
+
 export interface UserAccountDetails{
     fullname: string;
     initials: string;

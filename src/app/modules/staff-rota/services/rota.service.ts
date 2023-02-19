@@ -108,6 +108,7 @@ export class RotaService extends APIService {
     this.organisationDetails.organisationDetail.subscribe(organisationSettings => {
 
       this.periodsToShow = organisationSettings.rotaDefaults.periodsToShow;
+      // this.offset = this.periodsToShow;
 
     });
 
@@ -124,8 +125,6 @@ public getRotas() : Observable<Rota[] | null> {
   return this.getObservable(request);
 
 }
-
-
 
 public async initialiseRotas() : Promise<boolean> {
 
@@ -247,6 +246,8 @@ public extractAreaFromAreaShift(areaShift:AbstractControl) : RotationArea {
 
   return {
     areaRowSpan: areaShift.get('areaRowSpan')?.value,
+    scheduleManagerId: -1,
+    scheduleManager: "",
     rotationAreaColour: areaShift.get('rotationAreaColour')?.value,
     rotationArea: areaShift.get('rotationArea')?.value,
     rotationAreaId: areaShift.get('rotationAreaId')?.value,
@@ -262,6 +263,8 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
   await this.getRotationPeriods(rotaVersionId, periodsToShow, this.offset).then(async periods => {
 
+    console.log(periods);
+
     this.firstRotationPeriodGUID = periods?.firstRotationPeriodGUID || '';
     this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';    
 
@@ -275,7 +278,7 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
       await this.addRotationPeriod(period, true, false);
 
-    }
+    }    
     
     if(this.getRotationPeriodArray.controls[0]?.get('rotationPeriodGUID')?.value === this.firstRotationPeriodGUID){
       this.beginningOrEndRotation.next('beginningOfRange');
@@ -288,6 +291,8 @@ async initialiseRotationPeriods(periodsToShow: number) {
     }
   
     const periodGUIDs = this.getRotationPeriodArray.controls.map(period => period.get('rotationPeriodGUID')?.value).join(',');
+
+    console.log(periodGUIDs)
   
     this.loadMatrixForPeriods(periodGUIDs || "");
   
@@ -297,12 +302,13 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
 // API Calls
 
-getRotationPeriods(rotaVersionId: number, periodsToShow?: number, offset?: number) : Promise<RotationPeriodResponse | null> {  
+getRotationPeriods(rotaVersionId: number, periodsToShow?: number, offset?: number, isLocked?: number) : Promise<RotationPeriodResponse | null> {  
 
   periodsToShow = periodsToShow || 1;
   offset = offset || 0;
+  isLocked = isLocked || 0;
 
-  return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${offset}`);
+  return this.get(`/GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${periodsToShow}&offset=${offset}&isLocked=${isLocked}`);
 
 }
 
@@ -377,9 +383,17 @@ shiftLeftRotation() : void {
   //   this.getRotationPeriodArray.controls.pop();   
   // }
 
+  if(this.offset === 0){
+    this.offset = this.periodsToShow - 1;
+  }
+
   this.offset++;
 
   this.initialiseRotationPeriods(1);
+
+  this.sortAreaShifts();
+
+  setTimeout(() => this.generateTableDataSource(), 3000)
   
 }
 
@@ -765,7 +779,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     let maxSequence = 0;
     let nextStartDate = new Date();
     let nextEndDate = new Date();
-    nextEndDate.setUTCDate(nextEndDate.getUTCDate() + 7);
+    nextEndDate.setUTCDate(nextEndDate.getUTCDate() + 6);
 
     if(this.getRotationPeriodArray.controls.length > 0){
       lastRecord = this.getRotationPeriodArray.controls.reduce((a,b) => a.value.endDate < b.value.endDate ? b : a);
@@ -781,7 +795,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     const periodGUID = generateUUID();
 
-    return this.fb.group({
+    let retVal = this.fb.group({
       rotationPeriodId: [],
       rotationPeriodGUID: periodGUID,
       rotaVersionId: this.getCurrentRota.get("rotaVersionId")?.value,
@@ -793,6 +807,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
       locked: false,
       editable: true,
       checkUnassigned: false});
+
+      return retVal;
 
   }
 
@@ -1109,6 +1125,14 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     let rotationPeriodIdObject = { rotationPeriodId : period.get('rotationPeriodId')?.value };
 
     return this.postSubEndpoint("RotaDayAssignments", rotationPeriodIdObject);
+
+  }
+
+  public insertRotaDayAuthorisation(period: AbstractControl) : Promise<SuccessOnlyResponse> {
+
+    let rotationPeriodIdObject = { rotationPeriodId : period.get('rotationPeriodId')?.value };
+
+    return this.postSubEndpoint("RotaDayAuthorisation", rotationPeriodIdObject);
 
   }
 

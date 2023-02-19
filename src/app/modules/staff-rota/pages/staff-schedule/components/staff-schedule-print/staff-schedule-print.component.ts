@@ -5,7 +5,7 @@ import { PrintTemplateService } from 'src/app/modules/print-templates/services/p
 import { Observable } from 'rxjs';
 import { UserAssignmentPrintItem } from 'src/app/core/models/rota';
 import { MaterialModule } from 'src/app/material-module';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
@@ -28,7 +28,8 @@ export class StaffSchedulePrintComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userDetails: UserDetailsService,
-    private printService: PrintTemplateService
+    private printService: PrintTemplateService,
+    private datepipe: DatePipe
   ) { 
     const day = JSON.parse(route.snapshot.params?.staffScheduleDay);
 
@@ -43,9 +44,7 @@ export class StaffSchedulePrintComponent implements OnInit {
                                                                   .filter(assignment => assignment.userId)
                                                                   .map(assignment => {
 
-                                                                    let user = this.userDetails.getUser(assignment.userId)
-
-                                                                    const workTime = assignment.rotationRoleShiftSegments.find(segment => segment.shiftSegmentTypeId === 1);
+                                                                    let user = this.userDetails.getUser(assignment.userId);
 
                                                                     return {
                                                                       userId: assignment.userId,
@@ -53,18 +52,14 @@ export class StaffSchedulePrintComponent implements OnInit {
                                                                       firstName: user?.firstName || "",
                                                                       localName: user?.localName || "",
                                                                       notes: assignment.notes,
-                                                                      startTime: new Date(day.selectedDate + 'T' + workTime?.startTime),
-                                                                      endTime: new Date(day.selectedDate + 'T' + workTime?.endTime),
-                                                                      // rotationArea: assignment.rotationArea,
-                                                                      rotationRoleShiftSegments: assignment.rotationRoleShiftSegments
+                                                                      startTime: this.getAMPMFrom24hr(assignment?.actualStartTime) || assignment?.plannedStartTime,
+                                                                      endTime: this.getAMPMFrom24hr(assignment?.actualEndTime) || assignment?.plannedEndTime,
+                                                                      rotationAreaPosition: assignment.rotationAreaPosition || assignment.plannedRotationAreaPosition
+
                                                                     }
 
                                                                   })
-                                                                  .sort((a,b) => a.employeeNumber.localeCompare(
-                                                                    b.employeeNumber,
-                                                                    undefined,
-                                                                    {numeric : true, sensitivity: 'base'}
-                                                                  ))
+                                                                  .sort(this.sortUserAssignments)
 
 
                                           }))
@@ -73,6 +68,35 @@ export class StaffSchedulePrintComponent implements OnInit {
   }
 
   ngOnInit() {
+
+  }
+
+
+  private sortUserAssignments(a: UserAssignmentPrintItem, b: UserAssignmentPrintItem) : number {
+
+    const employeeNumberCompare =  a.employeeNumber.localeCompare(
+      b.employeeNumber,
+      undefined,
+      {numeric : true, sensitivity: 'base'}
+    );
+
+    if(employeeNumberCompare !== 0){
+      return employeeNumberCompare;
+    }    
+
+    return new Date(`2023-01-01 ${a.startTime}`).getTime() - new Date(`2023-01-01 ${b.startTime}`).getTime()
+
+  }
+
+  private getAMPMFrom24hr(currentTime: string) : string | null {
+
+    if(!currentTime){
+      return "";
+    }
+
+    const currentTimeDate = new Date(`2023-01-01 ${currentTime}`);
+
+    return this.datepipe.transform(currentTimeDate, 'hh:mm a');
 
   }
 

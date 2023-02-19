@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { AbstractControl, FormBuilder } from '@angular/forms';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { RotaDayAssignment } from 'src/app/core/models/rota';
+import { RotaDayAssignment, RotaDayAssignmentResponse, ScheduleAuthorisation, ScheduleManagerAuthorisation } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
-import { BaseShiftSegment } from '../../../core/models/rota';
+import { ScheduleAuthorisationDay } from './../../../core/models/rota';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ getRotationPeriodForRotaVersion(rotaVersionId: number, limit?: number, offset?: 
   limit = limit || 1;
   offset = offset || 0;
 
-  return this.get(`GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${limit}&offset=${offset}`)
+  return this.get(`GetRotationPeriods?rotaVersionId=${rotaVersionId}&limit=${limit}&offset=${offset}`);
 
 }
 
@@ -53,33 +53,93 @@ public generateNewAssignment(assignment: RotaDayAssignment) : ModelFormGroup<Rot
 
 public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
 
-  const blankSegment:BaseShiftSegment[] = [{
-    rotationRoleShiftSegmentId: -1,
-    shiftSegmentTypeId: -1,
-    startTime: "",
-    endTime: "",
-    sameDay: false
-  }];
 
   return this.fb.nonNullable.group({
-    rotaDayId :                 [0],
-    areaRowSpan :               [1],
-    userId :                    [0],
-    rotationUserId :            [0],
-    leaveRequestId :            [0],
-    leaveGranted :              [''],
-    leaveUser :                 [''],
-    rotationRoleId :            [0],
-    rotationRole :              [''],
-    // rotationAreaId :            [0],
-    // rotationArea :              [''],
-    // rotationAreaColour :        [''],
-    // rotationAreaSortOrder :     [0],
-    rotationRoleShiftSegments : [blankSegment],       
-    notes :                     [''],
-    isAdded:                    [true],
-    guid:                       ['']
+    notes: [''],
+    userId: [0],
+    employeeNumber: [''],
+    userCode: [''],
+    isAdded: [false],
+    leaveUser: [''],
+    rotaDayId: [0],
+    rotationAreaPositionId: [0],
+    rotationAreaPosition: [''],
+    rotationAreaId: [0],
+    rotationArea: [''],    
+    plannedRotationAreaPositionId: [0],
+    plannedRotationAreaPosition: [''],
+    plannedRotationAreaId: [0],
+    plannedRotationArea: [''],
+    leaveGranted: [''],
+    actualEndTime: [''],
+    plannedAreaId: [0],
+    leaveRequestId: [0],
+    plannedEndTime: [''],
+    rotationUserId: [0],
+    actualStartTime: [''],
+    plannedStartTime: [''],
+    areaRowSpan: [0],
+    rotationAreaColour: [''],
+    sequence: [0],
+    guid: [''],
+    shiftSegmentCount: [0]
   });
+
+}
+
+
+reassignAreaRowSpans(assignments: AbstractControl[]) : AbstractControl[] {
+
+  assignments.sort((a,b) => a.get('sequence')?.value - b.get('sequence')?.value)
+
+  if(assignments?.length === 0) return [];
+
+  if(assignments?.length === 1){
+    assignments.at(0)?.get('areaRowSpan')?.setValue(1);
+    assignments;
+  }
+
+  let currentSpan = 1;
+  let currentControl = assignments.at(0);
+
+  for(let i = 1; i <= assignments?.length; i++){
+
+    let currentControlValue = currentControl?.get('rotationAreaId')?.value || currentControl?.get('plannedRotationAreaId')?.value;
+    let thisControlValue = assignments.at(i)?.get('rotationAreaId')?.value || assignments.at(i)?.get('plannedRotationAreaId')?.value;
+
+    if(currentControlValue === thisControlValue){
+      assignments.at(i)?.get('areaRowSpan')?.setValue(0);  
+      currentSpan++;
+    }
+    else {
+      currentControl?.get('areaRowSpan')?.setValue(currentSpan);        
+      currentSpan = 1;
+      currentControl = assignments.at(i);
+    }
+
+  }
+
+  return assignments;
+
+}
+
+getScheduleManagerAuthorisation(rotationPeriodId: number) : Promise<ScheduleManagerAuthorisation | null> {
+
+  return this.get(`/GetScheduleAuthorisationByRotationPeriodId?rotationPeriodId=${rotationPeriodId}`);
+
+}
+
+public insertScheduleManagerAuthorisation(period: AbstractControl) : Promise<SuccessOnlyResponse> {
+
+  let rotationPeriodIdObject = { rotationPeriodId : period.get('rotationPeriodId')?.value };
+
+  return this.postSubEndpoint("ScheduleManagerAuthorisation", rotationPeriodIdObject);
+
+}
+
+public updateScheduleManagerAuthorisation(authorization: ScheduleAuthorisationDay) : Promise<SuccessOnlyResponse> {
+
+  return this.putSubEndpoint("ScheduleManagerAuthorisation", authorization);
 
 }
 

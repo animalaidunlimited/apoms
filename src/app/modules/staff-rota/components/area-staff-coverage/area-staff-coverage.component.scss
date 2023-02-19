@@ -3,24 +3,29 @@
     left: 0;
     display: inline-block;
 }
-  .area-coverage{
-    display: inline-block;
-  }
 
+.area-coverage{
+    display: inline-block;
+}
 
 .form-header{
     display: grid;
     grid-template-columns: 230px auto;
 }
 
-
 .quarter-hour{
     font-size: x-small;
     padding: 0 3px;
+    text-align: center;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 2px;
+    border: 1px solid darkgray;
+    background-color: lightgray;
 }
 
 .header-block{
-    height:24px;
+    min-height:24px;
 }
 
 .worker-column{
@@ -44,22 +49,16 @@
     background-color: #359A88;
     height: 24px;
     color: white;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .coverage{
     flex-grow: 1;
     justify-content: center;
     font-size: x-small;
-}
-
-.start-shift{
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-.end-shift{
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
 }
 
 .break{

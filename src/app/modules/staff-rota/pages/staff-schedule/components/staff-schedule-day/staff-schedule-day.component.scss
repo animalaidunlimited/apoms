@@ -74,7 +74,7 @@ th, td {
 
 .leave-icon{
     position: absolute;
-    bottom: 45%;
+    bottom: 5%;
     right: 0;
 }
 
@@ -107,7 +107,8 @@ th, td {
     border-radius: 5px;
     position: absolute;
     left: 165px;
-    margin-top: 5px;
+    margin-top: 45px;
+    z-index: 102;
 }
 
 @media(max-width: 600px) {

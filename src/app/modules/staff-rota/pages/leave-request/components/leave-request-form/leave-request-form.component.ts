@@ -188,6 +188,9 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 
   checkAgainstProtocol() : void {
 
+    console.log(this.numberOfDays?.value);
+    console.log(this.requestService.getNonFestivalNoticeDays(this.numberOfDays?.value || -1));
+
     let noticeDaysRequired = this.leaveRequestForm.get('leaveRequestReason')?.value?.toLowerCase() === 'festival' ?
       this.requestService.getFestivalNoticeDays(this.leaveRequestForm.get('leaveRequestReasonId')?.value || -1) :
       this.requestService.getNonFestivalNoticeDays(this.numberOfDays?.value || -1);

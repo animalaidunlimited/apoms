@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
-import { UntypedFormBuilder, FormControl, AbstractControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ export class GenericTableComponent implements OnInit, OnChanges {
 
   @Input() data!: Observable<any[]>;
   @Input() dataName!: string;
+  @Input() displayColumns!: string[];
   @Input() excludeColumns: string[] | undefined;
 
   @Output() clickedRow: EventEmitter<FormGroup> = new EventEmitter();
@@ -43,13 +44,12 @@ export class GenericTableComponent implements OnInit, OnChanges {
     this.displayedColumns = this.generateDisplayedColumns();
     this.changeDetector.detectChanges();
 
+    
   }
 
   generateDisplayedColumns() : Observable<string[]> {
 
-    return this.dataColumns.pipe(map(values => values
-                                              .filter(item => !item.includes("Id"))
-                                              .filter(item => !this.excludeColumns?.includes(item))));
+    return this.dataColumns.pipe(map(() => this.displayColumns));
 
   }
 

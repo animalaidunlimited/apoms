@@ -12,6 +12,7 @@ CREATE PROCEDURE AAU.sp_UpsertRotationArea(
 		IN prm_Username VARCHAR(45),
 		IN prm_RotationAreaId INT,
         IN prm_RotationArea VARCHAR(32),
+        IN prm_ScheduleManagerId INT,
 		IN prm_SortOrder INT,
         IN prm_Colour VARCHAR(10),
         IN prm_Deleted TINYINT
@@ -36,13 +37,14 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT COUNT(1) INTO vRotationAreaIdExists FROM AAU.RotationArea WHERE RotationArea = prm_RotationArea AND OrganisationId = vOrganisationId AND IsDeleted = 0;
+SELECT COUNT(1) INTO vRotationAreaIdExists FROM AAU.RotationArea WHERE RotationAreaId = prm_RotationAreaId;
 
 IF ( vRotationAreaIdExists = 0 ) THEN
 
 INSERT INTO AAU.RotationArea(
 	OrganisationId,
 	RotationArea,
+    ScheduleManagerId,
     SortOrder,
     Colour,
 	IsDeleted
@@ -50,6 +52,7 @@ INSERT INTO AAU.RotationArea(
 VALUES(
 	vOrganisationId,
 	prm_RotationArea,
+    prm_ScheduleManagerId,
 	prm_SortOrder,
     prm_Colour,
     prm_Deleted
@@ -59,23 +62,24 @@ VALUES(
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Insert', NOW());
+	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Insert', vTimeNow);
     
 ELSEIF ( vRotationAreaIdExists = 1  AND prm_RotationAreaId IS NOT NULL ) THEN
 
 UPDATE AAU.RotationArea SET
-	OrganisationId = vOrganisationId,
-	RotationArea = prm_RotationArea,
-    SortOrder = prm_SortOrder,
-    Colour = prm_Colour,
-	IsDeleted = prm_Deleted,
-    DeletedDate = IF(prm_Deleted = 1, vTimeNow, null)
+	OrganisationId		= vOrganisationId,
+	RotationArea		= prm_RotationArea,
+    ScheduleManagerId	= prm_ScheduleManagerId,
+    SortOrder			= prm_SortOrder,
+    Colour				= prm_Colour,
+	IsDeleted			= prm_Deleted,
+    DeletedDate			= IF(prm_Deleted = 1, vTimeNow, null)
     WHERE RotationAreaId = prm_rotationAreaId;
 
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Update', NOW()); 
+	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Update', vTimeNow); 
 
 ELSEIF ( vRotationAreaIdExists = 1  AND prm_RotationAreaId IS NULL ) THEN
 

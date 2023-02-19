@@ -117,7 +117,25 @@ export interface AreaShift{
 
   export interface RotationArea extends RotationAreaBase {
     areaRowSpan: number;
-    rotationAreaColour: string;    
+    rotationAreaColour: string;
+    scheduleManagerId: number;
+    scheduleManager: string;
+  }
+
+  export interface RotationAreaPosition {
+    rotationAreaPositionId: number;
+    rotationAreaId: number;
+    rotationArea: string;
+    rotationAreaPosition: string;
+    sortOrder: number;
+    isDeleted: boolean;
+    colour: string;
+  }
+
+  export interface GroupedRotationAreaPosition {
+    rotationArea: string;
+    rotationAreaId: number;
+    positions: RotationAreaPosition[]
   }
 
   export interface RotationAreaResponse{
@@ -171,28 +189,44 @@ export interface UserAssignmentPrintItem {
   firstName: string;
   localName: string
   notes: string;
-  startTime?: Date;
-  endTime?: Date;
-  // rotationArea: string;
-  rotationRoleShiftSegments: BaseShiftSegment[];
+  startTime?: string;
+  endTime?: string;
+  rotationAreaPosition: string;
 }
 
 export interface RotaDayAssignment{
-  rotaDayId: number;
-  areaRowSpan: number;
-  userId: number;
-  rotationUserId: number;
-  leaveRequestId: number;
-  leaveGranted: string;
-  leaveUser: string;
-  rotationRoleId: number;
-  rotationRole: string;  
-  rotationRoleShiftSegments: BaseShiftSegment[];
   notes: string;
+  userId: number;
+  employeeNumber: string;
+  userCode: string;
   isAdded: boolean;
+  leaveUser: string;
+  rotaDayId: number;
+  
+  rotationAreaPositionId: number;
+  rotationAreaPosition: string;
+  rotationAreaId: number;
+  rotationArea: string;    
+  plannedRotationAreaPositionId: number;
+  plannedRotationAreaPosition: string;
+  plannedRotationAreaId: number;
+  plannedRotationArea: string;
+
+  leaveGranted: string;
+  actualEndTime: string;
+  plannedAreaId: number;
+  leaveRequestId: number;
+  plannedEndTime: string;
+  rotationUserId: number;
+  actualStartTime: string;
+  plannedStartTime: string;
+  areaRowSpan: number;
+  rotationAreaColour: string;
+  sequence: number;
   guid: string;
   rotaDayDate?: string;
   rotationPeriodId?: number;
+  shiftSegmentCount: number;
 }
 export interface RotationPeriodLeave {
   leaveRequestId: number;
@@ -270,4 +304,25 @@ export interface LeaveRequestProtocol{
   dayRangeEnd: number;
   dayRangeStart: number;
   noticeDaysRequired: number;
+}
+
+export interface ScheduleAuthorisation
+{
+  scheduleManagerId: number;
+  scheduleManager: string;
+  areaList: string;
+  authorised: boolean;
+}
+
+export interface ScheduleAuthorisationDay{
+  rotaDayDate: string;
+  rotaDayAuthorisationId: number;
+  managerCount: number;
+  authorisedCount: number;
+  authorisation: ScheduleAuthorisation[];
+}
+
+export interface ScheduleManagerAuthorisation {
+  rotationPeriodId: number;  
+  scheduleAuthorisation: ScheduleAuthorisationDay[]
 }

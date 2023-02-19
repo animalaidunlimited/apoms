@@ -4,9 +4,18 @@
   <fieldset>
     <legend class="legend">Request</legend>
 
-    <div class="flex-column" >
+    <div class="flex-column">
 
-      <mat-form-field appearance="fill">
+      <app-user-autocomplete
+        formControlName="userId"
+        [formField]="true"
+        [scheduleUsers]="false"
+        [showLabel]="true"
+        class="select-field"
+        style="min-width: 100px;">
+      </app-user-autocomplete>
+
+      <!-- <mat-form-field appearance="fill">
         <mat-label>Worker name</mat-label>
         <input matInput
         [errorStateMatcher]="errorMatcher"
@@ -21,7 +30,7 @@
           </mat-option>
         </mat-autocomplete>
     
-      </mat-form-field>
+      </mat-form-field> -->
     
       <mat-form-field appearance="fill">
         <mat-label>Date of request</mat-label>
