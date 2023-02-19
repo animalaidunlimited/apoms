@@ -274,6 +274,7 @@ INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, I
 (1,'Upper H. ',37, '#cfe2f3', 0),
 (1,'Video',38, '#ed7d31', 0);
 
+
 CREATE TABLE `AAU`.`RotationAreaPosition` (
   `RotationAreaPositionId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,

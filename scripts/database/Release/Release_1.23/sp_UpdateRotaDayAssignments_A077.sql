@@ -8,6 +8,7 @@ CREATE PROCEDURE AAU.sp_UpdateRotaDayAssignment( 	IN prm_UserName VARCHAR(45),
                                                     IN prm_userId INTEGER,
 													IN prm_actualStartTime TIME,
 													IN prm_actualEndTime TIME,
+
 													IN prm_notes VARCHAR(1024))
 BEGIN
 
