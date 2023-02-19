@@ -233,7 +233,7 @@ CREATE TABLE `AAU`.`RotationArea` (
     );
     
 INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff', 0);
-    
+
 INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES 
 (1,'A Kennel',1, '#e06666', 0),
 (1,'ABC',2, '#1c4587', 0),
