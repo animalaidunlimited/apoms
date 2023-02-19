@@ -72,37 +72,6 @@ export class RotaSettingsService extends APIService {
   
   }
 
-  getRotationAreaPositions(includeDeleted: boolean) : Observable<RotationAreaPosition[]> {
-
-    const request = `/GetRotationAreaPositions?includeDeleted=${includeDeleted}`;
-
-    return this.getObservable(request).pipe(map((response: RotationAreaPosition[]) => response));    
-  
-  }
-  
-  getGroupedRotationAreaPositions(includeDeleted: boolean) : Observable<GroupedRotationAreaPosition[]> {
-
-    const request = `/GetRotationAreaPositions?includeDeleted=${includeDeleted}`;
-
-    return this.getObservable(request).pipe(map((response: RotationAreaPosition[]) => 
-      
-      response.reduce((returnValue, current) => {    
-  
-        let foundAreaGroup = returnValue.find((element:GroupedRotationAreaPosition) => element.rotationAreaId === current.rotationAreaId);
-        
-        !foundAreaGroup ?
-          returnValue.push({rotationArea: current.rotationArea, rotationAreaId: current.rotationAreaId, positions: [current]})
-        :
-          foundAreaGroup.positions.push(current);  
-        
-        return returnValue;
-        
-      },[] as GroupedRotationAreaPosition[])
-    
-    ));    
-  
-  }
-
   saveRotationRole(rotationRole: RotationRole) : Promise<RotationRoleResponse> {
 
     return this.postSubEndpoint(`RotationRole`, rotationRole);
