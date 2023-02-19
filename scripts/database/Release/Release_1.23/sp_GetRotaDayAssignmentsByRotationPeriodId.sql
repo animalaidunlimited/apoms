@@ -19,7 +19,34 @@ DECLARE vOrganisationId INT;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE Username = prm_Username;
 
-With BaseCTE AS 
+
+With RotationRoleShiftSegmentsCTE AS (
+
+SELECT rrss.RotationRoleId,
+JSON_ARRAYAGG(
+	JSON_MERGE_PRESERVE(
+		JSON_OBJECT("startTime", rrss.StartTime),
+		JSON_OBJECT("endTime", rrss.EndTime),
+		JSON_OBJECT("sameDay", rrss.SameDay),
+		JSON_OBJECT("shiftSegmentTypeId", rrss.ShiftSegmentTypeId)
+	)
+) AS `rotationRoleShiftSegments`
+
+FROM AAU.RotationRoleShiftSegment rrss
+WHERE rrss.IsDeleted = 0
+AND OrganisationId = vOrganisationId
+GROUP BY rrss.RotationRoleId
+),
+RoleAndAreaCTE AS
+(
+	SELECT rrss.RotationRoleId,
+	rr.RotationRole,
+	rrss.rotationRoleShiftSegments
+	FROM RotationRoleShiftSegmentsCTE rrss
+	INNER JOIN AAU.RotationRole rr ON rr.RotationRoleId = rrss.RotationRoleId
+),
+
+BaseCTE AS 
 (
 SELECT
 	rda.RotationPeriodId,
@@ -36,8 +63,7 @@ SELECT
     WHEN lr.Granted = 2 THEN 'Partially'
     ELSE NULL
     END AS `LeaveGranted`,
-    CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,
-    
+    CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,    
     rda.RotationAreaPositionId AS `rotationAreaPositionId`,
     rap.RotationAreaPosition AS `rotationAreaPosition`,
 	ra.RotationAreaId AS `rotationAreaId`,
@@ -111,7 +137,6 @@ SELECT
     '#999999', -- Colour
     -2, -- Sequence
     NULL -- Notes
-    
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
 INNER JOIN AAU.RotationPeriod rp ON DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY) BETWEEN rp.StartDate AND rp.EndDate
@@ -174,18 +199,15 @@ SELECT RotationPeriodId,
 						JSON_OBJECT("rotationUserId", RotationUserId),
 						JSON_OBJECT("leaveRequestId", LeaveRequestId),
                         JSON_OBJECT("leaveGranted", LeaveGranted),
-                        JSON_OBJECT("leaveUser", LeaveUser),
-                                                
+                        JSON_OBJECT("leaveUser", LeaveUser),                                               
                         JSON_OBJECT("rotationAreaPositionId", rotationAreaPositionId),
                         JSON_OBJECT("plannedArea", rotationAreaPosition),
                         JSON_OBJECT("rotationAreaId", rotationAreaId),
-                        JSON_OBJECT("rotationArea", rotationArea),
-                        
+                        JSON_OBJECT("rotationArea", rotationArea),                        
                         JSON_OBJECT("plannedRotationAreaPositionId", plannedRotationAreaPositionId),
                         JSON_OBJECT("plannedRotationAreaPosition", plannedRotationAreaPosition),
                         JSON_OBJECT("plannedRotationAreaId", plannedRotationAreaId),
-                        JSON_OBJECT("plannedRotationArea", plannedRotationArea),
-                        
+                        JSON_OBJECT("plannedRotationArea", plannedRotationArea),                        
                         JSON_OBJECT("plannedStartTime", plannedStartTime),
                         JSON_OBJECT("plannedEndTime", plannedEndTime),                        
 						JSON_OBJECT("actualStartTime", actualStartTime),
