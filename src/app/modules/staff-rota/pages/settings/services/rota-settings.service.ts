@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { fnSortBySortOrderAndRotationPeriodSortOrder } from 'src/app/core/helpers/utils';
 import { GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationAreaResponse, RotationRole, RotationRoleResponse } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 
 @Injectable({
   providedIn: 'root'
@@ -24,18 +25,12 @@ export class RotaSettingsService extends APIService {
     super(http);
    }
 
-
    getRotationRoles(includeDeleted: boolean): Observable<RotationRole[]> {    
-
-    if(!this.rotationRoles$){
+ 
       const request = `/GetRotationRoles?includeDeleted=${includeDeleted}`;
 
-      this.rotationRoles$ = this.getObservable(request).pipe(map((response: RotationRole[]) => response?.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a,b))));
+      return this.getObservable(request).pipe(map((response: RotationRole[]) => response?.sort((a,b) => fnSortBySortOrderAndRotationPeriodSortOrder(a,b))));
       
-    }
-    
-    return this.rotationRoles$;
-
 }
   
   getRotationAreas(includeDeleted: boolean) : Observable<RotationArea[]> {
@@ -45,7 +40,7 @@ export class RotaSettingsService extends APIService {
     return this.getObservable(request).pipe(map((response: RotationArea[]) => response));    
   
   }
-  
+
   getRotationAreaPositions(includeDeleted: boolean) : Observable<RotationAreaPosition[]> {
 
     const request = `/GetRotationAreaPositions?includeDeleted=${includeDeleted}`;

@@ -165,7 +165,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_DeleteUserById !!
 
--- CALL AAU.sp_GetUsersByIdRange('Jim');
+-- CALL AAU.sp_DeleteUserById('Jim');
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_DeleteUserById(IN prm_UserId INT)
@@ -271,6 +271,38 @@ WHERE ecr.CallerId = prm_CallerId AND ecr.IsDeleted = 0;
 
 END$$
 DELIMITER ;
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetCallerByNumber !!
+
+-- CALL AAU.sp_GetCallerByNumber('Jim', 1);
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetCallerByNumber( IN prm_UserName VARCHAR(45), IN prm_Number VARCHAR(45))
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 24/02/2020
+Purpose: Used to return a Caller by Number.
+
+Modified By: Jim Mackenzie
+Modified On: 11/02/2023
+Purpose: Altering to bring bcak result by organisation.
+*/
+
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE Username = prm_Username;
+
+SELECT c.CallerId, c.Name, c.Number, c.AlternativeNumber
+FROM AAU.Caller c
+WHERE Number LIKE CONCAT(prm_Number, '%')
+AND c.OrganisationId = vOrganisationId
+LIMIT 10;
+
+END$$
+
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetCurrentPatientsByEmergencyCaseId !!
@@ -578,7 +610,7 @@ Purpose: Retrieve a list of leave requests
 
 DECLARE vOrganisationId INT;
 
-SELECT IF(prm_StartDate IS NULL, CURRENT_DATE(), prm_StartDate) INTO prm_StartDate;
+SELECT IF(prm_StartDate IS NULL, DATE_ADD(CURRENT_DATE(), INTERVAL -2 DAY), prm_StartDate) INTO prm_StartDate;
 SELECT IF(prm_EndDate IS NULL, DATE_ADD(CURRENT_DATE(), INTERVAL 2 YEAR), prm_EndDate) INTO prm_EndDate; 
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
@@ -645,7 +677,7 @@ AND lr.LeaveStartDate <= prm_EndDate
 AND lr.LeaveEndDate >= prm_StartDate
 )
 
-SELECT
+SELECT 
 			JSON_ARRAYAGG(
 			JSON_MERGE_PRESERVE(
 			JSON_OBJECT("leaveRequestId", lr.LeaveRequestId),
@@ -768,39 +800,15 @@ DECLARE vOrganisationId INT;
 
 SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE Username = prm_Username;
 
-With RotationRoleShiftSegmentsCTE AS (
-
-SELECT rrss.RotationRoleId,
-JSON_ARRAYAGG(
-	JSON_MERGE_PRESERVE(
-		JSON_OBJECT("startTime", rrss.StartTime),
-		JSON_OBJECT("endTime", rrss.EndTime),
-		JSON_OBJECT("sameDay", rrss.SameDay),
-		JSON_OBJECT("shiftSegmentTypeId", rrss.ShiftSegmentTypeId)
-	)
-) AS `rotationRoleShiftSegments`
-
-FROM AAU.RotationRoleShiftSegment rrss
-WHERE rrss.IsDeleted = 0
-AND OrganisationId = vOrganisationId
-GROUP BY rrss.RotationRoleId
-),
-RoleAndAreaCTE AS
-(
-	SELECT rrss.RotationRoleId,
-	rr.RotationRole,
-	rrss.rotationRoleShiftSegments
-	FROM RotationRoleShiftSegmentsCTE rrss
-	INNER JOIN AAU.RotationRole rr ON rr.RotationRoleId = rrss.RotationRoleId
-),
-
-BaseCTE AS 
+With BaseCTE AS 
 (
 SELECT
 	rda.RotationPeriodId,
 	rda.RotaDayDate,
 	rda.RotaDayId,
-	IF(lr.Granted = 1 AND rda.UserId = rda.RotationUserId, NULL, rda.UserId) AS 'UserId',
+	IF(lr.Granted = 1 AND rda.UserId = lr.UserId, NULL, rda.UserId) AS 'UserId',
+    u.EmployeeNumber,
+    CONCAT(u.EmployeeNumber, ' - ', u.FirstName) AS `UserCode`,
 	rda.RotationUserId,
 	lr.LeaveRequestId,
     CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
@@ -810,14 +818,42 @@ SELECT
     ELSE NULL
     END AS `LeaveGranted`,
     CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,
-    rr.RotationRoleId,
-	rr.RotationRole,
     
-	rr.rotationRoleShiftSegments,
+    rda.RotationAreaPositionId AS `rotationAreaPositionId`,
+    rap.RotationAreaPosition AS `rotationAreaPosition`,
+	ra.RotationAreaId AS `rotationAreaId`,
+	ra.RotationArea AS `rotationArea`,  
+    
+	rr.RotationAreaPositionId AS `plannedRotationAreaPositionId`,
+	rr.RotationAreaPosition AS `plannedRotationAreaPosition`,  
+    rr.RotationAreaId AS `plannedRotationAreaId`,
+	rr.RotationArea AS `plannedRotationArea`,    
+   
+    TIME_FORMAT(rr.StartTime, '%h:%i %p') AS `plannedStartTime`,
+    TIME_FORMAT(rr.EndTime, '%h:%i %p') AS `plannedEndTime`,
+    TIME_FORMAT(rda.ActualStartTime, '%h:%i') AS `actualStartTime`,
+    TIME_FORMAT(rda.ActualEndTime, '%h:%i') AS `actualEndTime`,
+    IFNULL(ra.Colour, rr.Colour) AS `rotationAreaColour`,
+    rda.Sequence,
     rda.Notes
 	FROM AAU.RotaDayAssignment rda
-	INNER JOIN RoleAndAreaCTE rr ON rr.RotationRoleId = rda.RotationRoleId    
-	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.RotationUserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
+    INNER JOIN 
+    (
+		SELECT 	rrss.RotationRoleShiftSegmentId, rrss.RotationRoleId, rpa.RotationAreaPositionId,
+        CASE rrss.ShiftSegmentTypeId
+			WHEN -1 THEN 'Tea break'
+			WHEN -2 THEN 'Lunch break'
+        ELSE rpa.RotationAreaPosition END AS `RotationAreaPosition`,
+				ra.RotationAreaId, ra.RotationArea, ra.Colour, rrss.StartTime, rrss.EndTime, rrss.SameDay
+		FROM AAU.RotationRoleShiftSegment rrss
+        LEFT JOIN AAU.RotationAreaPosition rpa ON rpa.RotationAreaPositionId = rrss.ShiftSegmentTypeId
+		LEFT JOIN AAU.RotationArea ra ON ra.RotationAreaId = rpa.RotationAreaId
+		WHERE rrss.IsDeleted = 0
+			AND rrss.OrganisationId = vOrganisationId
+	) rr ON rr.RotationRoleShiftSegmentId = rda.RotationRoleShiftSegmentId
+    LEFT JOIN AAU.RotationAreaPosition rap		ON rap.RotationAreaPositionId = rda.RotationAreaPositionId
+    LEFT JOIN AAU.RotationArea ra				ON ra.RotationAreaId = rap.RotationAreaId
+	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.UserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
     LEFT JOIN AAU.User lu						ON lu.UserId = lr.UserId
     LEFT JOIN AAU.User u						ON u.UserId = rda.UserId
 WHERE rda.RotationPeriodId = prm_RotationPeriodId
@@ -828,27 +864,35 @@ UNION ALL
 
 SELECT 
     rp.RotationPeriodId,
-	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY),
-	-1,
-	lr.UserId,
-	lr.UserId,
+	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY), -- RotaDayDate
+	-1, -- RotaDayId
+	lr.UserId, -- UserId
+    NULL, -- EmployeeNumber
+    NULL, -- UserCode
+	lr.UserId, -- RotationUserId
 	lr.LeaveRequestId,
 	CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
 		WHEN lr.Granted = 0 THEN 'Denied'
 		WHEN lr.Granted = 1 THEN 'Granted'
 		ELSE NULL
-	END AS `LeaveGranted`,    
-	NULL,
-    -1,
-	'LEAVE',
-
-	-1,
-	'Leave',
-	-1,
-	'#999999',
-	
-    NULL,
-	NULL
+	END AS `LeaveGranted`, 
+    NULL, -- LeaveUser
+    	-1, -- rotationAreaPositionId
+    'LEAVE', -- rotationAreaPosition
+    -1, -- rotationAreaId
+	'LEAVE', -- rotationArea
+    -1, -- plannedRotationAreaPositionId
+    'LEAVE', -- plannedRotationAreaPosition
+    -1, -- plannedRotationAreaId
+	'LEAVE', -- plannedRotationArea
+	NULL, -- StartTime
+    NULL, -- EndTime
+    NULL, -- ActualStartTime
+    NULL, -- ActualEndTime
+    '#999999', -- Colour
+    -2, -- Sequence
+    NULL -- Notes
+    
 FROM AAU.LeaveRequest lr
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
 INNER JOIN AAU.RotationPeriod rp ON DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY) BETWEEN rp.StartDate AND rp.EndDate
@@ -860,28 +904,35 @@ UNION ALL
 -- Let's get all of the fixed off records
 SELECT
 	rp.RotationPeriodId,
-	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY),
-	-1,
-	u.UserId,
-	u.UserId,
+	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY), -- RotaDayDate
+	-1, -- RotaDayId
+	u.UserId, -- UserId
+    NULL, -- EmployeeNumber
+    NULL, -- UserCode
+	u.UserId, -- RotationUserId
 	lr.LeaveRequestId,
 	CASE WHEN lr.Granted IS NULL AND lr.LeaveRequestId IS NOT NULL THEN 'Pending'
 		WHEN lr.Granted = 0 THEN 'Denied'
 		WHEN lr.Granted = 1 THEN 'Granted'
 		ELSE NULL
 		END AS `LeaveGranted`,	
-	NULL,
-    -1,
-
-	'FIXED OFF',
-	-2,
-	'Fixed Off',
-	-2,
-	'#999999',
-	
-    NULL,
+	NULL, -- LeaveUser
     
-	NULL
+	-1, -- rotationAreaPositionId
+    'FIXED OFF', -- rotationAreaPosition
+    -1, -- rotationAreaId
+	'FIXED OFF', -- rotationArea
+    -1, -- plannedRotationAreaPositionId
+    'FIXED OFF', -- plannedRotationAreaPosition
+    -1, -- plannedRotationAreaId
+	'FIXED OFF', -- plannedRotationArea        
+	NULL, -- StartTime
+    NULL, -- EndTime
+    NULL, -- ActualStartTime
+    NULL, -- ActualEndTime
+    '#999999', -- Colour
+    -1, -- Sequence
+    NULL -- Notes
 FROM AAU.RotationPeriod rp
 INNER JOIN AAU.Tally t ON t.Id < 7
 INNER JOIN AAU.User u ON LOCATE(WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY)), u.FixedDayOff) > 0 AND u.fixedDayOff NOT LIKE '[-1]'
@@ -899,13 +950,29 @@ SELECT RotationPeriodId,
 					JSON_MERGE_PRESERVE(
 						JSON_OBJECT("rotaDayId", RotaDayId),
 						JSON_OBJECT("userId", UserId),
+                        JSON_OBJECT("employeeNumber", EmployeeNumber),
+                        JSON_OBJECT("userCode", UserCode),
 						JSON_OBJECT("rotationUserId", RotationUserId),
 						JSON_OBJECT("leaveRequestId", LeaveRequestId),
                         JSON_OBJECT("leaveGranted", LeaveGranted),
                         JSON_OBJECT("leaveUser", LeaveUser),
-                        JSON_OBJECT("rotationRoleId", RotationRoleId),
-                        JSON_OBJECT("rotationRole", RotationRole),                        
-                        JSON_OBJECT("rotationRoleShiftSegments", rotationRoleShiftSegments),
+                                                
+                        JSON_OBJECT("rotationAreaPositionId", rotationAreaPositionId),
+                        JSON_OBJECT("plannedArea", rotationAreaPosition),
+                        JSON_OBJECT("rotationAreaId", rotationAreaId),
+                        JSON_OBJECT("rotationArea", rotationArea),
+                        
+                        JSON_OBJECT("plannedRotationAreaPositionId", plannedRotationAreaPositionId),
+                        JSON_OBJECT("plannedRotationAreaPosition", plannedRotationAreaPosition),
+                        JSON_OBJECT("plannedRotationAreaId", plannedRotationAreaId),
+                        JSON_OBJECT("plannedRotationArea", plannedRotationArea),
+                        
+                        JSON_OBJECT("plannedStartTime", plannedStartTime),
+                        JSON_OBJECT("plannedEndTime", plannedEndTime),                        
+						JSON_OBJECT("actualStartTime", actualStartTime),
+                        JSON_OBJECT("actualEndTime", actualEndTime),
+                        JSON_OBJECT("sequence", Sequence),
+                        JSON_OBJECT("rotationAreaColour", rotationAreaColour),                        
                         JSON_OBJECT("notes", Notes),
                         JSON_OBJECT("isAdded", CAST(0 AS JSON))
 					)
@@ -935,6 +1002,40 @@ INNER JOIN AAU.RotaVersion rv ON rv.RotaVersionId = p.RotaVersionId
 GROUP BY rd.RotationPeriodId, p.StartDate, p.EndDate, rv.RotaId, rv.RotaVersionId;
 
 END$$
+
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_GetRotaDayAuthorisationByRotationPeriodId !!
+
+-- CALL AAU.sp_GetRotaDayAuthorisationByRotationPeriodId('Jim',1);
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetRotaDayAuthorisationByRotationPeriodId( IN prm_Username VARCHAR(45), IN prm_RotationPeriodId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 14/02/2023
+Purpose: Retrieve the rotation period with an array of days, each day containing an array of the schedule manager authorisations
+
+*/
+
+
+SELECT
+JSON_MERGE_PRESERVE(	
+JSON_OBJECT("rotationPeriodId", rda.RotationPeriodId),
+JSON_OBJECT("scheduleAuthorisation",
+JSON_ARRAYAGG(
+		JSON_MERGE_PRESERVE(		
+		JSON_OBJECT("rotaDayDate", rda.RotaDayDate),
+        JSON_OBJECT("rotaDayAuthorisationId", rda.RotaDayAuthorisationId),
+		JSON_OBJECT("authorisation", rda.ManagerAuthorisation)
+        )))) AS `RotationPeriodAuthorisation`
+FROM AAU.RotaDayAuthorisation rda
+WHERE rda.RotationPeriodId = prm_RotationPeriodId;
+
+END $$
+
 
 DELIMITER !!
 
@@ -1022,6 +1123,46 @@ END$$
 
 DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_GetRotationAreaPositions !!
+
+-- CALL AAU.sp_GetRotationAreaPositions('Jim', 1);
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetRotationAreaPositions( IN prm_UserName VARCHAR(45), IN prm_IncludeDeleted TINYINT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 12/02/2023
+Purpose: Retrieve a list of positions for the rota
+
+*/
+
+DECLARE vOrganisationId INT;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+ 	SELECT 
+ 			JSON_ARRAYAGG(
+ 			JSON_MERGE_PRESERVE(
+ 			JSON_OBJECT("rotationAreaPositionId", rap.`RotationAreaPositionId`),
+            JSON_OBJECT("rotationAreaId", rap.`RotationAreaId`),
+            JSON_OBJECT("rotationArea", ra.`RotationArea`),
+ 			JSON_OBJECT("rotationAreaPosition", rap.`RotationAreaPosition`),
+			JSON_OBJECT("sortOrder", rap.`SortOrder`),
+			JSON_OBJECT("isDeleted", rap.`IsDeleted`),
+			JSON_OBJECT("colour", IFNULL(rap.`Colour`,'#ffffff')) 
+ 			)) AS `RotationAreaPositions`
+     FROM AAU.RotationAreaPosition rap
+     INNER JOIN AAU.RotationArea ra ON ra.RotationAreaId = rap.RotationAreaId
+     WHERE rap.OrganisationId = vOrganisationId
+     AND (IFNULL(rap.IsDeleted,0) = prm_IncludeDeleted OR prm_IncludeDeleted = 1)
+     AND rap.`RotationAreaPositionId` > 0;
+    
+END$$
+
+DELIMITER !!
+
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotationAreas !!
 
 -- CALL AAU.sp_GetRotationAreas('Jim', 1);
@@ -1046,12 +1187,16 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
  			JSON_MERGE_PRESERVE(
  			JSON_OBJECT("rotationAreaId", ra.`RotationAreaId`),
  			JSON_OBJECT("rotationArea", ra.`RotationArea`),
+            JSON_OBJECT("scheduleManagerId", ra.`ScheduleManagerId`),
+            JSON_OBJECT("scheduleManager", CONCAT(u.`EmployeeNumber`,' - ', u.`FirstName`)),
 			JSON_OBJECT("sortOrder", ra.`SortOrder`),
 			JSON_OBJECT("isDeleted", ra.`IsDeleted`),
 			JSON_OBJECT("colour", ra.`Colour`) 
  			)) AS `RotationAreas`
      FROM AAU.RotationArea ra
+     LEFT JOIN AAU.User u ON u.UserId = ra.ScheduleManagerId
      WHERE ra.OrganisationId = vOrganisationId
+     AND ra.`RotationAreaId` > 0
      AND (IFNULL(ra.IsDeleted,0) = prm_IncludeDeleted OR prm_IncludeDeleted = 1);
     
 END$$
@@ -1063,7 +1208,7 @@ DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
 -- CALL AAU.sp_GetRotationPeriods(2, 1, 0);
 
 DELIMITER $$
-CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT)
+CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT, IN prm_IsLocked TINYINT)
 BEGIN
 
 /*
@@ -1081,6 +1226,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
     FROM AAU.RotationPeriod rp
     WHERE rp.RotaVersionId = prm_RotaVersionId
     AND rp.IsDeleted = 0
+    AND (rp.Locked = prm_IsLocked OR prm_IsLocked = 0)
     LIMIT 1
     ),
     rotationPeriodsCTE AS (
@@ -1095,6 +1241,7 @@ Purpose: Retrieve a list of rotation periods for a rota version.
     FROM AAU.RotationPeriod rp
     WHERE rp.RotaVersionId = prm_RotaVersionId
     AND rp.IsDeleted = 0
+    AND (rp.Locked = prm_IsLocked OR prm_IsLocked = 0)
     ORDER BY StartDate DESC
     LIMIT prm_Limit OFFSET prm_Offset
     )
@@ -1351,6 +1498,40 @@ FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArr
 
 
 END$$
+
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AAU`.`sp_GetUsersByJobTypeId`;
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_GetUsersByJobTypeId(IN prm_Username VARCHAR(45), IN prm_JobTypeId INT)
+BEGIN
+
+/*
+Created By: Jim Mackenzie
+Created On: 28/04/2020
+Purpose: Used to return users by their job type Id.
+
+Modified By: Jim Mackenzie
+Modified On: 14/02/2023
+Purpose: Changed case of Colour to colour.
+*/
+
+DECLARE vOrganisationId INT;
+SET vOrganisationId = 1;
+
+SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Username LIMIT 1;
+
+SELECT jt.UserId AS `userId`, u.EmployeeNumber AS `employeeNumber`, u.FirstName AS `firstName`, u.Surname AS `surname`, u.initials AS `initials`, u.Colour AS `colour`
+FROM AAU.UserJobType jt
+INNER JOIN AAU.User u ON u.UserId = jt.UserId
+WHERE jt.JobTypeId = prm_JobTypeId
+AND u.OrganisationId = vOrganisationId
+AND u.isDeleted = 0;
+
+END$$
+
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertLeaveRequest !!
@@ -1508,8 +1689,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
--- CALL AAU.sp_InsertRotaDayAssignments(1);
--- TRUNCATE TABLE AAU.RotaDayAssignment
+-- CALL AAU.sp_InsertRotaDayAssignments('Jim', 1);
+-- TRUNCATE TABLE AAU.RotaDayAssignment;
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_InsertRotaDayAssignments( IN prm_UserName VARCHAR(45), IN prm_RotationPeriodId INT)
@@ -1534,17 +1715,25 @@ IF vRotationPeriodExists = 0 THEN
 
 UPDATE AAU.RotationPeriod SET `Locked` = 1 WHERE RotationPeriodId = prm_RotationPeriodId;
 
-INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleId, UserId, RotationUserId, Sequence)
-SELECT DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
+-- SELECT * FROM AAU.RotaDayAssignment;
+
+INSERT INTO AAU.RotaDayAssignment ( RotaDayDate, RotationPeriodId, RotationRoleShiftSegmentId, RotationAreaPositionId, UserId, RotationUserId, Sequence )
+SELECT
+DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
 p.RotationPeriodId,
-a.RotationRoleId,
+rrss.RotationRoleShiftSegmentId,
+rap.RotationAreaPositionId,
 NULLIF(NULLIF(rmi.UserId, -1), lr.LeaveRequestId IS NOT NULL) AS `UserId`,
 NULLIF(rmi.UserId, -1) AS `RotationUserId`,
-a.Sequence
+ROW_NUMBER() OVER (PARTITION BY DATE_ADD(p.StartDate, INTERVAL t.Id DAY) ORDER BY ra.SortOrder, rap.SortOrder, u.EmployeeNumber)
 FROM AAU.RotaMatrixItem rmi
 INNER JOIN AAU.RotationPeriod p ON p.RotationPeriodGUID = rmi.RotationPeriodGUID AND p.IsDeleted = 0
 INNER JOIN AAU.AreaShift a ON a.AreaShiftGUID = rmi.AreaShiftGUID AND a.IsDeleted = 0
+INNER JOIN AAU.RotationRoleShiftSegment rrss ON rrss.rotationRoleId = a.rotationRoleId
+INNER JOIN AAU.RotationAreaPosition rap ON rap.RotationAreaPositionId = rrss.ShiftSegmentTypeId
+INNER JOIN AAU.RotationArea ra ON ra.RotationAreaId = rap.RotationAreaId
 INNER JOIN AAU.Tally t ON t.Id <= (DATEDIFF(p.EndDate, p.StartDate))
+LEFT JOIN AAU.User u ON u.UserId = rmi.UserId
 LEFT JOIN AAU.LeaveRequest lr ON lr.UserId = rmi.UserId AND DATE_ADD(p.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE p.RotationPeriodId = prm_RotationPeriodId;
 
@@ -1647,6 +1836,112 @@ SELECT vRotaDayId AS `rotaDayId`, vSuccess AS `success`;
 
 END$$
 
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_InsertScheduleAuthorisation!!
+
+-- CALL AAU.sp_InsertScheduleAuthorisation('Jim', 1);
+
+-- TRUNCATE TABLE AAU.RotaDayAuthorisation; 
+
+
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_InsertScheduleAuthorisation(
+		IN prm_Username VARCHAR(45),
+        IN prm_RotationPeriodId INT
+)
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 14/02/2023
+Purpose: Procedure to insert authorisation for all rota days in a rotation period.
+*/
+
+DECLARE vSuccess INT;
+DECLARE vRotationAreaId INT;
+DECLARE vRotationPeriodExists INT;
+DECLARE vOrganisationId INT;
+DECLARE vTimeNow DATETIME;
+
+SELECT u.OrganisationId, CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vOrganisationId, vTimeNow
+FROM AAU.User u
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotaDayAuthorisation WHERE RotationPeriodId = prm_RotationPeriodId;
+
+IF ( vRotationPeriodExists = 0 ) THEN
+
+	
+	INSERT INTO AAU.RotaDayAuthorisation (OrganisationId, RotationPeriodId, RotaDayDate, ManagerAuthorisation)
+	SELECT
+	vOrganisationId,
+	p.RotationPeriodId,
+	DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
+	a.`authorisation`
+	FROM AAU.RotationPeriod p
+	INNER JOIN AAU.Tally t ON t.Id <= (DATEDIFF(p.EndDate, p.StartDate))
+	CROSS JOIN (
+					SELECT 
+						JSON_ARRAYAGG(
+						JSON_MERGE_PRESERVE(
+						JSON_OBJECT("scheduleManagerId", ujt.UserId),
+						JSON_OBJECT("scheduleManager", CONCAT(u.EmployeeNumber,' - ', u.FirstName)),
+						JSON_OBJECT("areaList", ma.AreaList),
+						JSON_OBJECT("authorised", CAST(false AS JSON)))) AS `authorisation`
+					FROM AAU.UserJobType ujt
+					INNER JOIN AAU.User u ON u.UserId = ujt.UserId
+					LEFT JOIN (
+						SELECT ra.ScheduleManagerId, GROUP_CONCAT(ra.RotationArea) AS `AreaList`
+						FROM AAU.RotationArea ra
+						WHERE ra.ScheduleManagerId IS NOT NULL
+						GROUP BY ra.ScheduleManagerId
+                    ) ma ON ma.ScheduleManagerId = u.UserId
+					WHERE ujt.JobTypeId = 11
+				) a
+	WHERE p.RotationPeriodId = prm_RotationPeriodId;  
+
+    
+    
+    
+    
+-- 	SELECT
+-- 	vOrganisationId,
+-- 	p.RotationPeriodId,
+-- 	DATE_ADD(p.StartDate, INTERVAL t.Id DAY) AS `RotaDayDate`,
+-- 	a.`authorisation`
+-- 	FROM AAU.RotationPeriod p
+-- 	INNER JOIN AAU.Tally t ON t.Id <= (DATEDIFF(p.EndDate, p.StartDate))
+-- 	CROSS JOIN (
+-- 					SELECT 
+-- 						JSON_ARRAYAGG(
+-- 						JSON_MERGE_PRESERVE(
+-- 						JSON_OBJECT("scheduleManagerId", ujt.UserId),
+--                         JSON_OBJECT("scheduleManager", CONCAT(u.EmployeeNumber,' - ', u.FirstName)),
+-- 						JSON_OBJECT("authorised", CAST(false AS JSON)))) AS `authorisation`
+-- 					FROM AAU.UserJobType ujt
+--                     INNER JOIN AAU.User u ON u.UserId = ujt.UserId
+-- 					WHERE ujt.JobTypeId = 11
+-- 				) a
+-- 	WHERE p.RotationPeriodId = prm_RotationPeriodId;    
+
+    SELECT 1 INTO vSuccess;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (prm_Username,prm_RotationPeriodId,'Rota Day Authorisation','Insert', vTimeNow); 
+
+ELSE
+
+SELECT 2 INTO vSuccess;
+
+END IF;
+    
+	SELECT vSuccess AS success;
+    
+END$$
+
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertUser !!
@@ -2030,6 +2325,8 @@ DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpdateRotaDayAssignment( 	IN prm_UserName VARCHAR(45),
 													IN prm_rotaDayId INTEGER,
                                                     IN prm_userId INTEGER,
+													IN prm_actualStartTime TIME,
+													IN prm_actualEndTime TIME,
 													IN prm_notes VARCHAR(1024))
 BEGIN
 
@@ -2052,6 +2349,8 @@ SET vSuccess = 0;
 
 	UPDATE AAU.RotaDayAssignment SET
 		UserId = prm_userId,
+		ActualStartTime = prm_actualStartTime,
+		ActualEndTime = prm_actualEndTime,
 		Notes = prm_notes
 	WHERE RotaDayId = prm_rotaDayId;
     
@@ -2067,6 +2366,65 @@ SET vSuccess = 0;
     
 
 END$$
+DELIMITER !!
+
+DROP PROCEDURE IF EXISTS AAU.sp_UpdateScheduleAuthorisation!!
+
+-- CALL AAU.sp_UpsertRotationArea('Jim', NULL, 'A Kennel', 3, '#fffffff', 0)
+
+-- SELECT COUNT(1) FROM AAU.RotationArea WHERE RotationArea = 'A Kennel' AND OrganisationId = 1 AND IsDeleted = 0;
+
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpdateScheduleAuthorisation(
+		IN prm_Username VARCHAR(45),
+        IN prm_RotaDayAuthorisationId INT,
+        IN prm_RotaDayDate DATE,        
+        IN prm_ManagerAuthorisation JSON
+)
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 14/02/2023
+Purpose: Procedure to update authorisation for a rota day.
+*/
+
+DECLARE vSuccess INT;
+DECLARE vRotationAreaId INT;
+DECLARE vRotaDayAuthorisationIdExists INT;
+DECLARE vOrganisationId INT;
+DECLARE vTimeNow DATETIME;
+
+SELECT u.OrganisationId, CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vOrganisationId, vTimeNow
+FROM AAU.User u
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+SELECT COUNT(1) INTO vRotaDayAuthorisationIdExists FROM AAU.RotaDayAuthorisation WHERE RotaDayAuthorisationId = prm_RotaDayAuthorisationId;
+
+IF ( vRotaDayAuthorisationIdExists = 1 ) THEN
+
+UPDATE AAU.RotaDayAuthorisation SET
+	RotaDayDate				= prm_RotaDayDate,
+    ManagerAuthorisation	= prm_ManagerAuthorisation
+    WHERE RotaDayAuthorisationId = prm_RotaDayAuthorisationId;
+
+    SELECT 1 INTO vSuccess;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (prm_Username,prm_RotaDayAuthorisationId,'Rota Day Authorisation','Update', vTimeNow); 
+
+ELSE
+
+SELECT 2 INTO vSuccess;
+
+END IF;
+    
+	SELECT vSuccess AS success;
+    
+END$$
+
+DELIMITER ;
 DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpdateUserById !!
@@ -2369,6 +2727,107 @@ END $$
 DELIMITER ;
 DELIMITER !!
 
+DROP PROCEDURE IF EXISTS AAU.sp_UpsertRotationAreaPosition!!
+
+-- CALL AAU.sp_UpsertRotationAreaPosition('Jim', 2, 1, 'Medical 2.1',2, '#fffffff', 0);
+
+-- SELECT COUNT(1) FROM AAU.RotationAreaPosition WHERE RotationAreaPosition = 'A Kennel' AND OrganisationId = 1 AND IsDeleted = 0;
+
+-- SELECT * FROM AAU.RotationAreaPosition;
+
+-- SELECT * FROM AAU.Logging ORDER BY 1 DESC;
+
+DELIMITER $$
+CREATE PROCEDURE AAU.sp_UpsertRotationAreaPosition(
+		IN prm_Username VARCHAR(45),
+		IN prm_RotationAreaPositionId INT,
+        IN prm_RotationAreaId INT,
+        IN prm_Position VARCHAR(32),
+		IN prm_SortOrder INT,
+        IN prm_Colour VARCHAR(10),
+        IN prm_Deleted TINYINT
+)
+BEGIN
+/*
+Created By: Jim Mackenzie
+Created On: 12/02/2023
+Purpose: Procedure to add rotation area positions.
+*/
+
+DECLARE vSuccess INT;
+DECLARE vRotationAreaPositionId INT;
+DECLARE vRotationAreaPositionIdExists INT;
+DECLARE vOrganisationId INT;
+DECLARE vTimeNow DATETIME;
+
+SET vRotationAreaPositionId = prm_RotationAreaPositionId;
+
+SELECT u.OrganisationId, CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vOrganisationId, vTimeNow
+FROM AAU.User u
+INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
+WHERE UserName = prm_Username LIMIT 1;
+
+SELECT COUNT(1) INTO vRotationAreaPositionIdExists FROM AAU.RotationAreaPosition WHERE RotationAreaPositionId = prm_RotationAreaPositionId;
+
+IF ( vRotationAreaPositionIdExists = 0 ) THEN
+
+INSERT INTO AAU.RotationAreaPosition(
+	OrganisationId,
+    RotationAreaId,
+	Position,
+    SortOrder,
+    Colour,
+	IsDeleted
+)
+VALUES(
+	vOrganisationId,
+    prm_RotationAreaId,
+	prm_Position,
+	prm_SortOrder,
+    prm_Colour,
+    prm_Deleted
+);
+
+	SELECT LAST_INSERT_ID() INTO vRotationAreaPositionId;
+    SELECT 1 INTO vSuccess;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (prm_Username,vRotationAreaPositionId,'Rotation Area','Insert', NOW());
+    
+ELSEIF ( vRotationAreaPositionIdExists = 1  AND prm_RotationAreaPositionId IS NOT NULL ) THEN
+
+UPDATE AAU.RotationAreaPosition SET
+	OrganisationId = vOrganisationId,
+    RotationAreaId = prm_RotationAreaId,
+	Position = prm_Position,
+    SortOrder = prm_SortOrder,
+    Colour = prm_Colour,
+	IsDeleted = prm_Deleted,
+    DeletedDate = IF(prm_Deleted = 1, vTimeNow, null)
+    WHERE RotationAreaPositionId = prm_RotationAreaPositionId;
+
+    SELECT 1 INTO vSuccess;
+
+	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
+	VALUES (prm_Username,vRotationAreaPositionId,'Rotation Area','Update', NOW()); 
+
+ELSEIF ( vRotationAreaPositionIdExists = 1  AND prm_RotationAreaPositionId IS NULL ) THEN
+
+SELECT 2 INTO vSuccess;
+
+ELSE
+
+SELECT 3 INTO vSuccess;
+
+END IF;
+    
+	SELECT vRotationAreaPositionId AS RotationAreaPositionId, vSuccess AS success;
+    
+END$$
+
+DELIMITER ;
+DELIMITER !!
+
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertRotationArea!!
 
 -- CALL AAU.sp_UpsertRotationArea('Jim', NULL, 'A Kennel', 3, '#fffffff', 0)
@@ -2381,6 +2840,7 @@ CREATE PROCEDURE AAU.sp_UpsertRotationArea(
 		IN prm_Username VARCHAR(45),
 		IN prm_RotationAreaId INT,
         IN prm_RotationArea VARCHAR(32),
+        IN prm_ScheduleManagerId INT,
 		IN prm_SortOrder INT,
         IN prm_Colour VARCHAR(10),
         IN prm_Deleted TINYINT
@@ -2405,13 +2865,14 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT COUNT(1) INTO vRotationAreaIdExists FROM AAU.RotationArea WHERE RotationArea = prm_RotationArea AND OrganisationId = vOrganisationId AND IsDeleted = 0;
+SELECT COUNT(1) INTO vRotationAreaIdExists FROM AAU.RotationArea WHERE RotationAreaId = prm_RotationAreaId;
 
 IF ( vRotationAreaIdExists = 0 ) THEN
 
 INSERT INTO AAU.RotationArea(
 	OrganisationId,
 	RotationArea,
+    ScheduleManagerId,
     SortOrder,
     Colour,
 	IsDeleted
@@ -2419,6 +2880,7 @@ INSERT INTO AAU.RotationArea(
 VALUES(
 	vOrganisationId,
 	prm_RotationArea,
+    prm_ScheduleManagerId,
 	prm_SortOrder,
     prm_Colour,
     prm_Deleted
@@ -2428,23 +2890,24 @@ VALUES(
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Insert', NOW());
+	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Insert', vTimeNow);
     
 ELSEIF ( vRotationAreaIdExists = 1  AND prm_RotationAreaId IS NOT NULL ) THEN
 
 UPDATE AAU.RotationArea SET
-	OrganisationId = vOrganisationId,
-	RotationArea = prm_RotationArea,
-    SortOrder = prm_SortOrder,
-    Colour = prm_Colour,
-	IsDeleted = prm_Deleted,
-    DeletedDate = IF(prm_Deleted = 1, vTimeNow, null)
+	OrganisationId		= vOrganisationId,
+	RotationArea		= prm_RotationArea,
+    ScheduleManagerId	= prm_ScheduleManagerId,
+    SortOrder			= prm_SortOrder,
+    Colour				= prm_Colour,
+	IsDeleted			= prm_Deleted,
+    DeletedDate			= IF(prm_Deleted = 1, vTimeNow, null)
     WHERE RotationAreaId = prm_rotationAreaId;
 
     SELECT 1 INTO vSuccess;
 
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
-	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Update', NOW()); 
+	VALUES (prm_Username,vRotationAreaId,'Rotation Area','Update', vTimeNow); 
 
 ELSEIF ( vRotationAreaIdExists = 1  AND prm_RotationAreaId IS NULL ) THEN
 
@@ -2678,7 +3141,7 @@ FROM AAU.User u
 INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
-SELECT COUNT(1) INTO vRotationRoleIdExists FROM AAU.RotationRole WHERE RotationRole = prm_RotationRole AND OrganisationId = vOrganisationId AND IsDeleted = 0;
+SELECT COUNT(1) INTO vRotationRoleIdExists FROM AAU.RotationRole WHERE RotationRoleId = prm_RotationRoleId;
 
 IF ( vRotationRoleIdExists = 0 ) THEN
 

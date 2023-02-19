@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { UntypedFormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { UntypedFormBuilder, FormGroup, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
 import { BaseRotationRole, GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationRole } from 'src/app/core/models/rota';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { RotaSettingsService } from './../../services/rota-settings.service';
 import { SnackbarService } from './../../../../../../core/services/snackbar/snackbar.service';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-rotation-role-editor',
@@ -14,7 +16,9 @@ import { generateUUID } from 'src/app/core/helpers/utils';
   styleUrls: ['./rotation-role-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RotationRoleEditorComponent implements OnInit {
+export class RotationRoleEditorComponent implements OnInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
 
   errorMatcher = new CrossFieldErrorMatcher();
 
@@ -41,6 +45,7 @@ export class RotationRoleEditorComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private rotaSettingsService: RotaSettingsService,
+    public dialog: MatDialog,
     private snackbar: SnackbarService,
     private changeDetector : ChangeDetectorRef
   ) { 
@@ -73,8 +78,11 @@ export class RotationRoleEditorComponent implements OnInit {
     this.updateSortOrder();
     this.rotaSettingsService.rotationAreasUpdated.subscribe(() => this.loadDropdowns());
     
-    this.groupedRotationAreaPosition$.subscribe(val => console.log(val));
+  }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   private updateSortOrder(): void {
@@ -178,6 +186,37 @@ export class RotationRoleEditorComponent implements OnInit {
     this.rotationRoleForm.get("rotationRoleId")?.reset();
     this.snackbar.successSnackBar("Rotation role copied successfully", "OK");
     this.rotationRoleForm.get("rotationRole")?.setErrors({duplicateRoleName: true});
+
+  }
+
+  deleteShiftSegmentType(shiftSegment: AbstractControl<any, any>){
+
+    const dialogRef = this.dialog.open(ConfirmationDialog,{
+      data:{
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Yes',
+          cancel: 'No'
+        }
+      }
+    });
+
+    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe((confirmed: boolean) => {
+
+      if (confirmed) {
+        shiftSegment.get('isDeleted')?.setValue(true);
+
+        this.changeDetector.detectChanges();
+
+        if(shiftSegment.get('rotationRoleShiftSegmentId')?.value){
+          console.log("Saving");
+          this.saveRotationRole();
+        }
+      }
+    });
+
+
 
   }
 
