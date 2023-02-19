@@ -37,7 +37,6 @@ CREATE TABLE `AAU`.`RotationRole` (
   `RotationRoleId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `RotationRole` VARCHAR(45) NOT NULL,
-  `RotationAreaId` INT NOT NULL,
   `Colour` VARCHAR(20) NOT NULL,  
   `SortOrder` INT NULL,  
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
@@ -164,6 +163,26 @@ INDEX `FK_LeaveRequest_Organisation_OrganisationId_idx` (`OrganisationId` ASC) V
     ON UPDATE NO ACTION
 );
 
+CREATE TABLE `AAU`.`RotationPeriod` (
+  `RotationPeriodId` INT NOT NULL AUTO_INCREMENT,
+  `RotationPeriodGUID` VARCHAR(128) NOT NULL,
+  `RotaVersionId` INT NOT NULL,
+  `Name` VARCHAR(128) NULL,
+  `StartDate` DATE NOT NULL,
+  `EndDate` DATE NOT NULL,
+  `Locked` TINYINT NOT NULL DEFAULT 0,
+  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
+  `DeletedDate` DATETIME NULL,
+  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RotationPeriodId`),
+  INDEX `FK_RotationPeriod_RotaVersion_RotaVersionId_idx` (`RotaVersionId` ASC) VISIBLE,
+  UNIQUE INDEX `RotationPeriodGUID_UNIQUE` (`RotationPeriodGUID` ASC) VISIBLE,
+  CONSTRAINT `FK_RotationPeriod_RotaVersion_RotaVersionId`
+    FOREIGN KEY (`RotaVersionId`)
+    REFERENCES `AAU`.`RotaVersion` (`RotaVersionId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
 CREATE TABLE `AAU`.`RotaDayAuthorisation` (
   `RotaDayAuthorisationId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
@@ -186,28 +205,7 @@ CREATE TABLE `AAU`.`RotaDayAuthorisation` (
     FOREIGN KEY (`RotationPeriodId`)
     REFERENCES `AAU`.`RotationPeriod` (`RotationPeriodId`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-
-      
-CREATE TABLE `AAU`.`RotationPeriod` (
-  `RotationPeriodId` INT NOT NULL AUTO_INCREMENT,
-  `RotationPeriodGUID` VARCHAR(128) NOT NULL,
-  `RotaVersionId` INT NOT NULL,
-  `Name` VARCHAR(128) NULL,
-  `StartDate` DATE NOT NULL,
-  `EndDate` DATE NOT NULL,
-  `Locked` TINYINT NOT NULL DEFAULT 0,
-  `IsDeleted` TINYINT NOT NULL DEFAULT 0,
-  `DeletedDate` DATETIME NULL,
-  `CreatedDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`RotationPeriodId`),
-  INDEX `FK_RotationPeriod_RotaVersion_RotaVersionId_idx` (`RotaVersionId` ASC) VISIBLE,
-  UNIQUE INDEX `RotationPeriodGUID_UNIQUE` (`RotationPeriodGUID` ASC) VISIBLE,
-  CONSTRAINT `FK_RotationPeriod_RotaVersion_RotaVersionId`
-    FOREIGN KEY (`RotaVersionId`)
-    REFERENCES `AAU`.`RotaVersion` (`RotaVersionId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);    
+    ON UPDATE NO ACTION);   
     
 CREATE TABLE `AAU`.`RotationArea` (
   `RotationAreaId` INT NOT NULL AUTO_INCREMENT,
@@ -234,8 +232,8 @@ CREATE TABLE `AAU`.`RotationArea` (
     ON UPDATE NO ACTION
     );
     
-INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff');
-    
+INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff', 0);
+
 INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES 
 (1,'A Kennel',1, '#e06666', 0),
 (1,'ABC',2, '#1c4587', 0),

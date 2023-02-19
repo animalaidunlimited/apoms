@@ -35,6 +35,7 @@
 
               <div [formGroupName]="i"
               class="flex-row flex-wrap gap-10-0 flex-center-center shift-segment-container"
+              *ngIf="!segment.get('isDeleted')?.value"
               [ngClass]="shiftSegments.controls[i].hasError('updateError') ? 'segment-error' : ''">
 
                   <mat-form-field>
@@ -69,6 +70,15 @@
 
                   <!-- [ngClass]="isLast ? 'last-same-day-select' : 'same-day-select'" -->
                   <mat-slide-toggle formControlName="sameDay" >Same day</mat-slide-toggle>
+
+                  <button
+                  type="button"
+                  (click)="deleteShiftSegmentType(segment)"
+                  mat-mini-fab
+                  matTooltip="Delete"
+                  color="primary">
+                  <mat-icon>delete</mat-icon>
+                </button>
 
                 </div>
 

@@ -1,3 +1,5 @@
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS `AAU`.`sp_GetUsersByJobTypeId`;
 
 DELIMITER $$
