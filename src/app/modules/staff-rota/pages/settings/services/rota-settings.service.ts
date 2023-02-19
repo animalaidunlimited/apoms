@@ -40,7 +40,7 @@ export class RotaSettingsService extends APIService {
     return this.getObservable(request).pipe(map((response: RotationArea[]) => response));    
   
   }
-  
+
   getRotationAreaPositions(includeDeleted: boolean) : Observable<RotationAreaPosition[]> {
 
     const request = `/GetRotationAreaPositions?includeDeleted=${includeDeleted}`;
