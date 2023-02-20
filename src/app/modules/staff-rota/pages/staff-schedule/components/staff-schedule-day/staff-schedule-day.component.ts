@@ -248,8 +248,6 @@ updateSelectedUsers() : void {
         utilisedHours.setHours(0, 0, 0);
         utilisedHours.setMilliseconds((end.getTime() - start.getTime() + (1000 * 60 * 60 * 1.5)));
 
-        // console.log(current.value);
-
         returnValue.push({
           userId: current.get('userId')?.value,
           employeeNumber: current.get('employeeNumber')?.value,
@@ -348,7 +346,6 @@ showEmptyShiftsOnly() : void {
 
   this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments); 
 
-  console.log('showEmptyShiftsOnly');
   this.dataSource.next(this.filteredRotaDayAssignments);
 
 }
@@ -370,7 +367,6 @@ searchUsers(event: KeyboardEvent) : void {
 
   this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments)
 
-  console.log('searchUsers');
   this.dataSource.next(this.filteredRotaDayAssignments);
 }
 
@@ -406,7 +402,6 @@ addShift() : void {
   this.filteredRotaDayAssignments.push(emptyAssignment);
   this.rotaDayAssignments.push(emptyAssignment);
 
-  console.log('addShift');
   this.dataSource.next(this.filteredRotaDayAssignments);
 
 }
@@ -418,7 +413,6 @@ deleteShift(shift: AbstractControl) : void {
   let foundIndex = this.rotaDayAssignments.findIndex(element => element.get('guid')?.value !== shift.get('guid')?.value);
   this.rotaDayAssignments.slice(foundIndex, 1);
 
-  console.log('deleteShift');
   this.dataSource.next(this.filteredRotaDayAssignments);
 }
 

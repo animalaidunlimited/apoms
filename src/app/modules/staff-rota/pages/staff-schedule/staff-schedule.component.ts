@@ -370,8 +370,6 @@ getCurrentScheduleAuthorisation() : ScheduleAuthorisationDay | undefined{
 
   this.setAuthorisedCounts(foundScheduleAuthorisation);
 
-  console.log(foundScheduleAuthorisation);
-
   return foundScheduleAuthorisation;
 
 }

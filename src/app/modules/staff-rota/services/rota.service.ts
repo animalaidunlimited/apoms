@@ -263,8 +263,6 @@ async initialiseRotationPeriods(periodsToShow: number) {
 
   await this.getRotationPeriods(rotaVersionId, periodsToShow, this.offset).then(async periods => {
 
-    console.log(periods);
-
     this.firstRotationPeriodGUID = periods?.firstRotationPeriodGUID || '';
     this.lastRotationPeriodGUID = periods?.lastRotationPeriodGUID || '';    
 
@@ -291,8 +289,6 @@ async initialiseRotationPeriods(periodsToShow: number) {
     }
   
     const periodGUIDs = this.getRotationPeriodArray.controls.map(period => period.get('rotationPeriodGUID')?.value).join(',');
-
-    console.log(periodGUIDs)
   
     this.loadMatrixForPeriods(periodGUIDs || "");
   

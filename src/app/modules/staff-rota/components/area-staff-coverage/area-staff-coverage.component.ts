@@ -84,8 +84,6 @@ export class AreaStaffCoverageComponent implements OnInit {
 
         if(this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b)){
 
-          console.log(a.get('employeeNumber')?.value)
-
           return a.get('employeeNumber')?.value - b.get('employeeNumber')?.value;
         }
 
@@ -101,7 +99,6 @@ export class AreaStaffCoverageComponent implements OnInit {
 
     }
 
-    console.log(this.data);
   }
 
   barSelected(val: any) : void {

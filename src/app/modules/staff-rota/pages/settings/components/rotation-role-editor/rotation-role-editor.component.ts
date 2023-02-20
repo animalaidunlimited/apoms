@@ -163,6 +163,7 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
 
   clearRotationRole() : void {
     this.rotationRoleForm.reset({colour: '#ffffff'});
+    this.shiftSegments.clear();
     this.updateSortOrder();
     this.changeDetector.detectChanges();
   }
@@ -183,6 +184,7 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
   }
 
   duplicateRotationRole() : void {
+
     this.rotationRoleForm.get("rotationRoleId")?.reset();
     this.snackbar.successSnackBar("Rotation role copied successfully", "OK");
     this.rotationRoleForm.get("rotationRole")?.setErrors({duplicateRoleName: true});
@@ -210,7 +212,6 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
         this.changeDetector.detectChanges();
 
         if(shiftSegment.get('rotationRoleShiftSegmentId')?.value){
-          console.log("Saving");
           this.saveRotationRole();
         }
       }

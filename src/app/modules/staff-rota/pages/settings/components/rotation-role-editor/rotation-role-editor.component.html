@@ -117,12 +117,13 @@
           <mat-icon>add</mat-icon>
         </button>
 
+        <!-- [disabled]="rotationRoleForm.invalid" -->
         <button
           type="button"
           (click)="duplicateRotationRole()"
           mat-mini-fab
           matTooltip="Copy"
-          [disabled]="rotationRoleForm.invalid"
+         
           color="primary">
           <mat-icon>content_copy</mat-icon>
         </button>
