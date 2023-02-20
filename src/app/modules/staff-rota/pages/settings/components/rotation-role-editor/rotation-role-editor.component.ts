@@ -34,7 +34,8 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     isDeleted: [],
   });
 
-  groupedRotationAreaPosition$!: Observable<GroupedRotationAreaPosition[]>;
+
+
   rotationRoles$!: Observable<RotationRole[]>;
   rotationRolesForGenericTable$!: Observable<BaseRotationRole[]>;
 
@@ -42,10 +43,13 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     return this.rotationRoleForm.get("shiftSegments") as FormArray;
   }
 
+  get shiftSegmentTypeId() : FormArray {
+    return this.rotationRoleForm.get("shiftSegments") as FormArray;
+  }
+
   constructor(
     private fb: UntypedFormBuilder,
-    private rotaSettingsService: RotaSettingsService,
-    public dialog: MatDialog,
+    private rotaSettingsService: RotaSettingsService,    
     private snackbar: SnackbarService,
     private changeDetector : ChangeDetectorRef
   ) { 
@@ -55,7 +59,7 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
   }
 
   private loadDropdowns() {
-    this.groupedRotationAreaPosition$ = this.rotaSettingsService.getGroupedRotationAreaPositions(false);
+    
     this.rotationRoles$ = this.rotaSettingsService.getRotationRoles(true);
     this.rotationRolesForGenericTable$ = this.rotationRoles$.pipe(map(values => values?.map(value => {
 
@@ -188,36 +192,6 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     this.rotationRoleForm.get("rotationRoleId")?.reset();
     this.snackbar.successSnackBar("Rotation role copied successfully", "OK");
     this.rotationRoleForm.get("rotationRole")?.setErrors({duplicateRoleName: true});
-
-  }
-
-  deleteShiftSegmentType(shiftSegment: AbstractControl<any, any>){
-
-    const dialogRef = this.dialog.open(ConfirmationDialog,{
-      data:{
-        message: 'Are you sure want to delete?',
-        buttonText: {
-          ok: 'Yes',
-          cancel: 'No'
-        }
-      }
-    });
-
-    dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe((confirmed: boolean) => {
-
-      if (confirmed) {
-        shiftSegment.get('isDeleted')?.setValue(true);
-
-        this.changeDetector.detectChanges();
-
-        if(shiftSegment.get('rotationRoleShiftSegmentId')?.value){
-          this.saveRotationRole();
-        }
-      }
-    });
-
-
 
   }
 

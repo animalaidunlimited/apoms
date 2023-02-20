@@ -1,0 +1,49 @@
+<form [formGroup]="rotationPositionForm" autocomplete="off">
+
+    <mat-form-field>
+      <mat-label>Shift segment type</mat-label>
+      <input type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      formControlName="shiftSegmentTypeId"
+      [errorStateMatcher]="errorMatcher"
+      [matAutocomplete]="auto">
+      <mat-autocomplete 
+      #auto="matAutocomplete"
+      [displayWith]="displayFn">
+        <mat-option [value]="-2">Lunch break</mat-option>
+        <mat-option [value]="-3">Tea break</mat-option>
+
+        <mat-optgroup *ngFor="let group of (filteredGroupedRotationAreaPosition | async)" [label]="group.rotationArea">
+        <mat-option *ngFor="let position of group.positions" [value]="position.rotationAreaPositionId">
+          {{position.rotationAreaPosition}}
+        </mat-option>
+      </mat-optgroup>
+
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Start time</mat-label>
+      <input matInput type="time" formControlName="startTime" [errorStateMatcher]="errorMatcher"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>End time</mat-label>
+      <input matInput type="time" formControlName="endTime" [errorStateMatcher]="errorMatcher"/>
+    </mat-form-field>
+
+    <!-- [ngClass]="isLast ? 'last-same-day-select' : 'same-day-select'" -->
+    <mat-slide-toggle formControlName="sameDay" >Same day</mat-slide-toggle>
+
+    <button
+    type="button"
+    (click)="deleteShiftSegmentType()"
+    mat-mini-fab
+    matTooltip="Delete"
+    color="primary">
+    <mat-icon>delete</mat-icon>
+    </button>
+
+</form>

@@ -33,54 +33,16 @@
           <div formArrayName="shiftSegments"          
           *ngFor="let segment of shiftSegments.controls; let i = index; let isLast = last">
 
-              <div [formGroupName]="i"
-              class="flex-row flex-wrap gap-10-0 flex-center-center shift-segment-container"
-              *ngIf="!segment.get('isDeleted')?.value"
-              [ngClass]="shiftSegments.controls[i].hasError('updateError') ? 'segment-error' : ''">
-
-                  <mat-form-field>
-                    <mat-label>Shift segment type</mat-label>
-                    <mat-select formControlName="shiftSegmentTypeId"
-                    [errorStateMatcher]="errorMatcher">
-                      <mat-option [value]="-2">Lunch break</mat-option>
-                      <mat-option [value]="-3">Tea break</mat-option>
-
-                      <mat-optgroup *ngFor="let group of groupedRotationAreaPosition$ | async" [label]="group.rotationArea">
-                      <mat-option *ngFor="let position of group.positions" [value]="position.rotationAreaPositionId">
-                        {{position.rotationAreaPosition}}
-                      </mat-option>
-                    </mat-optgroup>
-
-                      <!-- <mat-option *ngFor="let position of groupedRotationAreaPosition$ | async" [value]="position.rotationAreaPositionId">
-                        {{position.position}}
-                      </mat-option>                       -->
-
-                    </mat-select>
-                  </mat-form-field>
-
-                  <mat-form-field>
-                    <mat-label>Start time</mat-label>
-                    <input matInput type="time" formControlName="startTime" [errorStateMatcher]="errorMatcher"/>
-                  </mat-form-field>
-
-                  <mat-form-field>
-                    <mat-label>End time</mat-label>
-                    <input matInput type="time" formControlName="endTime" [errorStateMatcher]="errorMatcher"/>
-                  </mat-form-field>
-
-                  <!-- [ngClass]="isLast ? 'last-same-day-select' : 'same-day-select'" -->
-                  <mat-slide-toggle formControlName="sameDay" >Same day</mat-slide-toggle>
-
-                  <button
-                  type="button"
-                  (click)="deleteShiftSegmentType(segment)"
-                  mat-mini-fab
-                  matTooltip="Delete"
-                  color="primary">
-                  <mat-icon>delete</mat-icon>
-                </button>
-
-                </div>
+              <div
+                [formGroupName]="i"
+                class="flex-row flex-wrap gap-10-0 flex-center-center shift-segment-container"
+                *ngIf="!segment.get('isDeleted')?.value"
+                [ngClass]="shiftSegments.controls[i].hasError('updateError') ? 'segment-error' : ''">
+                  <app-rotation-position
+                    [inputRotationPositionForm]="segment"
+                    (saveRequired)="saveRotationRole">
+                  </app-rotation-position>
+              </div>
 
           </div>
 
