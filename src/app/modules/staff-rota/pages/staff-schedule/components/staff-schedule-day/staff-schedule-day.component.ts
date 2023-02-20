@@ -44,18 +44,11 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
   dataSource: BehaviorSubject<AbstractControl[]> = new BehaviorSubject<AbstractControl[]>([this.fb.group({})]);
 
-
-  // 
-  // "plannedBreakStartTime", "plannedBreakEndTime", "actualBreakStartTime", "actualBreakEndTime",
   displayedColumns = ["rotationArea", "rotationAreaPosition", "userId", "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime", "notes"];
   
   errorMatcher = new CrossFieldErrorMatcher();
 
   filteredUsers!: Observable<UserDetails[]> | undefined;
-
-  // filteredRotaDayAssignments!: AbstractControl[];
-
-  // rotaDayAssignments!: AbstractControl[];
 
   rotaDayForm = this.fb.group({    
     rotaDayAssignments: this.fb.array([])
@@ -67,6 +60,8 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
   rotationAreas$:Observable<RotationArea[]>;
   rotationAreaPositions$:Observable<GroupedRotationAreaPosition[]>;
+
+  
 
   showEmptyShifts = false;
   showUserFilter = false;

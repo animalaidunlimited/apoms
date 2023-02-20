@@ -9,13 +9,14 @@ import { GenericTableComponent } from './components/generic-table/generic-table.
 import { GenericColumnHeadingFormatterPipe } from './pipes/generic-column-heading-formatter.pipe';
 import { GenericColumnCellPipe } from './pipes/generic-column-cell.pipe';
 import { RotationPositionEditorComponent } from './components/rotation-position-editor/rotation-position-editor.component';
+import { RotationPositionComponent } from './components/rotation-position/rotation-position.component';
 
 @NgModule({
   imports: [
-
-  CommonModule,
+    CommonModule,
     RotaSettingsComponentRoutingModule,
-    MaterialModule
+    MaterialModule,
+    RotationPositionComponent
   ],
   declarations: [
     RotaSettingsComponent,
