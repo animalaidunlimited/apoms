@@ -200,5 +200,3 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
   }
 
 }
-
-
