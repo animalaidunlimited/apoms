@@ -60,22 +60,22 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
 
    }
 
-  ngOnInit() {    
+  ngOnInit() {
 
-    this.rotaSettingsService.getGroupedRotationAreaPositions(false).subscribe(positions => {
+    this.rotaSettingsService.getGroupedRotationAreaPositions(false).pipe(takeUntil(this.ngUnsubscribe)).subscribe(positions => {
       
       this.groupedRotationAreaPosition = positions;
-      this.rotationPositionForm.patchValue(this.inputRotationPositionForm.value);
+      
+      this.filteredGroupedRotationAreaPosition = this.rotationPositionForm?.get("shiftSegmentTypeId")?.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filter(value || ''))
+      );
+
+      this.rotationPositionForm = this.inputRotationPositionForm as FormGroup;
 
       this.changeDetector.detectChanges();
       
     });
-
-    this.filteredGroupedRotationAreaPosition = this.rotationPositionForm?.get("shiftSegmentTypeId")?.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || ''))
-    );
-
 
   }
 
@@ -86,11 +86,9 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
 
   private _filter(value: string | number): GroupedRotationAreaPosition[] {
 
-    if(typeof value === "number" || value === "") return this.groupedRotationAreaPosition;
+    if(typeof value === "number" || !value) return this.groupedRotationAreaPosition;
 
-    const filterValue = value.toLowerCase();    
-
-    // return this.groupedRotationAreaPosition.filter(option => option.positions.filter(position => position.rotationAreaPosition.toLowerCase().includes(filterValue)));
+    const filterValue = value.toLowerCase();
 
     return this.groupedRotationAreaPosition.reduce((returnValue, currentPosition) => {
 
@@ -104,7 +102,7 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
 
       return returnValue;
       
-    }, [] as GroupedRotationAreaPosition[])
+    }, [] as GroupedRotationAreaPosition[]);
 
   }
 
@@ -152,10 +150,12 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
       return "Lunch break"
     }
 
-    const foundValue =  this.groupedRotationAreaPosition?.find(groups =>
-                                                                groups.positions?.find(position => position.rotationAreaPositionId === rotationAreaPositionId)
+    const foundArea =  this.groupedRotationAreaPosition?.find(groups =>
+                                                                groups.positions?.some(position => position.rotationAreaPositionId === rotationAreaPositionId)
     );
 
-    return foundValue?.positions[0]?.rotationAreaPosition || "";
+    const foundValue = foundArea?.positions.find(position => position.rotationAreaPositionId === rotationAreaPositionId)
+
+    return foundValue?.rotationAreaPosition || "";
   }
 }
