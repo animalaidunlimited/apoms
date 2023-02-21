@@ -195,8 +195,6 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
       control.get('rotationRoleShiftSegmentId')?.reset();
       control.get('rotationRoleShiftSegmentUUID')?.setValue(generateUUID());
     });
-    
-
   }
 
 }
