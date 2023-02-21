@@ -17,7 +17,7 @@
 
         <mat-optgroup *ngFor="let group of (filteredGroupedRotationAreaPosition | async)" [label]="group.rotationArea">
         <mat-option *ngFor="let position of group.positions" [value]="position.rotationAreaPositionId">
-          {{position.rotationAreaPosition}}
+          {{position.rotationAreaPositionId + ' - ' + position.rotationAreaPosition}}
         </mat-option>
       </mat-optgroup>
 
