@@ -66,12 +66,12 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
       
       this.groupedRotationAreaPosition = positions;
       
+      this.rotationPositionForm = this.inputRotationPositionForm as FormGroup;
+
       this.filteredGroupedRotationAreaPosition = this.rotationPositionForm?.get("shiftSegmentTypeId")?.valueChanges.pipe(
         startWith(''),
         map(value => this._filter(value || ''))
       );
-
-      this.rotationPositionForm = this.inputRotationPositionForm as FormGroup;
 
       this.changeDetector.detectChanges();
       
