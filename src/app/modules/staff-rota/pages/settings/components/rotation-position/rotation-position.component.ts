@@ -60,22 +60,21 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
 
    }
 
-  ngOnInit() {    
+  ngOnInit() {
 
     this.rotaSettingsService.getGroupedRotationAreaPositions(false).subscribe(positions => {
       
       this.groupedRotationAreaPosition = positions;
-      this.rotationPositionForm.patchValue(this.inputRotationPositionForm.value);
+      this.rotationPositionForm = this.inputRotationPositionForm as FormGroup;
+
+      this.filteredGroupedRotationAreaPosition = this.rotationPositionForm?.get("shiftSegmentTypeId")?.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filter(value || ''))
+      );
 
       this.changeDetector.detectChanges();
       
     });
-
-    this.filteredGroupedRotationAreaPosition = this.rotationPositionForm?.get("shiftSegmentTypeId")?.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value || ''))
-    );
-
 
   }
 
@@ -86,7 +85,7 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
 
   private _filter(value: string | number): GroupedRotationAreaPosition[] {
 
-    if(typeof value === "number" || value === "") return this.groupedRotationAreaPosition;
+    if(typeof value === "number" || !value) return this.groupedRotationAreaPosition;
 
     const filterValue = value.toLowerCase();    
 

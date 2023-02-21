@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { UntypedFormBuilder, FormGroup, Validators, FormArray, FormControl, AbstractControl } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
-import { BaseRotationRole, GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationRole } from 'src/app/core/models/rota';
+import { BaseRotationRole, RotationRole } from 'src/app/core/models/rota';
 import { Observable, Subject } from 'rxjs';
 import { RotaSettingsService } from './../../services/rota-settings.service';
 import { SnackbarService } from './../../../../../../core/services/snackbar/snackbar.service';
-import { map, take, takeUntil } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { generateUUID } from 'src/app/core/helpers/utils';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-rotation-role-editor',
@@ -192,6 +190,12 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     this.rotationRoleForm.get("rotationRoleId")?.reset();
     this.snackbar.successSnackBar("Rotation role copied successfully", "OK");
     this.rotationRoleForm.get("rotationRole")?.setErrors({duplicateRoleName: true});
+
+    this.shiftSegments.controls.forEach(control => {
+      control.get('rotationRoleShiftSegmentId')?.reset();
+      control.get('rotationRoleShiftSegmentUUID')?.setValue(generateUUID());
+    });
+    
 
   }
 
