@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { RotationArea, RotationAreaPosition } from 'src/app/core/models/rota';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
 import { CrossFieldErrorMatcher } from 'src/app/core/validators/cross-field-error-matcher';
@@ -53,7 +53,7 @@ export class RotationPositionEditorComponent implements OnInit {
   }
 
   private updateSortOrder() {
-    this.rotationAreas$.pipe(takeUntil(this.rotationAreaUnsubscribe)).subscribe(roles => {
+    this.rotationAreaPositions$.pipe(take(1)).subscribe(roles => {
 
       this.rotationAreaPositionForm.get('sortOrder')?.setValue(1 + (roles?.length || 0));
 
@@ -61,13 +61,13 @@ export class RotationPositionEditorComponent implements OnInit {
     });
   }
 
-  saveRotationArea() : void {
+  saveRotationAreaPosition() : void {
 
-    this.rotaSettingsService.saveRotationArea(this.rotationAreaPositionForm.value).then(response => {
+    this.rotaSettingsService.saveRotationAreaPosition(this.rotationAreaPositionForm.value).then(response => {
 
       if(response.success === 1) {
         this.snackbar.successSnackBar("Rotation area updated successfully", "OK");
-        this.rotationAreaPositionForm.get('rotationAreaId')?.setValue(response.rotationAreaId);
+        this.rotationAreaPositionForm.get('rotationAreaId')?.setValue(response.rotationAreaPositionId);
         this.rotaSettingsService.updateRotationAreas();
         this.clearRotationArea();
         this.loadRotationAreasAndPositions();

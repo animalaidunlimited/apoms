@@ -47,7 +47,7 @@ IF ( vRotationAreaPositionIdExists = 0 ) THEN
 INSERT INTO AAU.RotationAreaPosition(
 	OrganisationId,
     RotationAreaId,
-	Position,
+	RotationAreaPosition,
     SortOrder,
     Colour,
 	IsDeleted
@@ -72,7 +72,7 @@ ELSEIF ( vRotationAreaPositionIdExists = 1  AND prm_RotationAreaPositionId IS NO
 UPDATE AAU.RotationAreaPosition SET
 	OrganisationId = vOrganisationId,
     RotationAreaId = prm_RotationAreaId,
-	Position = prm_Position,
+	RotationAreaPosition = prm_Position,
     SortOrder = prm_SortOrder,
     Colour = prm_Colour,
 	IsDeleted = prm_Deleted,
