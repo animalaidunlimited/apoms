@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { fnSortBySortOrderAndRotationPeriodSortOrder } from 'src/app/core/helpers/utils';
-import { GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationAreaResponse, RotationRole, RotationRoleResponse } from 'src/app/core/models/rota';
+import { GroupedRotationAreaPosition, RotationArea, RotationAreaPosition, RotationAreaPositionResponse, RotationAreaResponse, RotationRole, RotationRoleResponse } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
 
@@ -81,6 +81,12 @@ export class RotaSettingsService extends APIService {
   saveRotationArea(rotationArea: RotationArea) : Promise<RotationAreaResponse> {
 
     return this.postSubEndpoint(`RotationArea`, rotationArea);
+    
+  }
+  
+  saveRotationAreaPosition(rotationAreaPosition: RotationAreaPosition) : Promise<RotationAreaPositionResponse> {
+
+    return this.postSubEndpoint(`RotationAreaPosition`, rotationAreaPosition);
     
   }
 

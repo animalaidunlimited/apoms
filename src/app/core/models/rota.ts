@@ -143,6 +143,11 @@ export interface AreaShift{
     success: number;
   }
 
+  export interface RotationAreaPositionResponse{
+    rotationAreaPositionId: number;
+    success: number;
+  }
+
   export interface RotationRoleResponse{
     rotationRoleId: number;
     rotationRoleSuccess: number;

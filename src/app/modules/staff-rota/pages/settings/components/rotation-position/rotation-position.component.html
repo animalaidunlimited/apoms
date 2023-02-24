@@ -17,7 +17,7 @@
 
         <mat-optgroup *ngFor="let group of (filteredGroupedRotationAreaPosition | async)" [label]="group.rotationArea">
         <mat-option *ngFor="let position of group.positions" [value]="position.rotationAreaPositionId">
-          {{position.rotationAreaPositionId + ' - ' + position.rotationAreaPosition}}
+          {{position.rotationAreaPosition}}
         </mat-option>
       </mat-optgroup>
 
@@ -35,7 +35,7 @@
     </mat-form-field>
 
     <!-- [ngClass]="isLast ? 'last-same-day-select' : 'same-day-select'" -->
-    <mat-slide-toggle formControlName="sameDay" >Same day</mat-slide-toggle>
+    <mat-slide-toggle formControlName="sameDay" >Next day</mat-slide-toggle>
 
     <button
     type="button"
