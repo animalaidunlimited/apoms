@@ -273,7 +273,10 @@ export class RotationPeriodComponent implements OnInit {
     this.periodPreviousValue = period.value;
     period?.get('editable')?.setValue(editable);
 
-    this.saveRotationPeriod(period);
+    if(editable){
+      this.saveRotationPeriod(period);
+    }
+
 
   }
 

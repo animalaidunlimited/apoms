@@ -2,6 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertRotationPeriod!!
 
+-- CALL AAU.sp_UpsertRotationPeriod('Jim',8,'36a95e3b-968d-4da8-d9ac-c29401789a18',1,'','2023-01-23','2023-01-29',false,0);
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertRotationPeriod(
 		IN prm_Username VARCHAR(45),
@@ -25,8 +27,10 @@ DECLARE vSuccess INT;
 DECLARE vRotationPeriodExists INT;
 DECLARE vTimeNow DATETIME;
 DECLARE vRotationPeriodId INT;
+DECLARE vOverlapsExisting INT;
 
 SET vRotationPeriodExists = 0;
+SET vOverlapsExisting = 0;
 SET vRotationPeriodId = prm_RotationPeriodId;
 
 SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vTimeNow
@@ -35,9 +39,11 @@ INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
 -- SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
-SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotationPeriodGUID = prm_RotationPeriodGUID AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
+SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotationPeriodGUID = prm_RotationPeriodGUID;
 
-IF vRotationPeriodExists = 0 THEN
+SELECT COUNT(1) INTO vOverlapsExisting FROM AAU.RotationPeriod WHERE RotationPeriodGUID != prm_RotationPeriodGUID AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
+
+IF vRotationPeriodExists = 0 AND vOverlapsExisting = 0 THEN
 
 INSERT INTO AAU.RotationPeriod(
 	RotationPeriodGUID,
@@ -60,7 +66,7 @@ VALUES(
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationPeriodId,'RotationPeriod','Insert', NOW());
 
-ELSEIF vRotationPeriodExists = 1 THEN
+ELSEIF vRotationPeriodExists = 1 AND vOverlapsExisting = 0 THEN
 
 	UPDATE AAU.RotationPeriod SET
 		`Name`		= prm_Name,
@@ -76,9 +82,13 @@ ELSEIF vRotationPeriodExists = 1 THEN
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationPeriodId,'RotationPeriod','Update', NOW());
     
+ELSEIF vOverlapsExisting <> 0 THEN
+
+SELECT 2 INTO vSuccess;
+
 ELSE
 
-SELECT 2 INTO vSuccess;    
+SELECT 3 INTO vSuccess;
 
 END IF;
     

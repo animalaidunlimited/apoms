@@ -684,6 +684,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     let defaultAreaShift = this.generateDefaultAreaShift();
 
+    const areaShiftCount = this.getAreaShiftArray.length;
+
     if(areaShift){
       defaultAreaShift.patchValue(areaShift);
     }
@@ -698,7 +700,12 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     let currentRows = this.dataSource.value;
     currentRows.push(row);
+
     this.dataSource.next(currentRows);
+
+    if(areaShiftCount === 0){
+      this.upsertAreaShift(defaultAreaShift.value);
+    }
 
   }
 
