@@ -50,10 +50,9 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     private rotaSettingsService: RotaSettingsService,    
     private snackbar: SnackbarService,
     private changeDetector : ChangeDetectorRef
-  ) { 
+  ) {    
 
     this.loadDropdowns();
-
   }
 
   private loadDropdowns() {
@@ -71,12 +70,13 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
       }
     })
     .sort((a,b) => a.sortOrder - b.sortOrder)
-    ))
+    ));
+    
 
   }
 
   ngOnInit() {
-
+    
     this.updateSortOrder();
     this.rotaSettingsService.rotationAreasUpdated.subscribe(() => this.loadDropdowns());
     
@@ -91,7 +91,9 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     this.rotationRoles$.pipe(take(1)).subscribe(roles => {
 
       this.rotationRoleForm.get('sortOrder')?.setValue(1 + (roles?.length || 0));
+      this.changeDetector.markForCheck();
     });
+
   }
 
   public addShiftSegment() : void {
@@ -108,19 +110,19 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
 
     this.shiftSegments.push(emptyShiftSegment);
 
-
   }
 
   saveRotationRole() : void {
 
     this.rotaSettingsService.saveRotationRole(this.rotationRoleForm.value).then(response => {
-
+      
       const segmentUpsertSuccess = !response.shiftSegments.some(shiftSegment => shiftSegment.success === -1);
 
       if(response.rotationRoleSuccess === 1 && segmentUpsertSuccess) {
         this.snackbar.successSnackBar("Rotation role updated successfully", "OK");
         this.rotationRoleForm.get('rotationRoleId')?.setValue(response.rotationRoleId);
         this.loadDropdowns();
+        this.changeDetector.markForCheck();
       }
       else {
         
@@ -167,7 +169,7 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     this.rotationRoleForm.reset({colour: '#ffffff'});
     this.shiftSegments.clear();
     this.updateSortOrder();
-    this.changeDetector.detectChanges();
+    this.changeDetector.markForCheck();
   }
 
   hydrateRotationRoleForEdit(emittedRow: FormGroup) : void {
@@ -183,6 +185,7 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
     }
 
     this.rotationRoleForm.patchValue(emittedRow.value);
+    this.changeDetector.markForCheck();
   }
 
   duplicateRotationRole() : void {
@@ -195,6 +198,8 @@ export class RotationRoleEditorComponent implements OnInit, OnDestroy {
       control.get('rotationRoleShiftSegmentId')?.reset();
       control.get('rotationRoleShiftSegmentUUID')?.setValue(generateUUID());
     });
+
+    this.updateSortOrder();
   }
 
 }
