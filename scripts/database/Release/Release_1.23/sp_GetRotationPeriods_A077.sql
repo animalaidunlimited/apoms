@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
 
--- CALL AAU.sp_GetRotationPeriods(2, 1, 0);
+-- CALL AAU.sp_GetRotationPeriods(1, 1, 0, 0);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT, IN prm_IsLocked TINYINT)
