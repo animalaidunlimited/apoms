@@ -718,6 +718,7 @@ INSERT INTO AAU.RotationRole (OrganisationId, RotationRole, Colour, SortOrder, I
 ('1', 'C03', '#fff2cc', '28', '0'),
 ('1', 'C04', '#fff2cc', '29', '0');
 
+
 INSERT INTO AAU.RotationRoleShiftSegment (OrganisationId, RotationRoleId, StartTime, EndTime, nextDay, ShiftSegmentTypeId, IsDeleted) VALUES
 ('1', '1', '19:00:00', '07:00:00', '1', '92', '0'),
 ('1', '2', '19:00:00', '07:00:00', '1', '93', '0'),
