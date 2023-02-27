@@ -14,7 +14,7 @@ export interface RotationRoleResponse{
     shiftSegmentTypeId: number;    
     startTime: string;
     endTime: string;
-    sameDay: boolean;    
+    nextDay: boolean;    
   }
 
 
@@ -217,6 +217,8 @@ export interface RotaDayAssignment{
   plannedRotationAreaId: number;
   plannedRotationArea: string;
 
+  nextDay: boolean;
+
   leaveGranted: string;
   actualEndTime: string;
   plannedAreaId: number;
@@ -227,6 +229,7 @@ export interface RotaDayAssignment{
   plannedStartTime: string;
   areaRowSpan: number;
   rotationAreaColour: string;
+  rotationAreaFontColour: string;
   sequence: number;
   guid: string;
   rotaDayDate?: string;
@@ -258,8 +261,8 @@ export interface LeaveRequest {
   leaveRequestReasonId: number | null;
   leaveRequestReason: string;
   additionalInformation: string;
-  leaveStartDate: Date | string | null;
-  leaveEndDate: Date | string | null;
+  leaveStartDate: Date | null;
+  leaveEndDate: Date | null;
   numberOfDays: number;
   granted: number | null;
   commentReasonManagementOnly: string;

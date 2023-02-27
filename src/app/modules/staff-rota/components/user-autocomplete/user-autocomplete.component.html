@@ -1,12 +1,11 @@
 <form [formGroup]="searchForm">
 
-  <mat-form-field *ngIf="formField" appearance="fill">
+  <mat-form-field *ngIf="formField" appearance="fill" style="min-width: 100px; width: 100%;">
     <mat-label *ngIf="showLabel">Staff name</mat-label>
     <input matInput
     [errorStateMatcher]="errorMatcher"
     type="text"
     (focus)="setSelectedUsers()"
-    style="width: 100%;"
     formControlName="userId"
     [ngStyle]="{'backgroundColor' : backgroundColour}"
     [matAutocomplete]="auto">

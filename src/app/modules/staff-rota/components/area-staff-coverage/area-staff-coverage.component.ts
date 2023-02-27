@@ -75,21 +75,21 @@ export class AreaStaffCoverageComponent implements OnInit {
 
   ngOnInit() {
 
-    for(let assignment of this.data.assignments){      
-
-      this.data.assignments.sort((a,b) => {
+    this.data.assignments.sort((a,b) => {
         
-        // return this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b) ?
-        // a.get('employeeNumber')?.value - b.get('employeeNumber')?.value : -1;
+      // return this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b) ?
+      // a.get('employeeNumber')?.value - b.get('employeeNumber')?.value : -1;
 
-        if(this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b)){
+      if(this.getMillisecondsFromStartTime(a) === this.getMillisecondsFromStartTime(b)){
 
-          return a.get('employeeNumber')?.value - b.get('employeeNumber')?.value;
-        }
+        return a.get('employeeNumber')?.value - b.get('employeeNumber')?.value;
+      }
 
-        return this.getMillisecondsFromStartTime(a) - this.getMillisecondsFromStartTime(b);
-      
-      });
+      return this.getMillisecondsFromStartTime(a) - this.getMillisecondsFromStartTime(b);
+    
+    });
+
+    for(let assignment of this.data.assignments){
 
       const assignmentGroup = <FormGroup>assignment;
 
@@ -128,16 +128,18 @@ export class AreaStaffCoverageComponent implements OnInit {
   }
 
   getShiftStart(element: AbstractControl<any, any>) : number {
-
-    const startTime = this.getRealShiftStartTime(element);
+    
+    let startTime = this.getRealShiftStartTime(element);
 
     return new Date(`${this.today} ${startTime}`).getTime();
 
   }
 
-  getShiftEnd(element: AbstractControl<any, any>) : number {
+  getShiftEnd(element: AbstractControl<any, any>) : number {   
 
-    const endTime = this.getRealShiftEndTime(element);
+    const nextDay = element.get('nextDay')?.value;
+
+    const endTime = nextDay ? "23:59:59" : this.getRealShiftEndTime(element);
 
     return new Date(`${this.today} ${endTime}`).getTime();
 

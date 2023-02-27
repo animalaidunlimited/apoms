@@ -249,7 +249,7 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
 
   saveRotaVersion() : void {
 
-    this.rotaService.saveRotaVersion(this.getCurrentRotaVersionDetails()).then(response => {
+    this.rotaService.saveRotaVersion(this.getCurrentRotaVersionDetails()).then(response => {      
 
       if(response.rotaVersionSuccess === 1){
         this.getCurrentRota.get('rotaId')?.enable();        

@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
--- CALL AAU.sp_InsertRotaDayAssignments('Jim', 1);
+-- CALL AAU.sp_InsertRotaDayAssignments('Jim', 4);
 -- TRUNCATE TABLE AAU.RotaDayAssignment;
 
 DELIMITER $$

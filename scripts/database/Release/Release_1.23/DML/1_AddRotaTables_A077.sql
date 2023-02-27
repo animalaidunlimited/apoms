@@ -20,7 +20,7 @@ CREATE TABLE `AAU`.`Rota` (
   `RotaId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `RotaName` VARCHAR(64) NOT NULL,
-  `DefaultRota` TINYINT NULL,
+  `DefaultRota` TINYINT NULL DEFAULT 0,
   `IsDeleted` TINYINT NOT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
   `CreatedDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +56,7 @@ CREATE TABLE `AAU`.`RotationRoleShiftSegment` (
 	`RotationRoleId` INT NOT NULL,    
 	`StartTime` TIME NOT NULL,
 	`EndTime` TIME NOT NULL,
-	`SameDay` TINYINT NULL,
+	`nextDay` TINYINT NULL,
   `ShiftSegmentTypeId` INT NOT NULL,
 	`IsDeleted` TINYINT NOT NULL DEFAULT 0,
 	`DeletedDate` DATETIME NULL,
@@ -79,7 +79,7 @@ CREATE TABLE `AAU`.`RotaVersion` (
   `RotaVersionId` INT NOT NULL AUTO_INCREMENT,
   `OrganisationId` INT NOT NULL,
   `RotaVersionName` VARCHAR(64) NOT NULL,
-  `DefaultRotaVersion` TINYINT NULL,
+  `DefaultRotaVersion` TINYINT NULL DEFAULT 0,
   `RotaId` INT NOT NULL,
   `IsDeleted` TINYINT NULL DEFAULT 0,
   `DeletedDate` DATETIME NULL,
@@ -718,7 +718,7 @@ INSERT INTO AAU.RotationRole (OrganisationId, RotationRole, Colour, SortOrder, I
 ('1', 'C03', '#fff2cc', '28', '0'),
 ('1', 'C04', '#fff2cc', '29', '0');
 
-INSERT INTO AAU.RotationRoleShiftSegment (OrganisationId, RotationRoleId, StartTime, EndTime, SameDay, ShiftSegmentTypeId, IsDeleted) VALUES
+INSERT INTO AAU.RotationRoleShiftSegment (OrganisationId, RotationRoleId, StartTime, EndTime, nextDay, ShiftSegmentTypeId, IsDeleted) VALUES
 ('1', '1', '19:00:00', '07:00:00', '1', '92', '0'),
 ('1', '2', '19:00:00', '07:00:00', '1', '93', '0'),
 ('1', '3', '19:00:00', '07:00:00', '1', '94', '0'),
@@ -766,7 +766,7 @@ INSERT INTO `AAU`.`RotationRole` (RotationRole, Colour, OrganisationId, Rotation
 SELECT *
 FROM AAU.RotationRoleShiftSegment;
 
-INSERT INTO AAU.RotationRoleShiftSegment (OrganisationId, RotationRoleId, StartTime, EndTime, SameDay, ShiftSegmentTypeId, IsDeleted) VALUES
+INSERT INTO AAU.RotationRoleShiftSegment (OrganisationId, RotationRoleId, StartTime, EndTime, nextDay, ShiftSegmentTypeId, IsDeleted) VALUES
 (1,1,'09:00','11:00',0,1,0),
 (1,1,'11:00','11:15',0,-1,0),
 (1,1,'11:15','13:00',0,2,0),

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormArray, AbstractControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UserDetails } from 'src/app/core/models/user';
@@ -41,9 +41,7 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
   ngUnsubscribe = new Subject();
   
   assignedUsers = new BehaviorSubject<number[]>([]); 
-
-  dataSource: BehaviorSubject<AbstractControl[]> = new BehaviorSubject<AbstractControl[]>([this.fb.group({})]);
-
+ 
   displayedColumns = ["rotationArea", "rotationAreaPosition", "userId", "plannedStartTime", "plannedEndTime", "actualStartTime", "actualEndTime", "notes"];
   
   errorMatcher = new CrossFieldErrorMatcher();
@@ -159,12 +157,11 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
   private resetRotaDayAssignments() {
 
     //Let's remove the tea and lunch breaks
-    this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment =>  assignment.get('rotationAreaPositionId')?.value > -2 )
+    this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment => assignment.get('rotationAreaPositionId')?.value > -2 )
                                                              .map(assignment => assignment);
 
     this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments);
 
-    this.dataSource.next(this.filteredRotaDayAssignments);
   }
 
 showAreaStaffCoverage( department: string, rotationAreaId: number) : void {
@@ -341,8 +338,6 @@ showEmptyShiftsOnly() : void {
 
   this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments); 
 
-  this.dataSource.next(this.filteredRotaDayAssignments);
-
 }
 
 searchUsers(event: KeyboardEvent) : void {
@@ -354,18 +349,18 @@ searchUsers(event: KeyboardEvent) : void {
 
   this.userSearch = (event.target as HTMLInputElement).value;
 
-  const foundUsers = this.userList.value.filter(element => element.firstName.toLowerCase()
-                                                                      .includes(this.userSearch.toLowerCase()))
-                                                                      .map(element => element.userId);
+  const foundUsers = this.userList.value.filter(element =>
+                                                          element.firstName.toLowerCase().includes(this.userSearch.toLowerCase())
+                                                          ||
+                                                          element.employeeNumber.includes(this.userSearch.toLowerCase())
+                                                          )
+                                                          .map(element => element.userId);
 
-  this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment => foundUsers.includes(assignment.get('userId')?.value));
+  let assignments = this.rotaDayAssignments.filter(assignment => foundUsers.includes(assignment.get('userId')?.value));
 
-  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments)
+  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(assignments);
 
-  this.dataSource.next(this.filteredRotaDayAssignments);
 }
-
-
 
 clearAndCloseUserSearch() : void {
 
@@ -397,8 +392,6 @@ addShift() : void {
   this.filteredRotaDayAssignments.push(emptyAssignment);
   this.rotaDayAssignments.push(emptyAssignment);
 
-  this.dataSource.next(this.filteredRotaDayAssignments);
-
 }
 
 deleteShift(shift: AbstractControl) : void {
@@ -407,8 +400,6 @@ deleteShift(shift: AbstractControl) : void {
 
   let foundIndex = this.rotaDayAssignments.findIndex(element => element.get('guid')?.value !== shift.get('guid')?.value);
   this.rotaDayAssignments.slice(foundIndex, 1);
-
-  this.dataSource.next(this.filteredRotaDayAssignments);
 }
 
 areaSelected(area: RotationArea, shift: AbstractControl) : void {

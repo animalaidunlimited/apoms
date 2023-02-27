@@ -28,7 +28,7 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 					JSON_OBJECT("shiftSegmentTypeId", rrss.ShiftSegmentTypeId),
 					JSON_OBJECT("startTime", TIME_FORMAT(rrss.`StartTime`, "%H:%i")),
 					JSON_OBJECT("endTime", TIME_FORMAT(rrss.`EndTime`, "%H:%i")),
-					JSON_OBJECT("sameDay", IF(rrss.SameDay = 1, CAST(true AS JSON), CAST(false AS JSON)))
+					JSON_OBJECT("nextDay", IF(rrss.nextDay = 1, CAST(true AS JSON), CAST(false AS JSON)))
 					)) AS `ShiftSegments`
 		FROM AAU.RotationRoleShiftSegment rrss
         WHERE rrss.IsDeleted = 0

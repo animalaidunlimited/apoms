@@ -70,6 +70,7 @@ public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
     plannedRotationAreaPosition: [''],
     plannedRotationAreaId: [0],
     plannedRotationArea: [''],
+    nextDay: [false],
     leaveGranted: [''],
     actualEndTime: [''],
     plannedAreaId: [0],
@@ -80,6 +81,7 @@ public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
     plannedStartTime: [''],
     areaRowSpan: [0],
     rotationAreaColour: [''],
+    rotationAreaFontColour: [''],
     sequence: [0],
     guid: [''],
     shiftSegmentCount: [0]
@@ -87,10 +89,21 @@ public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
 
 }
 
-
 reassignAreaRowSpans(assignments: AbstractControl[]) : AbstractControl[] {
 
-  assignments.sort((a,b) => a.get('sequence')?.value - b.get('sequence')?.value)
+  assignments.sort((a,b) => {
+
+    if(a.get('sequence')?.value === b.get('sequence')?.value){
+
+      return a.get('employeeNumber')?.value?.localeCompare(b.get('employeeNumber')?.value,
+        undefined,
+        {numeric : true, sensitivity: 'base'}
+      );
+    }
+
+    return a.get('sequence')?.value - b.get('sequence')?.value;
+
+  })
 
   if(assignments?.length === 0) return [];
 
@@ -129,9 +142,9 @@ getScheduleManagerAuthorisation(rotationPeriodId: number) : Promise<ScheduleMana
 
 }
 
-public insertScheduleManagerAuthorisation(period: AbstractControl) : Promise<SuccessOnlyResponse> {
+public insertScheduleManagerAuthorisation(rotationPeriodId: number) : Promise<SuccessOnlyResponse> {
 
-  let rotationPeriodIdObject = { rotationPeriodId : period.get('rotationPeriodId')?.value };
+  let rotationPeriodIdObject = { rotationPeriodId : rotationPeriodId };
 
   return this.postSubEndpoint("ScheduleManagerAuthorisation", rotationPeriodIdObject);
 

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, forwardRef, Output, EventEmitter } from '@angular/core';
-import { FormControl, AbstractControl, Validators, UntypedFormBuilder, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, OnInit, Input, forwardRef, Output, EventEmitter, OnChanges } from '@angular/core';
+import { FormControl, AbstractControl, UntypedFormBuilder, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
@@ -23,7 +23,6 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   @Input() existingUsersList: BehaviorSubject<number[]> | undefined;
   @Input() showLabel: boolean = false;
-  @Input() inputControl!: AbstractControl<number | null , number | null> | null;
   @Input() formField: boolean = true;
   @Input() scheduleUsers: boolean = true;
   @Input() backgroundColour: string = "";
@@ -31,21 +30,24 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   ngUnsubscribe = new Subject();
 
+  disabled = false;
+
   errorMatcher = new CrossFieldErrorMatcher();
 
   filteredUsers!: Observable<UserDetails[]> | undefined;
 
   searchForm = this.fb.group({
     userId: new FormControl<string | number | null>(null)
-  });
-
-  userId : (number | string | null) = null;
+  });  
 
   touched = false;
 
-  disabled = false;
+  userId : (number | string | null) = null;
 
   userList: BehaviorSubject<UserDetails[]>;
+
+  kiran = false;
+  manoj = false;
 
   get currentUser() : AbstractControl<string | number | null, string | number | null> | null {
     return this.searchForm.get('userId');
@@ -54,22 +56,26 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
   constructor(
     private userDetails: UserDetailsService,
     private fb: UntypedFormBuilder
-  ) {
+    ) {
 
     this.userList = this.scheduleUsers ? this.userDetails.getScheduleUserList() : this.userDetails.getUserList();    
    }
 
   ngOnInit() {
+
   }
 
   /* START VALUE ACCESSOR METHODS */
-  onChange = (userId: number | string | null | undefined) => {};
+  onChange = (userId: number | string | null) => {};
 
   onTouched = () => {};
 
   writeValue(userId: number | string | null) {
+
     this.userId = userId;
-    this.currentUser?.setValue(userId);
+      
+    this.searchForm.get('userId')?.setValue(userId);
+
   }
 
   registerOnChange(onChange: any) {
@@ -103,7 +109,6 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
       startWith(''),
       map(value => this._filter(value)),
     );
-    
 
   }
 
