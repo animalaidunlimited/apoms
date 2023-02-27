@@ -2,7 +2,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertRotationPeriod!!
 
--- CALL AAU.sp_UpsertRotationPeriod('Jim',8,'36a95e3b-968d-4da8-d9ac-c29401789a18',1,'','2023-01-23','2023-01-29',false,0);
+
+-- CALL AAU.sp_UpsertRotationPeriod('Jim',  9,  'f2f387f2-da33-9e76-5e0d-c2f3e29906c5',  5,  'Week 146',  '2023-02-13',  '2023-02-19',  false,  0);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertRotationPeriod(
@@ -41,7 +42,8 @@ WHERE UserName = prm_Username LIMIT 1;
 -- SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
 SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotationPeriodGUID = prm_RotationPeriodGUID;
 
-SELECT COUNT(1) INTO vOverlapsExisting FROM AAU.RotationPeriod WHERE RotationPeriodGUID != prm_RotationPeriodGUID AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
+
+SELECT COUNT(1) INTO vOverlapsExisting FROM AAU.RotationPeriod WHERE RotationPeriodGUID != prm_RotationPeriodGUID AND RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
 
 IF vRotationPeriodExists = 0 AND vOverlapsExisting = 0 THEN
 

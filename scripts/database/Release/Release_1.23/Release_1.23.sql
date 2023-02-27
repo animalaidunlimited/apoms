@@ -808,7 +808,7 @@ JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("startTime", rrss.StartTime),
 		JSON_OBJECT("endTime", rrss.EndTime),
-		JSON_OBJECT("sameDay", rrss.SameDay),
+		JSON_OBJECT("nextDay", rrss.nextDay),
 		JSON_OBJECT("shiftSegmentTypeId", rrss.ShiftSegmentTypeId)
 	)
 ) AS `rotationRoleShiftSegments`
@@ -870,7 +870,7 @@ SELECT
 			WHEN -1 THEN 'Tea break'
 			WHEN -2 THEN 'Lunch break'
         ELSE rpa.RotationAreaPosition END AS `RotationAreaPosition`,
-				ra.RotationAreaId, ra.RotationArea, ra.Colour, rrss.StartTime, rrss.EndTime, rrss.SameDay
+				ra.RotationAreaId, ra.RotationArea, ra.Colour, rrss.StartTime, rrss.EndTime, rrss.nextDay
 		FROM AAU.RotationRoleShiftSegment rrss
         LEFT JOIN AAU.RotationAreaPosition rpa ON rpa.RotationAreaPositionId = rrss.ShiftSegmentTypeId
 		LEFT JOIN AAU.RotationArea ra ON ra.RotationAreaId = rpa.RotationAreaId
@@ -1387,7 +1387,7 @@ SELECT OrganisationId INTO vOrganisationId FROM AAU.User WHERE UserName = prm_Us
 					JSON_OBJECT("shiftSegmentTypeId", rrss.ShiftSegmentTypeId),
 					JSON_OBJECT("startTime", TIME_FORMAT(rrss.`StartTime`, "%H:%i")),
 					JSON_OBJECT("endTime", TIME_FORMAT(rrss.`EndTime`, "%H:%i")),
-					JSON_OBJECT("sameDay", IF(rrss.SameDay = 1, CAST(true AS JSON), CAST(false AS JSON)))
+					JSON_OBJECT("nextDay", IF(rrss.nextDay = 1, CAST(true AS JSON), CAST(false AS JSON)))
 					)) AS `ShiftSegments`
 		FROM AAU.RotationRoleShiftSegment rrss
         WHERE rrss.IsDeleted = 0
@@ -3045,7 +3045,7 @@ CREATE PROCEDURE AAU.sp_UpsertRotationRoleShiftSegment(
 										IN prm_RotationRoleId INT,
 										IN prm_StartTime TIME,
 										IN prm_EndTime TIME,
-										IN prm_SameDay TINYINT,
+										IN prm_nextDay TINYINT,
 										IN prm_ShiftSegmentTypeId INT,
                                         IN prm_IsDeleted TINYINT
 )
@@ -3078,7 +3078,7 @@ INSERT INTO AAU.RotationRoleShiftSegment(
 	OrganisationId,
 	StartTime,
 	EndTime,
-	SameDay,
+	nextDay,
 	ShiftSegmentTypeId,
 	IsDeleted
 )
@@ -3087,7 +3087,7 @@ VALUES(
 	vOrganisationId,
 	prm_StartTime,
 	prm_EndTime,
-	prm_SameDay,
+	prm_nextDay,
 	prm_ShiftSegmentTypeId,
 	prm_IsDeleted
 );
@@ -3103,7 +3103,7 @@ ELSEIF ( vRotationRoleShiftSegmentExists = 1  AND prm_RotationRoleShiftSegmentId
 UPDATE AAU.RotationRoleShiftSegment SET  
  	StartTime			= prm_StartTime,
 	EndTime				= prm_EndTime,
-	SameDay				= prm_SameDay,
+	nextDay				= prm_nextDay,
 	ShiftSegmentTypeId 	= prm_ShiftSegmentTypeId,
 	IsDeleted			= prm_IsDeleted,
     DeletedDate			= IF(prm_IsDeleted = 1, vTimeNow, null)

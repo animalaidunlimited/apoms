@@ -477,6 +477,8 @@ public setRotaVersionAsDefault(defaultRotaVersionId: number) : void {
 
 public async upsertRota() : Promise<UpsertRotaResponse> {
 
+  this.getCurrentRota.get('rotaVersionId')?.enable();
+
   let rota = this.getCurrentRota.value as CurrentRota;
 
   if(!rota.rotaId){
@@ -486,8 +488,6 @@ public async upsertRota() : Promise<UpsertRotaResponse> {
   if(this.rotas.value?.length === 0){
     rota.defaultRota = true;
   }
-
-  this.getCurrentRota.get('rotaVersionId')?.enable();
   
   //If we're setting to default, then unset the other defaults
   if(this.getCurrentRota.get('defaultRota')?.value){

@@ -11,8 +11,7 @@
         [formField]="true"
         [scheduleUsers]="false"
         [showLabel]="true"
-        class="select-field"
-        style="min-width: 100px;">
+        class="select-field"        >
       </app-user-autocomplete>
 
       <!-- <mat-form-field appearance="fill">
@@ -34,7 +33,7 @@
     
       <mat-form-field appearance="fill">
         <mat-label>Date of request</mat-label>
-        <input matInput type="date" [errorStateMatcher]="errorMatcher"
+        <input matInput [errorStateMatcher]="errorMatcher"
           [matDatepicker]="requestPicker"
           formControlName="requestDate"  />
           <mat-datepicker-toggle matIconSuffix [for]="requestPicker"></mat-datepicker-toggle>
@@ -74,10 +73,11 @@
 
         <mat-form-field appearance="fill">
           <mat-label>Leave requested from</mat-label>
-          <input matInput type="date"
+          <mat-hint>DD/MM/YYYY</mat-hint>
+          <input matInput
             [matDatepicker]="fromPicker"
             [min]="leaveRequestForm.get('requestDate')?.value"
-            [max]="leaveRequestForm.get('leaveEndDate')?.value"
+            [max]="leaveRequestForm.get('leaveEndDate')?.value"            
             [errorStateMatcher]="errorMatcher"
             formControlName="leaveStartDate"  />
             <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
@@ -94,7 +94,8 @@
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>to</mat-label>
-          <input matInput type="date" [errorStateMatcher]="errorMatcher"
+          <mat-hint>DD/MM/YYYY</mat-hint>
+          <input matInput [errorStateMatcher]="errorMatcher"
           [matDatepicker]="toPicker"
           [min]="leaveRequestForm.get('leaveStartDate')?.value"
             formControlName="leaveEndDate"  />
@@ -116,7 +117,7 @@
 
       <div *ngIf="leaveRequestForm.get('withinProtocol')?.value === false" class="out-of-protocol">OUT OF PROTOCOL.</div>
 
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" style="margin-top: 15px;">
         <mat-label>Additional information on the leave</mat-label>
         <input matInput type="text" [errorStateMatcher]="errorMatcher"
           formControlName="additionalInformation"  />
@@ -153,13 +154,13 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Date the leave was granted/refused</mat-label>
+        <mat-label>Date leave was granted/refused</mat-label>
         <input matInput type="date" [errorStateMatcher]="errorMatcher"
           formControlName="dateApprovedRejected"  />
       </mat-form-field>
 
       <div>
-        <label id="recorded-on-noticeboard-radio-group-label">Has the Answer been recorded on Notice Board</label>
+        <label id="recorded-on-noticeboard-radio-group-label">Has the answer been recorded on the notice board</label>
         <mat-radio-group
           aria-labelledby="recorded-on-noticeboard-radio-group-label"
           class="request-reasons"

@@ -9,7 +9,7 @@ CREATE PROCEDURE AAU.sp_UpsertRotationRoleShiftSegment(
 										IN prm_RotationRoleId INT,
 										IN prm_StartTime TIME,
 										IN prm_EndTime TIME,
-										IN prm_SameDay TINYINT,
+										IN prm_nextDay TINYINT,
 										IN prm_ShiftSegmentTypeId INT,
                                         IN prm_IsDeleted TINYINT
 )
@@ -42,7 +42,7 @@ INSERT INTO AAU.RotationRoleShiftSegment(
 	OrganisationId,
 	StartTime,
 	EndTime,
-	SameDay,
+	nextDay,
 	ShiftSegmentTypeId,
 	IsDeleted
 )
@@ -51,7 +51,7 @@ VALUES(
 	vOrganisationId,
 	prm_StartTime,
 	prm_EndTime,
-	prm_SameDay,
+	prm_nextDay,
 	prm_ShiftSegmentTypeId,
 	prm_IsDeleted
 );
@@ -67,7 +67,7 @@ ELSEIF ( vRotationRoleShiftSegmentExists = 1  AND prm_RotationRoleShiftSegmentId
 UPDATE AAU.RotationRoleShiftSegment SET  
  	StartTime			= prm_StartTime,
 	EndTime				= prm_EndTime,
-	SameDay				= prm_SameDay,
+	nextDay				= prm_nextDay,
 	ShiftSegmentTypeId 	= prm_ShiftSegmentTypeId,
 	IsDeleted			= prm_IsDeleted,
     DeletedDate			= IF(prm_IsDeleted = 1, vTimeNow, null)

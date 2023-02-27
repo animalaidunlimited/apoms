@@ -3,9 +3,13 @@ import { ValidatorFn, AbstractControl } from "@angular/forms";
 export function maxDateTodayValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
 
-      const today = new Date().getTime();
+      const today = new Date()
+
+      today.setHours(0, 0, 0);
 
       const dateToCheck = new Date(control.value);
+
+      dateToCheck.setHours(0, 0, 0);
   
       if(!(control && control.value)) {
         // if there's no control or no value, that's ok
@@ -13,7 +17,7 @@ export function maxDateTodayValidator(): ValidatorFn {
       }      
   
       // return null if there's no errors
-      return dateToCheck.getTime() > today 
+      return dateToCheck.getTime() > today.getTime()
         ? {invalidDate: 'Date must be today or before' } 
         : null;
     }
@@ -24,6 +28,9 @@ export function maxDateTodayValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {     
 
       const dateToCheck = new Date(control.value);
+
+      dateToCheck.setHours(0,0,0);
+      minDate.setHours(0,0,0);
   
       if(!(control && control.value)) {
         // if there's no control or no value, that's ok
@@ -41,6 +48,9 @@ export function maxDateTodayValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
 
       const dateToCheck = new Date(control.value);
+
+      dateToCheck.setHours(0,0,0);
+      maxDate.setHours(0,0,0);
   
       if(!(control && control.value)) {
         // if there's no control or no value, that's ok

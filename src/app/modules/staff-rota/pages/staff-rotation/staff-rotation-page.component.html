@@ -1,6 +1,8 @@
 <div class="flex-column flex-start-start" style="margin-left:15px;">
 
-  <div class="flex-row flex-center-center table-container">
+  <div class="flex-column flex-center-center table-container">
+
+    <div class="flex-row flex-start-start">    
 
     <form [formGroup]="rotaForm">
 
@@ -285,7 +287,7 @@
   
   </div>
   
-  </div>
+  
   
     <div class="flex-row flex-center-center gap-20 area-shift">
   
@@ -307,8 +309,12 @@
           <mat-icon>add</mat-icon>
       </button>
 
+    </div>
+
   </div>
   
+  </div>
+
   <div class="flex-row" *ngIf="(unassignedUsers | async); let unassigned">
       <div class="group-header">
           <div class="group-header-text">Unassigned staff:</div>

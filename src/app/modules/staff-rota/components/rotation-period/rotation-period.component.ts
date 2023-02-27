@@ -135,7 +135,7 @@ export class RotationPeriodComponent implements OnInit {
       }
       else {
 
-        this.snackbarService.errorSnackBar("ERR: RPC-130: Error adding rotation period, please see administrator", "OK");
+        this.snackbarService.errorSnackBar("ERR: RPC-140: Error adding rotation period, please see administrator", "OK");
       }
 
     });

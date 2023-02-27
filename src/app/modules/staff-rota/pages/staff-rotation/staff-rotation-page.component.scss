@@ -1,6 +1,28 @@
 .rotation-container{
     max-width: 1400px;
-    overflow: hidden;
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+        background-color: #fff;
+        width: 0.8rem;
+        height: 0.8rem;
+      }
+      /* background of the scrollbar except button or resizer */
+      &::-webkit-scrollbar-track {
+        background-color: #fff;
+      }
+    
+      /* scrollbar itself */
+      &::-webkit-scrollbar-thumb {
+        background-color: #babac0;
+        border-radius: 1rem;
+        border: 0.2rem solid #fff;
+      }
+    
+      /* set button(top and bottom of the scrollbar) */
+      &::-webkit-scrollbar-button {
+        display:none;
+      }
 }
 
 table {
@@ -118,6 +140,7 @@ tr, th, td {
 
 .area-shift{
     padding-top: 15px;
+    width: 100%;
 }
 
 .table-container{

@@ -42,7 +42,7 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
     rotationRoleShiftSegmentUUID: new FormControl<string | null>(generateUUID()),
     startTime: new FormControl<string | null>(null, Validators.required),
     endTime: new FormControl<string | null>(null, Validators.required),
-    sameDay: new FormControl<boolean | null>(false, Validators.required),
+    nextDay: new FormControl<boolean | null>(false, Validators.required),
     shiftSegmentTypeId: new FormControl<number | string>("", Validators.required),
     isDeleted: new FormControl<boolean>(false, Validators.required)
   });

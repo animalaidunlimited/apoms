@@ -27,7 +27,7 @@ JSON_ARRAYAGG(
 	JSON_MERGE_PRESERVE(
 		JSON_OBJECT("startTime", rrss.StartTime),
 		JSON_OBJECT("endTime", rrss.EndTime),
-		JSON_OBJECT("sameDay", rrss.SameDay),
+		JSON_OBJECT("nextDay", rrss.nextDay),
 		JSON_OBJECT("shiftSegmentTypeId", rrss.ShiftSegmentTypeId)
 	)
 ) AS `rotationRoleShiftSegments`
@@ -72,13 +72,17 @@ SELECT
 	rr.RotationAreaPositionId AS `plannedRotationAreaPositionId`,
 	rr.RotationAreaPosition AS `plannedRotationAreaPosition`,  
     rr.RotationAreaId AS `plannedRotationAreaId`,
-	rr.RotationArea AS `plannedRotationArea`,    
+	rr.RotationArea AS `plannedRotationArea`,
+    
+    IF(rr.NextDay = 1, CAST(true AS JSON), CAST(false AS JSON)) AS `nextDay`,
    
     TIME_FORMAT(rr.StartTime, '%h:%i %p') AS `plannedStartTime`,
     TIME_FORMAT(rr.EndTime, '%h:%i %p') AS `plannedEndTime`,
     TIME_FORMAT(rda.ActualStartTime, '%h:%i') AS `actualStartTime`,
     TIME_FORMAT(rda.ActualEndTime, '%h:%i') AS `actualEndTime`,
     IFNULL(ra.Colour, rr.Colour) AS `rotationAreaColour`,
+    IF(((CONV(SUBSTRING(ra.Colour , 2, 2), 16, 10) * 299) + (CONV(SUBSTRING(ra.Colour , 4, 2), 16, 10) * 587) + (CONV(SUBSTRING(ra.Colour , 6, 2), 16, 10) * 114)) / 1000 > 155, '#000000', '#ffffff') AS `rotationAreaFontColour`,
+
     rda.Sequence,
     rda.Notes
 	FROM AAU.RotaDayAssignment rda
@@ -89,7 +93,7 @@ SELECT
 			WHEN -1 THEN 'Tea break'
 			WHEN -2 THEN 'Lunch break'
         ELSE rpa.RotationAreaPosition END AS `RotationAreaPosition`,
-				ra.RotationAreaId, ra.RotationArea, ra.Colour, rrss.StartTime, rrss.EndTime, rrss.SameDay
+				ra.RotationAreaId, ra.RotationArea, ra.Colour, rrss.StartTime, rrss.EndTime, rrss.nextDay
 		FROM AAU.RotationRoleShiftSegment rrss
         LEFT JOIN AAU.RotationAreaPosition rpa ON rpa.RotationAreaPositionId = rrss.ShiftSegmentTypeId
 		LEFT JOIN AAU.RotationArea ra ON ra.RotationAreaId = rpa.RotationAreaId
@@ -112,7 +116,7 @@ SELECT
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY), -- RotaDayDate
 	-1, -- RotaDayId
 	lr.UserId, -- UserId
-    NULL, -- EmployeeNumber
+    u.EmployeeNumber, -- EmployeeNumber
     NULL, -- UserCode
 	lr.UserId, -- RotationUserId
 	lr.LeaveRequestId,
@@ -130,18 +134,22 @@ SELECT
     'LEAVE', -- plannedRotationAreaPosition
     -1, -- plannedRotationAreaId
 	'LEAVE', -- plannedRotationArea
+    CAST(false AS JSON), -- nextDay
 	NULL, -- StartTime
     NULL, -- EndTime
     NULL, -- ActualStartTime
     NULL, -- ActualEndTime
     '#999999', -- Colour
+    '#ffffff', -- RotationAreaFontColour
     -2, -- Sequence
     NULL -- Notes
 FROM AAU.LeaveRequest lr
+INNER JOIN AAU.User u ON u.UserId = lr.UserId
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
 INNER JOIN AAU.RotationPeriod rp ON DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY) BETWEEN rp.StartDate AND rp.EndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 AND lr.Granted = 1
+AND lr.OrganisationId = vOrganisationId
 
 UNION ALL
 
@@ -151,7 +159,7 @@ SELECT
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY), -- RotaDayDate
 	-1, -- RotaDayId
 	u.UserId, -- UserId
-    NULL, -- EmployeeNumber
+    u.EmployeeNumber, -- EmployeeNumber
     NULL, -- UserCode
 	u.UserId, -- RotationUserId
 	lr.LeaveRequestId,
@@ -169,12 +177,14 @@ SELECT
     -1, -- plannedRotationAreaPositionId
     'FIXED OFF', -- plannedRotationAreaPosition
     -1, -- plannedRotationAreaId
-	'FIXED OFF', -- plannedRotationArea        
+	'FIXED OFF', -- plannedRotationArea
+    CAST(false AS JSON), -- nextDay    
 	NULL, -- StartTime
     NULL, -- EndTime
     NULL, -- ActualStartTime
     NULL, -- ActualEndTime
     '#999999', -- Colour
+    '#ffffff', -- RotationAreaFontColour
     -1, -- Sequence
     NULL -- Notes
 FROM AAU.RotationPeriod rp
@@ -182,7 +192,7 @@ INNER JOIN AAU.Tally t ON t.Id < 7
 INNER JOIN AAU.User u ON LOCATE(WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY)), u.FixedDayOff) > 0 AND u.fixedDayOff NOT LIKE '[-1]'
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
-
+AND u.OrganisationId = vOrganisationId
 ),
 rotaDayAssignmentCTE AS
 (
@@ -203,7 +213,8 @@ SELECT RotationPeriodId,
                         JSON_OBJECT("rotationAreaPositionId", rotationAreaPositionId),
                         JSON_OBJECT("plannedArea", rotationAreaPosition),
                         JSON_OBJECT("rotationAreaId", rotationAreaId),
-                        JSON_OBJECT("rotationArea", rotationArea),                        
+                        JSON_OBJECT("rotationArea", rotationArea),
+                        JSON_OBJECT("nextDay", nextDay),
                         JSON_OBJECT("plannedRotationAreaPositionId", plannedRotationAreaPositionId),
                         JSON_OBJECT("plannedRotationAreaPosition", plannedRotationAreaPosition),
                         JSON_OBJECT("plannedRotationAreaId", plannedRotationAreaId),
@@ -213,7 +224,8 @@ SELECT RotationPeriodId,
 						JSON_OBJECT("actualStartTime", actualStartTime),
                         JSON_OBJECT("actualEndTime", actualEndTime),
                         JSON_OBJECT("sequence", Sequence),
-                        JSON_OBJECT("rotationAreaColour", rotationAreaColour),                        
+                        JSON_OBJECT("rotationAreaColour", rotationAreaColour),
+                        JSON_OBJECT("rotationAreaFontColour", rotationAreaFontColour),                        
                         JSON_OBJECT("notes", Notes),
                         JSON_OBJECT("isAdded", CAST(0 AS JSON))
 					)

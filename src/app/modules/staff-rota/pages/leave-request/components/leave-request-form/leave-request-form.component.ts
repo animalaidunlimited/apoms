@@ -38,8 +38,8 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     requestDate: new FormControl< Date | null>(new Date(getCurrentDateString()), [Validators.required, maxDateTodayValidator()]),
     leaveRequestReasonId: new FormControl<any | null>(null, Validators.required),
     leaveRequestReason: [''],
-    leaveStartDate: new FormControl< Date | string | null>(null, Validators.required ),
-    leaveEndDate: new FormControl< Date | string | null>(null, Validators.required ),    
+    leaveStartDate: new FormControl< Date | null>(null, Validators.required ),
+    leaveEndDate: new FormControl< Date | null>(null, Validators.required ),    
     additionalInformation: [''],
     numberOfDays: [-1],
     granted: new FormControl<number | null>(null),
@@ -88,7 +88,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     private MatDialogRef: MatDialogRef<boolean>) {
 
       //We need to set this in order for the date picker to work with a date input
-        this.dateAdapter.setLocale('fr-CA'); // yyyy-MM-dd
+        this.dateAdapter.setLocale('en-GB'); // yyyy-MM-dd
 
         this.userList = this.userDetailsService.getScheduleUserList();
         this.requestReasons$ = this.dropdown.getLeaveRequestReasons();
@@ -169,6 +169,7 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
     leaveStart?.setValidators([ Validators.required,
                                 minDateValidator(new Date(this.requestDate || "")),
                                 maxDateValidator(new Date(leaveEnd?.value || ""))]);
+
     leaveEnd?.setValidators([Validators.required, minDateValidator(new Date(leaveStart?.value || ""))]);
 
   }
@@ -179,7 +180,10 @@ export class LeaveRequestFormComponent implements OnInit, OnDestroy {
       let startDate = new Date(this.leaveStartDate);
       let endDate = new Date(this.leaveEndDate);
 
-      const numberOfDays = ((endDate.getTime() - startDate.getTime()) / 1000 / 86400) + 1;
+      startDate.setHours(0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
+
+      const numberOfDays = Math.floor(((endDate.getTime() - startDate.getTime()) / 1000 / 86400)) + 1;
 
       this.numberOfDays?.setValue(numberOfDays);
 
