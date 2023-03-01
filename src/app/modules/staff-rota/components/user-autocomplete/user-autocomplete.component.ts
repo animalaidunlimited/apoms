@@ -46,9 +46,6 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   userList: BehaviorSubject<UserDetails[]>;
 
-  kiran = false;
-  manoj = false;
-
   get currentUser() : AbstractControl<string | number | null, string | number | null> | null {
     return this.searchForm.get('userId');
   }
@@ -94,7 +91,9 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
   }
 
   setDisabledState(disabled: boolean) {
-    this.disabled = disabled;
+    this.disabled = disabled;    
+    
+    disabled ? this.currentUser?.disable() : this.currentUser?.enable();
   }
 
   /* END VALUE ACCESSOR METHODS */

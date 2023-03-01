@@ -1,4 +1,4 @@
-<form [formGroup]="rotationPositionForm" autocomplete="off">
+<form [formGroup]="rotationPositionForm" autocomplete="off" class="flex-row flex-center-center gap-20">
 
     <mat-form-field>
       <mat-label>Shift segment type</mat-label>
@@ -35,13 +35,14 @@
     </mat-form-field>
 
     <!-- [ngClass]="isLast ? 'last-same-day-select' : 'same-day-select'" -->
-    <mat-slide-toggle formControlName="nextDay" >Next day</mat-slide-toggle>
+    <mat-slide-toggle formControlName="nextDay" style="padding-bottom: 22px;">Next day</mat-slide-toggle>
 
     <button
     type="button"
     (click)="deleteShiftSegmentType()"
     mat-mini-fab
     matTooltip="Delete"
+    style="margin-bottom: 19px;"
     color="primary">
     <mat-icon>delete</mat-icon>
     </button>

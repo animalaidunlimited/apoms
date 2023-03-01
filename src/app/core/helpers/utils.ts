@@ -171,3 +171,18 @@ export function generateRangeOfQuarterHours(start: number, end: number) : string
   return range;
 
 }
+
+export function generateDateFromTime(inputTime: string) : Date {
+
+  return new Date(`${getCurrentDateString()} ${inputTime}`);
+
+}
+
+export function addDaysToDate(inputDate: Date, days: number) : Date {
+
+  let returnDate = new Date(inputDate);
+  returnDate.setDate( inputDate.getDate() + days );
+
+  return returnDate;
+
+}
