@@ -94,7 +94,9 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
   }
 
   setDisabledState(disabled: boolean) {
-    this.disabled = disabled;
+    this.disabled = disabled;    
+    
+    disabled ? this.currentUser?.disable() : this.currentUser?.enable();
   }
 
   /* END VALUE ACCESSOR METHODS */

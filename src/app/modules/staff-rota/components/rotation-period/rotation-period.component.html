@@ -27,12 +27,12 @@
         (change)="checkUnassignedStaff(inputPeriod, $event.checked)">
       </mat-checkbox>
 
-      <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, false)">
-        <mat-icon matTooltip="copy" class="close-icon" >content_copy</mat-icon>
+      <button mat-icon-button class="close-button" matTooltip="copy" (click)="copyRotationPeriod(period, false)">
+        <mat-icon class="close-icon" >content_copy</mat-icon>
       </button>
 
-      <button mat-icon-button class="close-button" (click)="copyRotationPeriod(period, true)">
-        <mat-icon matTooltip="copy + rotate" class="close-icon" >difference</mat-icon>
+      <button mat-icon-button class="close-button" matTooltip="copy + rotate" (click)="copyRotationPeriod(period, true)">
+        <mat-icon class="close-icon" >difference</mat-icon>
       </button>
 
     </div>
@@ -40,24 +40,27 @@
     <div class="flex-row flex-center-center">
       <button mat-icon-button
       (click)="generateRotationPeriodDays(period)"
-      
+      matTooltip="generate" 
       *ngIf="!period.get('locked')?.value" [disabled]="!period.get('rotationPeriodId')?.value || period.dirty">        
-        <mat-icon matTooltip="generate" [ngClass]="(!period.get('rotationPeriodId')?.value  || period.dirty) ? 'close-icon disabled' : 'close-button key'">key</mat-icon>
+        <mat-icon [ngClass]="(!period.get('rotationPeriodId')?.value  || period.dirty) ? 'close-icon disabled' : 'close-button key'">key</mat-icon>
       </button>
 
       <button mat-icon-button class="close-button"
       *ngIf="period.get('locked')?.value"
+      matTooltip="go to schedule" 
       (click)="navigateToRotationPeriod(period)">        
-        <mat-icon matTooltip="go to period rota" class="close-icon lock">lock</mat-icon>
+        <mat-icon class="close-icon lock">lock</mat-icon>
       </button>      
 
       <button mat-icon-button [color]="period.pristine ? null : 'warn'" class="close-button" (click)="saveRotationPeriod(period)"
+      matTooltip="save" 
       [disabled]="period.get('locked')?.value">        
-        <mat-icon matTooltip="save" class="close-icon" >save</mat-icon>
+        <mat-icon class="close-icon" >save</mat-icon>
       </button>
 
-      <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)">
-        <mat-icon matTooltip="delete" class="close-icon" >delete</mat-icon>
+      <button mat-icon-button class="close-button" (click)="deleteRotationPeriod(period)"
+      matTooltip="delete" >
+        <mat-icon class="close-icon" >delete</mat-icon>
       </button>
     </div>
   </div>

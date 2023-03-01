@@ -10,14 +10,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { AreaStaffCoverageComponent } from '../../../../components/area-staff-coverage/area-staff-coverage.component';
 import { RotationArea, RotationRole, GroupedRotationAreaPosition } from 'src/app/core/models/rota';
 import { RotaSettingsService } from '../../../settings/services/rota-settings.service';
-import { generateUUID, getCurrentDateString } from 'src/app/core/helpers/utils';
+import { addDaysToDate, generateDateFromTime, generateUUID, getCurrentDateString } from 'src/app/core/helpers/utils';
 
 interface UserUtilisation{
   userId: number;
   employeeNumber: string;
   userCode: string;
   hours: Date;
-  utilisation: "under" | "over"
+  utilisation: "under" | "over" | "on"
 }
 
 interface AreaCount{
@@ -57,9 +57,7 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
   });
 
   rotationAreas$:Observable<RotationArea[]>;
-  rotationAreaPositions$:Observable<GroupedRotationAreaPosition[]>;
-
-  
+  rotationAreaPositions$:Observable<GroupedRotationAreaPosition[]>;  
 
   showEmptyShifts = false;
   showUserFilter = false;
@@ -143,6 +141,8 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
     
     this.rotaDayAssignments = (this.inputRotaDayAssignments as FormArray)?.controls;
 
+    
+
     this.rotaDayAssignments.sort((a,b) => a.get('sequence')?.value - b.get('sequence')?.value);
 
     this.resetRotaDayAssignments();    
@@ -189,11 +189,7 @@ updateSelectedUsers() : void {
 
 }
 
- generateDateFromTime(inputTime: string) : Date {
 
-  return new Date(`${getCurrentDateString()} ${inputTime}`);
-
- }
 
  saveRotaDay() : void {
 
@@ -231,14 +227,20 @@ updateSelectedUsers() : void {
 
       let foundUser = returnValue.find(element => element.userId === current.get('userId')?.value);
 
-      let start = this.generateDateFromTime(current.get('actualStartTime')?.value || current.get('plannedStartTime')?.value);
-      let end = this.generateDateFromTime(current.get('actualEndTime')?.value || current.get('plannedEndTime')?.value);
+      let start = generateDateFromTime(current.get('actualStartTime')?.value || current.get('plannedStartTime')?.value);
+      let end = generateDateFromTime(current.get('actualEndTime')?.value || current.get('plannedEndTime')?.value);
+
+      if(current.get('nextDay')?.value){
+
+        end = addDaysToDate(end, 1);
+
+      }
       
       if(!foundUser){
 
         const utilisedHours = new Date();
         utilisedHours.setHours(0, 0, 0);
-        utilisedHours.setMilliseconds((end.getTime() - start.getTime() + (1000 * 60 * 60 * 1.5)));
+        utilisedHours.setMilliseconds((end.getTime() - start.getTime()));
 
         returnValue.push({
           userId: current.get('userId')?.value,
@@ -268,7 +270,12 @@ updateSelectedUsers() : void {
     this.utilisation.next(currentAssignments);
   }
 
-  private getUtilisation(utilisedHours: Date): "under" | "over" {
+  private getUtilisation(utilisedHours: Date): "under" | "over" | "on" {
+
+    if(utilisedHours.getHours() === 9){
+      return "on";
+    }
+
     return utilisedHours.getHours() < 9 ? "under" : "over";
   }
 
@@ -288,13 +295,11 @@ private recalculateTaskCountByUser() : void {
   this.rotaDayAssignments.forEach(staffTask => {
 
     const shiftSegmentCount = this.rotaDayAssignments.filter(element => element.get('userId')?.value === staffTask.get('userId')?.value
-                                                                              && element.get('rotationAreaPositionId')?.value > 0);
-
-    
+                                                                              && element.get('rotationAreaPositionId')?.value > 0);    
 
     staffTask.get('shiftSegmentCount')?.setValue(shiftSegmentCount.length, {emitEvent: false});
 
-  })
+  });
 
 }
 
