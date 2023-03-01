@@ -46,6 +46,9 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   userList: BehaviorSubject<UserDetails[]>;
 
+  kiran = false;
+  manoj = false;
+
   get currentUser() : AbstractControl<string | number | null, string | number | null> | null {
     return this.searchForm.get('userId');
   }
