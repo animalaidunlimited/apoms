@@ -47,6 +47,12 @@ public generateNewAssignment(assignment: RotaDayAssignment) : ModelFormGroup<Rot
 
   emptyAssignment.patchValue(assignment);
 
+ 
+
+  if((emptyAssignment.get('rotationAreaId')?.value || 0) < 0){
+    emptyAssignment.disable();
+  }
+
   return emptyAssignment;
 
 }

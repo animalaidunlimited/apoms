@@ -996,6 +996,7 @@ SELECT RotationPeriodId,
                         JSON_OBJECT("rotationAreaId", rotationAreaId),
                         JSON_OBJECT("rotationArea", rotationArea),
                         JSON_OBJECT("nextDay", nextDay),
+
                         JSON_OBJECT("plannedRotationAreaPositionId", plannedRotationAreaPositionId),
                         JSON_OBJECT("plannedRotationAreaPosition", plannedRotationAreaPosition),
                         JSON_OBJECT("plannedRotationAreaId", plannedRotationAreaId),

@@ -14,6 +14,7 @@ import { addDaysToDate, generateDateFromTime, generateUUID } from 'src/app/core/
 import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
 import { takeUntil } from 'rxjs/operators';
 
+
 interface UserUtilisation{
   userId: number;
   employeeNumber: string;
@@ -137,6 +138,8 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
   private initialiseForm() {
     
     this.rotaDayAssignments = (this.inputRotaDayAssignments as FormArray)?.controls;    
+
+    
 
     this.rotaDayAssignments.sort((a,b) => a.get('sequence')?.value - b.get('sequence')?.value);
 
