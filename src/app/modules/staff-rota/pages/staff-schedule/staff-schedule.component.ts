@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { skip, take, takeUntil } from 'rxjs/operators';
 import { RotaService } from '../../services/rota.service';
-import { DisplayLeaveRequest, LeaveRequest, Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotationPeriodResponse, RotaVersion,
+import { LeaveRequest, Rota, RotaDay, RotaDayAssignmentResponse, RotationArea, RotationPeriodResponse, RotaVersion,
          ScheduleAuthorisation, ScheduleAuthorisationDay, ScheduleManagerAuthorisation } from '../../../../core/models/rota';
 import { RotaSettingsService } from '../settings/services/rota-settings.service';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
@@ -24,8 +24,6 @@ export class StaffScheduleComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
-  dataLoaded = false;
-
   areaForm = this.fb.group({
     areas: new FormControl<number[] | undefined>(undefined),
     rotaId: new FormControl<number | null>(null, Validators.required),
@@ -33,6 +31,10 @@ export class StaffScheduleComponent implements OnInit {
   });
 
   areas: RotationArea[] = [];
+
+  currentScheduleAuthorisation = new BehaviorSubject<ScheduleAuthorisationDay>({} as ScheduleAuthorisationDay);
+
+  dataLoading = false;
 
   leaveRequests = new BehaviorSubject<LeaveRequest[] | null>(null);
 
@@ -49,9 +51,10 @@ export class StaffScheduleComponent implements OnInit {
   selectedIndex = 0;
 
   scheduleAuthorisation : ScheduleManagerAuthorisation | null = null;
-  currentScheduleAuthorisation = new BehaviorSubject<ScheduleAuthorisationDay>({} as ScheduleAuthorisationDay);
 
   showScheduleAuthorisation = false;
+
+  showWeek = true; 
 
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -111,7 +114,7 @@ export class StaffScheduleComponent implements OnInit {
 
   watchRotaSelect() : void
   {
-    this.areaForm.get('rotaId')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(rotaId => 
+    this.areaForm.get('rotaId')?.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(rotaId =>      
      
       this.rotas.pipe(take(1)).subscribe(rotas => { 
 
@@ -125,6 +128,7 @@ export class StaffScheduleComponent implements OnInit {
   
           if(defaultRotaVersion){
             this.areaForm.get('rotaVersionId')?.setValue(defaultRotaVersion.rotaVersionId);
+            this.dataLoading = true;            
             this.getRotationPeriodForRotaVersion(defaultRotaVersion.rotaVersionId);
           }
         }
@@ -171,12 +175,18 @@ export class StaffScheduleComponent implements OnInit {
 
     });
   }
-
+  
   loadRotaDays() : void {
+    
+    console.log('here');
 
     if(this.rotationPeriodId === -1){
+      this.dataLoading = false;
       return;
-    }    
+    }
+
+    this.dataLoading = true;
+    
 
     this.rotaService.getRotaDayAssignmentsByRotationPeriodId(this.rotationPeriodId);
     
@@ -205,7 +215,6 @@ export class StaffScheduleComponent implements OnInit {
       }  
       
       this.processRotaDays(rotaDays);
-      this.dataLoaded = true;
 
       this.loadScheduleManagerAuthorisation();
       
@@ -238,7 +247,7 @@ export class StaffScheduleComponent implements OnInit {
 
   watchLeaveRequests() : void {
 
-    this.leaveRequests.pipe(takeUntil(this.ngUnsubscribe), skip(1)).subscribe(requests => {
+    this.leaveRequests.pipe(takeUntil(this.ngUnsubscribe), skip(1), take(1)).subscribe(requests => {
 
       this.rotaDayForm.controls.forEach(day => {        
 
@@ -265,6 +274,8 @@ export class StaffScheduleComponent implements OnInit {
 
     if(!rotaDays) return;
 
+    rotaDays.rotaDays.sort((a,b) => new Date(a.rotaDayDate).getTime() - new Date(b.rotaDayDate).getTime())
+
     this.rotaDays.next(rotaDays.rotaDays);
 
     this.rotaDayForm.clear();
@@ -274,6 +285,9 @@ export class StaffScheduleComponent implements OnInit {
 
       this.rotaDayForm.push(dayGroup);
     }
+
+    this.dataLoading = false;
+    console.log('Now here');
 
   }
 
@@ -286,12 +300,6 @@ export class StaffScheduleComponent implements OnInit {
     });
 
     for(let assignment of day.rotaDayAssignments){
-
-
-      //TODO - Need to make sure that we can use this for the areas/shifts/tasks correctly
-      // if(!this.selectedAreas.find(area => area === assignment.rotationAreaId) && assignment.rotationAreaId > 0){
-      //   continue;        
-      // }
 
       let newAssignment = this.staffScheduleService.generateNewAssignment(assignment);
 
@@ -396,6 +404,10 @@ tabChanged($event: MatTabChangeEvent) : void {
 
 showLeaveRequestsForDay(leaveDate: string | Date) : void {
   console.log(leaveDate);
+}
+
+toggleShowWeek() : void {
+  this.showWeek = !this.showWeek;
 }
 
 updateManagerAuthorisation(authorisation: ScheduleAuthorisation) : void {

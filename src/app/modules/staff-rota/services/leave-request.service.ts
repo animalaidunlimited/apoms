@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { checkMomentAndReturnDateString } from 'src/app/core/helpers/utils';
 import { DisplayLeaveRequest, Festival, LeaveRequest, LeaveRequestProtocol, LeaveRequestSaveResponse } from 'src/app/core/models/rota';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { APIService } from 'src/app/core/services/http/api.service';
+import { OrganisationDetailsService } from 'src/app/core/services/organisation-details/organisation-details.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,7 @@ export class LeaveRequestService extends APIService {
 
 constructor(
   http: HttpClient,
+  private organisationDetailsService: OrganisationDetailsService,
   private dropdown: DropdownService
 ) {
   super(http);
@@ -81,6 +84,12 @@ getLeaveRequestsForUser(userId: number) : Observable<DisplayLeaveRequest[]> {
 }
 
 saveLeaveRequest(leaveRequest: Partial<LeaveRequest>) : Promise<LeaveRequestSaveResponse> {
+
+    leaveRequest.requestDate = checkMomentAndReturnDateString(leaveRequest.requestDate);
+    leaveRequest.leaveStartDate = checkMomentAndReturnDateString(leaveRequest?.leaveStartDate);
+    leaveRequest.leaveEndDate = checkMomentAndReturnDateString(leaveRequest.leaveEndDate);
+    leaveRequest.dateApprovedRejected = checkMomentAndReturnDateString(leaveRequest?.dateApprovedRejected);
+    leaveRequest.dateLeaveCancelled = checkMomentAndReturnDateString(leaveRequest.dateLeaveCancelled);
 
   return leaveRequest?.leaveRequestId ? this.putSubEndpoint("/LeaveRequest", leaveRequest) : this.postSubEndpoint("/LeaveRequest", leaveRequest);
 

@@ -7,6 +7,7 @@ import { StaffScheduleDayComponent } from './components/staff-schedule-day/staff
 import { UserAutoCompleteModule } from '../../components/user-autocomplete/user-autocomplete.module';
 import { AreaStaffCoverageComponent } from '../../components/area-staff-coverage/area-staff-coverage.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { StaffScheduleWeekComponent } from './components/staff-schedule-week/staff-schedule-week.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
   declarations: [
     StaffScheduleComponent,
     StaffScheduleDayComponent,
+    StaffScheduleWeekComponent,
     AreaStaffCoverageComponent
   ]
 })

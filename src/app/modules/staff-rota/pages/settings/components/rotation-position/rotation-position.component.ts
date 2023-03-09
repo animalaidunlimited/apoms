@@ -124,11 +124,9 @@ export class RotationPositionComponent implements OnInit, OnDestroy {
       if (confirmed) {
         this.rotationPositionForm.get('isDeleted')?.setValue(true);
 
-        this.changeDetector.detectChanges();
+        this.changeDetector.markForCheck();
 
-        if(this.rotationPositionForm.get('rotationRoleShiftSegmentId')?.value){
-          this.saveRequired.emit(true);
-        }
+        this.saveRequired.emit(true);       
       }
     });
     

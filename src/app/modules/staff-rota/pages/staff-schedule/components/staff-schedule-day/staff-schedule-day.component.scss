@@ -8,16 +8,6 @@
     transform: scale(-1);
 }
 
-.area-header{
-    writing-mode: vertical-lr;
-    text-align: -webkit-center;
-    transform: scale(-1);
-    vertical-align: middle;
-    width: 35px;
-    padding-left: 0 !important;
-    cursor: pointer;
-}
-
 .time-error{
     color: red;
     border: 1px solid red;
@@ -73,25 +63,7 @@ th, td {
     margin-bottom: 10px;
 }
 
-.leave-icon{
-    position: absolute;
-    bottom: 5%;
-    right: 0;
-}
 
-.leave-pending{
-    color: orange;
-}
-
-.leave-denied{
-    color:lightslategrey
-}
-
-.granted-leave-user{
-    font-size: smaller;
-    color: darkgray;
-    padding-top: 5px;
-}
 
 .who-icon{
     cursor: pointer;
@@ -111,6 +83,31 @@ th, td {
     margin-top: 45px;
     z-index: 102;
 }
+
+.delete-row-menu {
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 180px;
+    max-width: 280px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 0;
+  }
+  
+  .delete-row-menu-item {
+    background-color: transparent;
+    cursor: pointer;
+    border: none !important;
+  
+    user-select: none;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+  
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex: 1;
+  }
 
 @media(max-width: 600px) {
  

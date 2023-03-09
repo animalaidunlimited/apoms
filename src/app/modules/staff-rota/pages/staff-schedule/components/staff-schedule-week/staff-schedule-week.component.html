@@ -1,0 +1,67 @@
+
+<form [formGroup]="weeklyForm">
+
+  <table mat-table [dataSource]="areaPositions.controls" class="mat-elevation-z8" formArrayName="areaPositions">
+ 
+    <ng-container matColumnDef="area">
+      <th mat-header-cell *matHeaderCellDef> Area </th>
+      <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" (click)="print(element)"
+      [attr.rowspan]="element.get('areaRowSpan')?.value"
+      [style.display]="element.get('areaRowSpan')?.value !== 0  ? '' : 'none'"
+      class="area-header first-column"
+      [ngStyle]="{ backgroundColor: element.get('rotationAreaColour')?.value, color: element.get('rotationAreaFontColour')?.value }"> {{element.get('rotationArea')?.value}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="areaPosition">
+      <th mat-header-cell *matHeaderCellDef> Position </th>
+      <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" style="white-space: nowrap;"> {{element.get('rotationAreaPosition')?.value}} </td>
+    </ng-container>
+
+    <div *ngFor="let day of days">
+
+      <ng-container [matColumnDef]="day">
+        <th mat-header-cell *matHeaderCellDef> {{day | date : "ccc, d/MMM/YYYY"}} </th>
+        <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" style="min-width: 155px;" (click)="print(element)">
+          
+          <div [formGroupName]="day">
+            <!-- Here we need to name the form group above [formGroupName]="day", but also reference the day formgroup below because
+            'element' is actually coming from the level above-->
+            <div *ngIf="element.get(day)?.get('leaveUser')?.value &&
+                        (element.get(day)?.get('leaveGranted')?.value === 'Granted' || element.get(day)?.get('leaveGranted')?.value === 'Fixed Off')"
+              class="granted-leave-user">
+              {{element.get(day)?.get('leaveUser')?.value + ' (' + (element.get(day)?.get('leaveGranted')?.value === 'Granted' ? 'L' : 'FO') + ')'}}
+            </div>
+
+            <app-user-autocomplete
+              formControlName="userId"
+              [formField]="false"
+              [scheduleUsers]="true"
+              [showLabel]="false"
+              (selectionMade)="userSelected(element.get(day)?.value)"
+              [backgroundColour]="element.get(day)?.get('shiftSegmentCount')?.value > 1 ? '#FCE8B2' : ''"
+              class="select-field"
+              style="min-width: 155px; position: relative;">
+                <mat-icon 
+                  *ngIf="element.get(day)?.get('leaveGranted')?.value === 'Pending' || element.get(day)?.get('leaveGranted')?.value === 'Denied'; let leave"
+                  matTooltipClass="leave-tooltip"
+                  [ngClass]="element.get(day)?.get('leaveGranted')?.value === 'Pending' ? 'leave-pending' : 'leave-denied'"
+                  class="leave-icon"
+                  [matTooltip]="element.get(day)?.get('leaveGranted')?.value"
+                  matSuffix >
+                event_busy
+                </mat-icon>  
+            </app-user-autocomplete>
+
+          </div>
+
+        </td>
+      </ng-container>
+
+    </div>
+  
+    <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+  </table>
+
+</form>
+

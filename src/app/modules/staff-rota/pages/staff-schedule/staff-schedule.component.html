@@ -65,21 +65,24 @@
 
   <div class="flex-row flex-center-center gap-10">
 
-    <button mat-mini-fab color="primary" [disabled]="!dataLoaded" (click)="printRotaDay()" matTooltip="Print schedule">
+    <button mat-mini-fab color="primary" *ngIf="!showWeek" [disabled]="dataLoading" (click)="printRotaDay()" matTooltip="Print schedule">
       <mat-icon>print</mat-icon>
     </button>
 
-    <div>
+    <div class="flex-row flex-center-center gap-10">
 
       <!-- [ngStyle]="{ 'backgroundColor': (currentScheduleAuthorisation | async)?.managerCount === (currentScheduleAuthorisation | async)?.authorisedCount ? 'green' : 
       (currentScheduleAuthorisation | async)?.authorisedCount !== 0 ? 'orange' : ''}" -->
-      <button mat-mini-fab color="primary" [disabled]="!dataLoaded" (click)="showAuthorisation()" matTooltip="Check complete"
-      
+      <button mat-mini-fab color="primary" [disabled]="dataLoading" (click)="showAuthorisation()"
+      matTooltip="Check complete"
+      *ngIf="!showWeek"      
       [ngStyle]="{ 'backgroundColor': ((currentScheduleAuthorisation | async)?.authorisedCount || 0) === 0 ? '' :
-      (currentScheduleAuthorisation | async)?.managerCount === (currentScheduleAuthorisation | async)?.authorisedCount ? 'green' : 'orange' }"
-
-      >
+      (currentScheduleAuthorisation | async)?.managerCount === (currentScheduleAuthorisation | async)?.authorisedCount ? 'green' : 'orange' }">
         <mat-icon>fact_check</mat-icon>
+      </button>
+
+      <button mat-mini-fab color="primary" [disabled]="dataLoading" (click)="toggleShowWeek()" matTooltip="Toggle day/week view">
+        <mat-icon>today</mat-icon>
       </button>
 
       <div style="position: relative;">
@@ -94,20 +97,25 @@
 
       </div>
   
-
+      <button mat-mini-fab color="primary" (click)="loadRotaDays()" matTooltip="Reload rota">
+        <mat-icon>refresh</mat-icon>
+      </button>
 
     </div>
 
-
-
-    <button mat-mini-fab color="primary" (click)="loadRotaDays()" matTooltip="Reload rota">
-      <mat-icon>refresh</mat-icon>
-    </button>
   </div>
 
 
 
 </div>
+
+<mat-progress-bar mode="query" style="margin-top: 10px;" *ngIf="dataLoading"></mat-progress-bar>
+
+<div *ngIf="showWeek; else showDaily">   
+  <app-staff-schedule-week [inputForm]="rotaDayForm"></app-staff-schedule-week>
+</div>
+
+<ng-template #showDaily>
 
 <mat-tab-group (selectedTabChange)="tabChanged($event)">
   <mat-tab *ngFor="let day of rotaDayForm.controls" >
@@ -117,7 +125,7 @@
       <mat-icon *ngIf="day.get('leaveRequestCount')?.value > 0"
       [matBadge]="day.get('leaveRequestCount')?.value" matBadgeColor="warn"
       matBadgeSize="small"
-      [matTooltip]="day.get('leaveRequestCount')?.value + ' pending leave request' + (day.get('leaveRequestCount')?.value > 1 ? 's' : '')" style="margin-left: 10px; pointer-events: all;"
+      [matTooltip]="day.get('leaveRequestCount')?.value + ' pending leave request' + ((day.get('leaveRequestCount')?.value > 1) ? 's' : '')" style="margin-left: 10px; pointer-events: all;"
       (click)="showLeaveRequestsForDay(day.get('rotaDayDate')?.value)">perm_contact_calendar</mat-icon>
 
   </ng-template>    
@@ -126,3 +134,5 @@
   
   </mat-tab>
 </mat-tab-group>
+
+</ng-template>

@@ -18,3 +18,34 @@
     padding: 15px;
     z-index: 102;
 }
+
+.area-header{
+    writing-mode: vertical-lr;
+    text-align: -webkit-center;
+    transform: scale(-1);
+    vertical-align: middle;
+    width: 35px;
+    padding-left: 0 !important;
+    cursor: pointer;
+  }
+
+.granted-leave-user{
+    font-size: smaller;
+    color: darkgray;
+    padding-top: 5px;
+}
+
+.leave-icon{
+    position: absolute;
+    bottom: 5%;
+    right: 0;
+    background-color: whitesmoke
+}
+
+.leave-pending{
+    color: orange;
+}
+
+.leave-denied{
+    color:lightslategrey
+}

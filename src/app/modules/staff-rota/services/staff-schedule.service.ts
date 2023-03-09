@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormBuilder } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, UntypedFormGroup } from '@angular/forms';
 import { ModelFormGroup } from 'src/app/core/helpers/form-model';
 import { SuccessOnlyResponse } from 'src/app/core/models/responses';
-import { RotaDayAssignment, RotaDayAssignmentResponse, ScheduleAuthorisation, ScheduleManagerAuthorisation } from 'src/app/core/models/rota';
+import { AreaPositionWeekly, RotaDay, RotaDayAssignment, RotaDayAssignmentResponse, ScheduleAuthorisation, ScheduleManagerAuthorisation } from 'src/app/core/models/rota';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { ScheduleAuthorisationDay } from './../../../core/models/rota';
 
@@ -47,18 +47,11 @@ public generateNewAssignment(assignment: RotaDayAssignment) : ModelFormGroup<Rot
 
   emptyAssignment.patchValue(assignment);
 
- 
-
-  if((emptyAssignment.get('rotationAreaId')?.value || 0) < 0){
-    emptyAssignment.disable();
-  }
-
   return emptyAssignment;
 
 }
 
 public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
-
 
   return this.fb.nonNullable.group({
     notes: [''],
@@ -95,9 +88,7 @@ public emptyAssignment() : ModelFormGroup<RotaDayAssignment> {
 
 }
 
-reassignAreaRowSpans(assignments: AbstractControl[]) : AbstractControl[] {
-
-  assignments.sort((a,b) => {
+sortAssignments(a: AbstractControl, b: AbstractControl) : number {
 
     if(a.get('sequence')?.value === b.get('sequence')?.value){
 
@@ -109,7 +100,9 @@ reassignAreaRowSpans(assignments: AbstractControl[]) : AbstractControl[] {
 
     return a.get('sequence')?.value - b.get('sequence')?.value;
 
-  })
+}
+
+reassignAreaRowSpans(assignments: AbstractControl[]) : AbstractControl[] {
 
   if(assignments?.length === 0) return [];
 
@@ -161,5 +154,153 @@ public updateScheduleManagerAuthorisation(authorization: ScheduleAuthorisationDa
   return this.putSubEndpoint("ScheduleManagerAuthorisation", authorization);
 
 }
+
+generateWeeklyDataSource(rotaDays : RotaDay[]) : FormArray{
+
+  //Get a list of the distinct tasks
+  const areaPositions = this.extractAreaPositionList(rotaDays);
+
+  //Get a list of the days
+  const days = this.extractDaysFromRotaDaysArray(rotaDays);
+
+  //This needs to work like a matrix as the Rotation works as there may be days when a particular task
+  //doesn't exist. So the front end will need to use the combo of areaPositionId and RotaDayDate to get the correct value
+  //So we need to turn the rota day list into just a list of the assignments with an ID to pull them out
+  let rawDataSource = this.generateDataSource(areaPositions, days, rotaDays);
+
+  let rowSpanDataSource = this.reassignAreaRowSpans(rawDataSource.controls);
+
+  const returnArray: FormArray = new FormArray(rowSpanDataSource);
+
+  return returnArray;
+
+}
+
+reassignWeeklyAreaRowSpans(rawDataSource: FormArray) : FormArray {
+    
+    rawDataSource.controls.forEach(element => {
+
+      console.log(element.value);
+
+    })
+    
+    return rawDataSource;
+
+}
+
+generateDataSource(areaPositions: AreaPositionWeekly[], days: (string | Date)[], rotaDays: RotaDay[]) : FormArray {
+
+let dataSource: FormArray = new FormArray([] as any[]);
+
+areaPositions.forEach(position => {
+
+  for(let i = 0; i < position.rotationAreaPositionCount; i++){
+
+    let positionGroup = new UntypedFormGroup({
+      rotationAreaPositionId: new FormControl<number|null>(position.rotationAreaPositionId),
+      rotationAreaPosition: new FormControl<string|null>(position.rotationAreaPosition),
+      rotationAreaId: new FormControl<number|null>(position.rotationAreaId),
+      rotationArea: new FormControl<string|null>(position.rotationArea),
+      rotationAreaColour: new FormControl<string|null>(position.rotationAreaColour),
+      rotationAreaFontColour: new FormControl<string|null>(position.rotationAreaFontColour),
+      sequence: new FormControl<number|null>(position.sequence),
+      areaRowSpan: new FormControl<number|null>(1)
+    });
+
+    days.forEach(day => {
+
+      const currentDayAssignments = rotaDays.find(currentDay => currentDay.rotaDayDate === day);
+  
+      const foundAssignments = currentDayAssignments?.rotaDayAssignments.filter(assignment => assignment.rotationAreaPositionId === position.rotationAreaPositionId) || [];
+    
+      let formGroup = this.generateNewAssignment(foundAssignments[i]);
+
+      positionGroup.addControl(day.toString(), formGroup, { emitEvent: false });      
+  
+    });
+
+    dataSource.push(positionGroup);
+
+  }
+
+});
+
+return dataSource;
+
+}
+
+/**
+ * Extracts a list of area positions from the total list by going through each day in the incoming array
+ * and finding the day with the largest number of each area position. For instance, Sunday might have the most 
+ * 'Fixed offs' so we need to use this to ensure that the weekly view will show all of the fixed offs.
+ * @param rotaDays - The list of rotaDay object that will be iterated over
+ * @returns An array of area position objects with all the information required for the front end display.
+**/
+public extractAreaPositionList(rotaDays: RotaDay[]) : AreaPositionWeekly[]{
+
+  let areaPositionList =  rotaDays.reduce((cumulativeAreaPositions, rotaDay) => {
+
+    const currentAssignments = rotaDay.rotaDayAssignments
+                                              .filter(assignment => assignment.rotationAreaPositionId >= -1) // exclude breaks
+                                              .reduce((returnValue, currentTask) => {
+
+      const foundTask = returnValue.find(task => task.rotationAreaPositionId === currentTask.rotationAreaPositionId);
+
+      if(!foundTask){
+
+        const newValue: AreaPositionWeekly = {
+          rotationAreaPositionId: currentTask.rotationAreaPositionId,
+          rotationAreaPosition: currentTask.rotationAreaPosition,
+          rotationAreaId: currentTask.rotationAreaId,
+          rotationArea: currentTask.rotationArea,
+          rotationAreaColour: currentTask.rotationAreaColour,
+          rotationAreaFontColour: currentTask.rotationAreaFontColour,
+          sequence: currentTask.sequence,
+          rotationAreaPositionCount: 1,
+          rotaDayIdList: []
+        }
+
+        returnValue.push(newValue);
+      }
+      else {      
+  
+          foundTask.rotationAreaPositionCount++;
+
+      }
+
+      return returnValue
+
+    }, [] as AreaPositionWeekly[]);
+
+
+    const concatAssignments: AreaPositionWeekly[] = [...currentAssignments, ...cumulativeAreaPositions];
+
+    const returnAssignments = concatAssignments.reduce((returnValue, current) => {
+
+      let foundValue = returnValue.find(element => element.rotationAreaPositionId === current.rotationAreaPositionId);
+
+      if(!foundValue){
+        returnValue.push(current);
+      }
+      else {
+        foundValue.rotationAreaPositionCount = foundValue.rotationAreaPositionCount < current.rotationAreaPositionCount ?  current.rotationAreaPositionCount : foundValue.rotationAreaPositionCount;
+      }      
+
+      return returnValue;        
+
+    },[] as AreaPositionWeekly[])
+
+    return returnAssignments;
+
+  }, [] as AreaPositionWeekly[]);
+
+  return areaPositionList.sort((a,b) => a.sequence - b.sequence);
+
+}
+
+extractDaysFromRotaDaysArray(rotaDays: RotaDay[]) : (string)[] {
+  return rotaDays.map(rotaDay => rotaDay.rotaDayDate.toString());
+}
+
 
 }

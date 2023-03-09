@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormArray, AbstractControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
+import { FormArray, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UserDetails } from 'src/app/core/models/user';
 import { SnackbarService } from 'src/app/core/services/snackbar/snackbar.service';
@@ -8,9 +8,11 @@ import { StaffScheduleService } from '../../../../services/staff-schedule.servic
 import { UserDetailsService } from 'src/app/core/services/user-details/user-details.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AreaStaffCoverageComponent } from '../../../../components/area-staff-coverage/area-staff-coverage.component';
-import { RotationArea, RotationRole, GroupedRotationAreaPosition } from 'src/app/core/models/rota';
+import { RotationArea, GroupedRotationAreaPosition } from 'src/app/core/models/rota';
 import { RotaSettingsService } from '../../../settings/services/rota-settings.service';
-import { addDaysToDate, generateDateFromTime, generateUUID, getCurrentDateString } from 'src/app/core/helpers/utils';
+import { addDaysToDate, generateDateFromTime, generateUUID } from 'src/app/core/helpers/utils';
+import { ConfirmationDialog } from 'src/app/core/components/confirm-dialog/confirmation-dialog.component';
+import { takeUntil } from 'rxjs/operators';
 
 interface UserUtilisation{
   userId: number;
@@ -20,15 +22,10 @@ interface UserUtilisation{
   utilisation: "under" | "over" | "on"
 }
 
-interface AreaCount{
-  area: string;
-  count: number;
-}
-
 @Component({
   selector: 'app-staff-schedule-day',
   templateUrl: './staff-schedule-day.component.html',
-  styleUrls: ['./staff-schedule-day.component.scss']
+  styleUrls: ['./staff-schedule-day.component.scss','../../staff-schedule.component.scss']
 })
 export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
@@ -139,9 +136,7 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
 
   private initialiseForm() {
     
-    this.rotaDayAssignments = (this.inputRotaDayAssignments as FormArray)?.controls;
-
-    
+    this.rotaDayAssignments = (this.inputRotaDayAssignments as FormArray)?.controls;    
 
     this.rotaDayAssignments.sort((a,b) => a.get('sequence')?.value - b.get('sequence')?.value);
 
@@ -157,8 +152,9 @@ export class StaffScheduleDayComponent implements OnInit, OnDestroy {
   private resetRotaDayAssignments() {
 
     //Let's remove the tea and lunch breaks
-    this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment => assignment.get('rotationAreaPositionId')?.value > -2 )
-                                                             .map(assignment => assignment);
+    this.filteredRotaDayAssignments = this.rotaDayAssignments.filter(assignment => assignment.get('rotationAreaPositionId')?.value > -3 )
+                                                             .map(assignment => assignment)
+                                                             .sort(this.staffScheduleService.sortAssignments);
 
     this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments);
 
@@ -221,6 +217,7 @@ updateSelectedUsers() : void {
   private updateUtilisation() {
 
     let currentAssignments = this.rotaDayAssignments
+    .filter(assignment => assignment.get('rotationAreaPositionId')?.value > 0)
     .reduce((returnValue, current) => {
 
       if(current.get('plannedRotationAreaId')?.value < 0) return returnValue;
@@ -261,8 +258,8 @@ updateSelectedUsers() : void {
 
     }, [] as UserUtilisation[]);
     
-    currentAssignments.sort((a,b) => a.employeeNumber.localeCompare(
-      b.employeeNumber,
+    currentAssignments.sort((a,b) => (a.employeeNumber || '0').localeCompare(
+      b.employeeNumber || '0',
       undefined,
       {numeric : true, sensitivity: 'base'}
     ));
@@ -295,6 +292,7 @@ private recalculateTaskCountByUser() : void {
   this.rotaDayAssignments.forEach(staffTask => {
 
     const shiftSegmentCount = this.rotaDayAssignments.filter(element => element.get('userId')?.value === staffTask.get('userId')?.value
+                                                                              && !!element.get('userId')?.value
                                                                               && element.get('rotationAreaPositionId')?.value > 0);    
 
     staffTask.get('shiftSegmentCount')?.setValue(shiftSegmentCount.length, {emitEvent: false});
@@ -339,7 +337,7 @@ showEmptyShiftsOnly() : void {
   this.filteredRotaDayAssignments = this.showEmptyShifts ?  this.rotaDayAssignments.filter(assignment => !assignment.get('userId')?.value) :
                                                             this.rotaDayAssignments;
 
-  
+  this.filteredRotaDayAssignments.sort(this.staffScheduleService.sortAssignments);
 
   this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments); 
 
@@ -361,7 +359,8 @@ searchUsers(event: KeyboardEvent) : void {
                                                           )
                                                           .map(element => element.userId);
 
-  let assignments = this.rotaDayAssignments.filter(assignment => foundUsers.includes(assignment.get('userId')?.value));
+  let assignments = this.rotaDayAssignments.filter(assignment => foundUsers.includes(assignment.get('userId')?.value))
+                                           .sort(this.staffScheduleService.sortAssignments);
 
   this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(assignments);
 
@@ -393,19 +392,62 @@ addShift() : void {
 
   //Let's generate an ID we can use to remove newly added assignments
   emptyAssignment.get('guid')?.setValue(generateUUID());
+  
+  emptyAssignment.get('sequence')?.setValue(this.filteredRotaDayAssignments.length + 1);
+  emptyAssignment.get('isAdded')?.setValue(true);
 
-  this.filteredRotaDayAssignments.push(emptyAssignment);
+  let newAssignments = this.filteredRotaDayAssignments.map(element => element);
+
+  newAssignments.push(emptyAssignment);
+
+  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(newAssignments)
+                                                                  .sort(this.staffScheduleService.sortAssignments);;
+
   this.rotaDayAssignments.push(emptyAssignment);
 
 }
 
 deleteShift(shift: AbstractControl) : void {
 
-  this.filteredRotaDayAssignments = this.filteredRotaDayAssignments.filter(element => element.get('guid')?.value !== shift.get('guid')?.value);
+  const dialogRef = this.dialog.open(ConfirmationDialog,{
+    data:{
+      message: 'Are you sure want to delete?',
+      buttonText: {
+        ok: 'Yes',
+        cancel: 'No'
+      }
+    }
+  });
 
-  let foundIndex = this.rotaDayAssignments.findIndex(element => element.get('guid')?.value !== shift.get('guid')?.value);
-  this.rotaDayAssignments.slice(foundIndex, 1);
+  dialogRef.afterClosed().pipe(takeUntil(this.ngUnsubscribe))
+  .subscribe((confirmed: boolean) => {
+
+    const filteredFoundIndex = this.filteredRotaDayAssignments.findIndex(element => this.filterByUserIdAndAreaPositionId(element, shift));
+
+    this.filteredRotaDayAssignments.splice(filteredFoundIndex, 1);
+  
+    const foundIndex = this.rotaDayAssignments.findIndex(element => this.filterByUserIdAndAreaPositionId(element, shift));
+     
+    this.rotaDayAssignments.splice(foundIndex, 1);
+  
+    this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(this.filteredRotaDayAssignments)
+                                                                  .sort(this.staffScheduleService.sortAssignments);;
+    
+  });
+
+
+
+
 }
+
+  private filterByUserIdAndAreaPositionId(element: AbstractControl<any, any>, shift: AbstractControl<any, any>): boolean {
+
+return shift.get('rotationAreaPositionId')?.value < 0 ?
+     (element.get('userId')?.value === shift.get('userId')?.value &&
+      element.get('rotationAreaPositionId')?.value === shift.get('rotationAreaPositionId')?.value)
+      :
+      element.get('rotaDayId')?.value === shift.get('rotaDayId')?.value;
+  }
 
 areaSelected(area: RotationArea, shift: AbstractControl) : void {
 

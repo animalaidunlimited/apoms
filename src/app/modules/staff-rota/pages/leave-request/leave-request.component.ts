@@ -71,7 +71,7 @@ export class LeaveRequestComponent implements OnInit, OnDestroy {
 
     this.displayColumns = of(["edit","department","staff","requestDate","leaveRequestReason",
     "additionalInformation","leaveStartDate","leaveEndDate","numberOfDays","granted","commentReasonManagementOnly",
-    "dateApprovedRejected","recordedOnNoticeBoard","delete"
+    "dateApprovedRejected","dateLeaveCancelled","recordedOnNoticeBoard","delete"
     ]);
 
     this.departments$ = this.dropdown.getDepartments();

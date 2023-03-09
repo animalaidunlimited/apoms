@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotaDayAssignmentsByRotationPeriodId !!
 
--- CALL AAU.sp_GetRotaDayAssignmentsByRotationPeriodId('Jim',1);
+-- CALL AAU.sp_GetRotaDayAssignmentsByRotationPeriodId('Jim',4);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotaDayAssignmentsByRotationPeriodId( IN prm_Username VARCHAR(45), IN prm_RotationPeriodId INT)
@@ -61,9 +61,10 @@ SELECT
     WHEN lr.Granted = 0 THEN 'Denied'
     WHEN lr.Granted = 1 THEN 'Granted'
     WHEN lr.Granted = 2 THEN 'Partially'
+    WHEN lr.LeaveRequestId IS NULL AND rda.UserId IS NULL AND rda.RotationUserId IS NOT NULL THEN 'Fixed Off'
     ELSE NULL
     END AS `LeaveGranted`,
-    CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName) AS `LeaveUser`,    
+    IF(lr.LeaveRequestId IS NOT NULL, CONCAT(lu.EmployeeNumber, ' - ', lu.FirstName), CONCAT(ru.EmployeeNumber, ' - ', ru.FirstName)) AS `LeaveUser`,    
     rda.RotationAreaPositionId AS `rotationAreaPositionId`,
     rap.RotationAreaPosition AS `rotationAreaPosition`,
 	ra.RotationAreaId AS `rotationAreaId`,
@@ -85,8 +86,8 @@ SELECT
 
     rda.Sequence,
     rda.Notes
-	FROM AAU.RotaDayAssignment rda
-    INNER JOIN 
+    FROM AAU.RotaDayAssignment rda
+    LEFT JOIN 
     (
 		SELECT 	rrss.RotationRoleShiftSegmentId, rrss.RotationRoleId, rpa.RotationAreaPositionId,
         CASE rrss.ShiftSegmentTypeId
@@ -102,9 +103,10 @@ SELECT
 	) rr ON rr.RotationRoleShiftSegmentId = rda.RotationRoleShiftSegmentId
     LEFT JOIN AAU.RotationAreaPosition rap		ON rap.RotationAreaPositionId = rda.RotationAreaPositionId
     LEFT JOIN AAU.RotationArea ra				ON ra.RotationAreaId = rap.RotationAreaId
-	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = rda.UserId AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
+	LEFT JOIN AAU.LeaveRequest lr 				ON lr.UserId = IFNULL(rda.UserId, rda.RotationUserId) AND rda.RotaDayDate BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
     LEFT JOIN AAU.User lu						ON lu.UserId = lr.UserId
     LEFT JOIN AAU.User u						ON u.UserId = rda.UserId
+    LEFT JOIN AAU.User ru						ON ru.UserId = rda.RotationUserId
 WHERE rda.RotationPeriodId = prm_RotationPeriodId
       
 UNION ALL
@@ -126,13 +128,13 @@ SELECT
 		ELSE NULL
 	END AS `LeaveGranted`, 
     NULL, -- LeaveUser
-    	-1, -- rotationAreaPositionId
+    	-2, -- rotationAreaPositionId
     'LEAVE', -- rotationAreaPosition
-    -1, -- rotationAreaId
+    -2, -- rotationAreaId
 	'LEAVE', -- rotationArea
-    -1, -- plannedRotationAreaPositionId
+    -2, -- plannedRotationAreaPositionId
     'LEAVE', -- plannedRotationAreaPosition
-    -1, -- plannedRotationAreaId
+    -2, -- plannedRotationAreaId
 	'LEAVE', -- plannedRotationArea
     CAST(false AS JSON), -- nextDay
 	NULL, -- StartTime
@@ -151,6 +153,7 @@ WHERE RotationPeriodId = prm_RotationPeriodId
 AND lr.Granted = 1
 AND lr.OrganisationId = vOrganisationId
 
+/*
 UNION ALL
 
 -- Let's get all of the fixed off records
@@ -193,6 +196,7 @@ INNER JOIN AAU.User u ON LOCATE(WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 AND u.OrganisationId = vOrganisationId
+*/
 ),
 rotaDayAssignmentCTE AS
 (
@@ -210,8 +214,8 @@ SELECT RotationPeriodId,
 						JSON_OBJECT("leaveRequestId", LeaveRequestId),
                         JSON_OBJECT("leaveGranted", LeaveGranted),
                         JSON_OBJECT("leaveUser", LeaveUser),                                               
-                        JSON_OBJECT("rotationAreaPositionId", rotationAreaPositionId),
-                        JSON_OBJECT("plannedArea", rotationAreaPosition),
+                        JSON_OBJECT("rotationAreaPositionId", rotationAreaPositionId),                                                
+                        JSON_OBJECT("rotationAreaPosition", rotationAreaPosition),
                         JSON_OBJECT("rotationAreaId", rotationAreaId),
                         JSON_OBJECT("rotationArea", rotationArea),
                         JSON_OBJECT("nextDay", nextDay),

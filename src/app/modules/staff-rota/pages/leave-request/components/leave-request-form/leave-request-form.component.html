@@ -92,6 +92,7 @@
             </mat-error>
 
         </mat-form-field>
+
         <mat-form-field appearance="fill">
           <mat-label>to</mat-label>
           <mat-hint>DD/MM/YYYY</mat-hint>
@@ -143,20 +144,54 @@
           <mat-radio-button class="reason-radio-button" [value]="1">Yes</mat-radio-button>
           <mat-radio-button class="reason-radio-button" [value]="0">No</mat-radio-button>
           <mat-radio-button class="reason-radio-button" [value]="2">Partially</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="3">Cancelled - before approved</mat-radio-button>
+          <mat-radio-button class="reason-radio-button" [value]="4">Cancelled - after approved</mat-radio-button>
         </mat-radio-group>
       </div>
-      
+
+      <div class="flex-row flex-start-start gap-20-10">
+  
+        <mat-form-field appearance="fill">
+          
+          <mat-label>Granted/refused date</mat-label>
+          <mat-hint>DD/MM/YYYY</mat-hint>
+          <input matInput
+            [matDatepicker]="dateApprovedRejectedPicker"
+            [min]="leaveRequestForm.get('requestDate')?.value"           
+            [errorStateMatcher]="errorMatcher"
+            formControlName="dateApprovedRejected"  />
+            <mat-datepicker-toggle matIconSuffix [for]="dateApprovedRejectedPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dateApprovedRejectedPicker></mat-datepicker>
+  
+            <mat-error *ngIf="leaveRequestForm.get('dateApprovedRejected')?.errors?.invalidDate_Min">
+              Date must be on or after {{(leaveRequestForm.get('requestDate')?.value | date : "EEE,dd/MMM")}}
+            </mat-error>
+  
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" *ngIf="leaveCancelled">
+
+          <mat-label>Cancelled date</mat-label>
+          <mat-hint>DD/MM/YYYY</mat-hint>
+          <input matInput
+            [matDatepicker]="dateLeaveCancelledPicker"
+            [min]="leaveRequestForm.get('requestDate')?.value"           
+            [errorStateMatcher]="errorMatcher"
+            formControlName="dateLeaveCancelled"  />
+            <mat-datepicker-toggle matIconSuffix [for]="dateLeaveCancelledPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dateLeaveCancelledPicker></mat-datepicker>
+  
+            <mat-error *ngIf="leaveRequestForm.get('dateLeaveCancelled')?.errors?.invalidDate_Min">
+              Date must be on or after {{(leaveRequestForm.get('requestDate')?.value | date : "EEE,dd/MMM")}}
+            </mat-error>
+  
+        </mat-form-field>
+      </div>
 
       <mat-form-field appearance="fill">
         <mat-label>Comment / reason (management only)</mat-label>
         <input matInput type="text" [errorStateMatcher]="errorMatcher"
           formControlName="commentReasonManagementOnly"  />
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Date leave was granted/refused</mat-label>
-        <input matInput type="date" [errorStateMatcher]="errorMatcher"
-          formControlName="dateApprovedRejected"  />
       </mat-form-field>
 
       <div>
@@ -174,6 +209,7 @@
   </fieldset> 
 
   <div class="flex-row flex-center-center save-button">
+    <button mat-raised-button color="primary" [disabled]="leaveRequestForm.invalid" (click)="saveLeaveRequestAndClose()">Save and close</button>
     <button mat-raised-button color="primary" [disabled]="leaveRequestForm.invalid" (click)="saveLeaveRequest()">Save</button>
   </div>
 

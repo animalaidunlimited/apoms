@@ -196,7 +196,7 @@ export interface UserAssignmentPrintItem {
   notes: string;
   startTime?: string;
   endTime?: string;
-  rotationAreaPosition: string;
+  rotationArea: string;
 }
 
 export interface RotaDayAssignment{
@@ -257,16 +257,17 @@ export interface LastFestivalDetails {
 export interface LeaveRequest {
   leaveRequestId: number | null;  
   userId: number | null;
-  requestDate: Date | null;
+  requestDate: Date | string | null;
   leaveRequestReasonId: number | null;
   leaveRequestReason: string;
   additionalInformation: string;
-  leaveStartDate: Date | null;
-  leaveEndDate: Date | null;
+  leaveStartDate: Date | string | null;
+  leaveEndDate: Date | string | null;
   numberOfDays: number;
   granted: number | null;
   commentReasonManagementOnly: string;
-  dateApprovedRejected: Date | null;
+  dateApprovedRejected: Date | string | null;
+  dateLeaveCancelled: Date | string | null;
   recordedOnNoticeBoard: boolean | null;
   withinProtocol: boolean | null;
   festivalId: number | null;
@@ -333,4 +334,16 @@ export interface ScheduleAuthorisationDay{
 export interface ScheduleManagerAuthorisation {
   rotationPeriodId: number;  
   scheduleAuthorisation: ScheduleAuthorisationDay[]
+}
+
+export interface AreaPositionWeekly {
+  rotationAreaPositionId: number;
+  rotationAreaPosition: string;
+  rotationAreaId: number;
+  rotationArea: string;
+  rotationAreaColour: string;
+  rotationAreaFontColour: string;
+  sequence: number;
+  rotationAreaPositionCount: number;
+  rotaDayIdList: number[]
 }
