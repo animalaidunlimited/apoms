@@ -112,6 +112,7 @@
               class="granted-leave-user">
                 {{element.get('leaveUser')?.value + ' (' + (element?.get('leaveGranted')?.value === 'Granted' ? 'L' : 'FO') + ')'}}
               </div>           
+
                 <app-user-autocomplete
                   formControlName="userId"
                   [formField]="false"
@@ -129,8 +130,7 @@
                   [matTooltip]="element.get('leaveGranted')?.value"
                   matSuffix >event_busy</mat-icon>
 
-                </app-user-autocomplete>
-                
+                </app-user-autocomplete>                
 
             </div>
           
@@ -171,42 +171,6 @@
           </td>
         </ng-container>
 
-
-
-        <!-- <ng-container matColumnDef="plannedBreakStartTime">
-          <th mat-header-cell *matHeaderCellDef> Break start </th>
-          <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedBreakStartTime')?.value}}</span></td>
-        </ng-container>
-      
-        <ng-container matColumnDef="plannedBreakEndTime">
-          <th mat-header-cell *matHeaderCellDef> Break end </th>
-          <td mat-cell *matCellDef="let element"> <span *ngIf="element.get('rotationAreaId')?.value !== -2">{{element.get('plannedBreakEndTime')?.value}}</span></td>
-        </ng-container>
-      
-        <ng-container matColumnDef="actualBreakStartTime">
-          <th mat-header-cell *matHeaderCellDef> Real break start </th>
-          <td mat-cell *matCellDef="let element; let i = index;">
-            <div [formGroupName]="i" class="time-field" *ngIf="element.get('rotationAreaId')?.value !== -2">
-              <input matInput class="non-form-field-input" autocomplete="off"
-              #breakStart
-              [ngClass]=" element.get('actualBreakStartTime')?.errors ? 'time-error' : ''"
-              formControlName="actualBreakStartTime" type="time" (blur)="checkActualTimes(element, breakStart, 'actualBreakStartTime', 'actualBreakEndTime')"/>  
-            </div>  
-          </td>
-        </ng-container>
-      
-        <ng-container matColumnDef="actualBreakEndTime">
-          <th mat-header-cell *matHeaderCellDef> Real break end </th>
-          <td mat-cell *matCellDef="let element; let i = index;"> 
-            <div [formGroupName]="i" class="time-field" *ngIf="element.get('rotationAreaId')?.value !== -2">
-              <input matInput class="non-form-field-input"
-              #breakEnd
-              [ngClass]=" element.get('actualBreakEndTime')?.errors ? 'time-error' : ''"
-              autocomplete="off" formControlName="actualBreakEndTime" type="time" (blur)="checkActualTimes(element, breakEnd, 'actualBreakEndTime', 'actualBreakStartTime')"/>  
-            </div>
-          </td>
-        </ng-container> -->
-
         <ng-container matColumnDef="notes">
           <th mat-header-cell *matHeaderCellDef> Notes </th>
           <td mat-cell *matCellDef="let element; let i = index;"> 
@@ -215,24 +179,6 @@
             </div>
            </td>
         </ng-container>
-
-        <!-- <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element; let i = index;"> 
-            <div [formGroupName]="i">
-
-              <button              
-              type="button"
-              (click)="deleteShift(element)"
-              mat-mini-fab
-              color="warn">
-              <mat-icon>delete</mat-icon>
-            </button>
-               
-            </div>
-           </td>
-        </ng-container>     -->
-
   
     <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true;"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
