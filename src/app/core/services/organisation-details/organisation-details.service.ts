@@ -77,6 +77,10 @@ export class OrganisationDetailsService extends APIService{
         return this.storage.read('OrganisationId');
     }
 
+    public getTimezoneOffsetMinutes() : number {
+        return 330;
+    }
+
     public set vehicleAssignerStartHour(incomingStartTime:string){
 
         let currentDetail = this.organisationDetail.value;

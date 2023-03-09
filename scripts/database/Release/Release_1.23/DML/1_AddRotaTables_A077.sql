@@ -232,7 +232,7 @@ CREATE TABLE `AAU`.`RotationArea` (
     ON UPDATE NO ACTION
     );
     
-INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-1, 1, 'Breaks',-1,'#ffffff', 0);
+INSERT INTO AAU.RotationArea (RotationAreaId, OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (-3, 1, 'Breaks',-2,'#999999', 0),(-1, 1, 'FIXED OFF',-1,'#999999', 0);
 
 INSERT INTO AAU.RotationArea (OrganisationId, RotationArea, SortOrder, Colour, IsDeleted) VALUES (1,'A Kennel',1, '#e06666', 0),
 (1,'A KENNEL',2, '#0b5394', 0),
@@ -303,8 +303,9 @@ CREATE TABLE `AAU`.`RotationAreaPosition` (
     ON UPDATE NO ACTION);
 
 INSERT INTO `AAU`.`RotationAreaPosition` (RotationAreaPositionId, OrganisationId, RotationAreaId, RotationAreaPosition, SortOrder) VALUES
-('-2', '1', '-1', 'Lunch break', '-1'),
-('-3', '1', '-1', 'Tea break', '-1');
+('-3', '1', '-3', 'Tea break', '-3'),
+('-2', '1', '-3', 'Lunch break', '-2'),
+('-1', '1', '-1', 'Fixed Off', '-1');
 
 INSERT INTO `AAU`.`RotationAreaPosition` (OrganisationId, RotationAreaId, RotationAreaPosition, SortOrder) VALUES
 (1,1,'Medical 1',1),

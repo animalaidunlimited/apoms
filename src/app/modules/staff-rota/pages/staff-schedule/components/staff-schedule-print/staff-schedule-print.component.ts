@@ -54,7 +54,7 @@ export class StaffSchedulePrintComponent implements OnInit {
                                                                       notes: assignment.notes,
                                                                       startTime: this.getAMPMFrom24hr(assignment?.actualStartTime) || assignment?.plannedStartTime,
                                                                       endTime: this.getAMPMFrom24hr(assignment?.actualEndTime) || assignment?.plannedEndTime,
-                                                                      rotationAreaPosition: assignment.rotationAreaPosition || assignment.plannedRotationAreaPosition
+                                                                      rotationArea: assignment.rotationArea || assignment.plannedRotationArea
 
                                                                     }
 

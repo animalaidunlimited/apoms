@@ -853,13 +853,17 @@ SELECT
 	rr.RotationAreaPositionId AS `plannedRotationAreaPositionId`,
 	rr.RotationAreaPosition AS `plannedRotationAreaPosition`,  
     rr.RotationAreaId AS `plannedRotationAreaId`,
-	rr.RotationArea AS `plannedRotationArea`,    
+	rr.RotationArea AS `plannedRotationArea`,
+    
+    IF(rr.NextDay = 1, CAST(true AS JSON), CAST(false AS JSON)) AS `nextDay`,
    
     TIME_FORMAT(rr.StartTime, '%h:%i %p') AS `plannedStartTime`,
     TIME_FORMAT(rr.EndTime, '%h:%i %p') AS `plannedEndTime`,
     TIME_FORMAT(rda.ActualStartTime, '%h:%i') AS `actualStartTime`,
     TIME_FORMAT(rda.ActualEndTime, '%h:%i') AS `actualEndTime`,
     IFNULL(ra.Colour, rr.Colour) AS `rotationAreaColour`,
+    IF(((CONV(SUBSTRING(ra.Colour , 2, 2), 16, 10) * 299) + (CONV(SUBSTRING(ra.Colour , 4, 2), 16, 10) * 587) + (CONV(SUBSTRING(ra.Colour , 6, 2), 16, 10) * 114)) / 1000 > 155, '#000000', '#ffffff') AS `rotationAreaFontColour`,
+
     rda.Sequence,
     rda.Notes
 	FROM AAU.RotaDayAssignment rda
@@ -893,7 +897,7 @@ SELECT
 	DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY), -- RotaDayDate
 	-1, -- RotaDayId
 	lr.UserId, -- UserId
-    NULL, -- EmployeeNumber
+    u.EmployeeNumber, -- EmployeeNumber
     NULL, -- UserCode
 	lr.UserId, -- RotationUserId
 	lr.LeaveRequestId,
@@ -911,18 +915,22 @@ SELECT
     'LEAVE', -- plannedRotationAreaPosition
     -1, -- plannedRotationAreaId
 	'LEAVE', -- plannedRotationArea
+    CAST(false AS JSON), -- nextDay
 	NULL, -- StartTime
     NULL, -- EndTime
     NULL, -- ActualStartTime
     NULL, -- ActualEndTime
     '#999999', -- Colour
+    '#ffffff', -- RotationAreaFontColour
     -2, -- Sequence
     NULL -- Notes
 FROM AAU.LeaveRequest lr
+INNER JOIN AAU.User u ON u.UserId = lr.UserId
 INNER JOIN AAU.Tally t ON t.Id <= (lr.LeaveEndDate - lr.LeaveStartDate)
 INNER JOIN AAU.RotationPeriod rp ON DATE_ADD(lr.LeaveStartDate, INTERVAL t.Id DAY) BETWEEN rp.StartDate AND rp.EndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
 AND lr.Granted = 1
+AND lr.OrganisationId = vOrganisationId
 
 UNION ALL
 
@@ -932,7 +940,7 @@ SELECT
 	DATE_ADD(rp.StartDate, INTERVAL t.Id DAY), -- RotaDayDate
 	-1, -- RotaDayId
 	u.UserId, -- UserId
-    NULL, -- EmployeeNumber
+    u.EmployeeNumber, -- EmployeeNumber
     NULL, -- UserCode
 	u.UserId, -- RotationUserId
 	lr.LeaveRequestId,
@@ -950,12 +958,14 @@ SELECT
     -1, -- plannedRotationAreaPositionId
     'FIXED OFF', -- plannedRotationAreaPosition
     -1, -- plannedRotationAreaId
-	'FIXED OFF', -- plannedRotationArea        
+	'FIXED OFF', -- plannedRotationArea
+    CAST(false AS JSON), -- nextDay    
 	NULL, -- StartTime
     NULL, -- EndTime
     NULL, -- ActualStartTime
     NULL, -- ActualEndTime
     '#999999', -- Colour
+    '#ffffff', -- RotationAreaFontColour
     -1, -- Sequence
     NULL -- Notes
 FROM AAU.RotationPeriod rp
@@ -963,7 +973,7 @@ INNER JOIN AAU.Tally t ON t.Id < 7
 INNER JOIN AAU.User u ON LOCATE(WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY)), u.FixedDayOff) > 0 AND u.fixedDayOff NOT LIKE '[-1]'
 LEFT JOIN AAU.LeaveRequest lr 	ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE RotationPeriodId = prm_RotationPeriodId
-
+AND u.OrganisationId = vOrganisationId
 ),
 rotaDayAssignmentCTE AS
 (
@@ -985,6 +995,8 @@ SELECT RotationPeriodId,
                         JSON_OBJECT("plannedArea", rotationAreaPosition),
                         JSON_OBJECT("rotationAreaId", rotationAreaId),
                         JSON_OBJECT("rotationArea", rotationArea),
+                        JSON_OBJECT("nextDay", nextDay),
+
                         JSON_OBJECT("plannedRotationAreaPositionId", plannedRotationAreaPositionId),
                         JSON_OBJECT("plannedRotationAreaPosition", plannedRotationAreaPosition),
                         JSON_OBJECT("plannedRotationAreaId", plannedRotationAreaId),
@@ -994,7 +1006,8 @@ SELECT RotationPeriodId,
 						JSON_OBJECT("actualStartTime", actualStartTime),
                         JSON_OBJECT("actualEndTime", actualEndTime),
                         JSON_OBJECT("sequence", Sequence),
-                        JSON_OBJECT("rotationAreaColour", rotationAreaColour),                        
+                        JSON_OBJECT("rotationAreaColour", rotationAreaColour),
+                        JSON_OBJECT("rotationAreaFontColour", rotationAreaFontColour),
                         JSON_OBJECT("notes", Notes),
                         JSON_OBJECT("isAdded", CAST(0 AS JSON))
 					)
@@ -1227,7 +1240,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_GetRotationPeriods !!
 
--- CALL AAU.sp_GetRotationPeriods(2, 1, 0);
+-- CALL AAU.sp_GetRotationPeriods(1, 1, 0, 0);
 
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_GetRotationPeriods( IN prm_RotaVersionId INT, IN prm_Limit INT, IN prm_Offset INT, IN prm_IsLocked TINYINT)
@@ -1482,6 +1495,7 @@ JSON_OBJECT("employeeNumber",UserDetails.EmployeeNumber),
 JSON_OBJECT("firstName",UserDetails.FirstName),
 JSON_OBJECT("surname",UserDetails.Surname),
 JSON_OBJECT("initials",UserDetails.Initials),
+JSON_OBJECT("localName",UserDetails.LocalName),
 JSON_OBJECT("colour",UserDetails.Colour),
 JSON_OBJECT("telephone",UserDetails.Telephone),
 JSON_OBJECT("userName",UserDetails.UserName),
@@ -1495,7 +1509,7 @@ JSON_OBJECT("departmentId",UserDetails.DepartmentId),
 JSON_OBJECT("excludeFromScheduleUsers",UserDetails.ExcludeFromScheduleUsers),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted)
 ))  AS userDetails
-FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
+FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.LocalName, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle, 
             IF(u.ExcludeFromScheduleUsers, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS ExcludeFromScheduleUsers,
             u.FixedDayOff, u.DepartmentId,
@@ -1710,7 +1724,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
--- CALL AAU.sp_InsertRotaDayAssignments('Jim', 1);
+-- CALL AAU.sp_InsertRotaDayAssignments('Jim', 4);
 -- TRUNCATE TABLE AAU.RotaDayAssignment;
 
 DELIMITER $$
@@ -2949,6 +2963,8 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_UpsertRotationPeriod!!
 
+-- CALL AAU.sp_UpsertRotationPeriod('Jim',  9,  'f2f387f2-da33-9e76-5e0d-c2f3e29906c5',  5,  'Week 146',  '2023-02-13',  '2023-02-19',  false,  0);
+
 DELIMITER $$
 CREATE PROCEDURE AAU.sp_UpsertRotationPeriod(
 		IN prm_Username VARCHAR(45),
@@ -2972,8 +2988,10 @@ DECLARE vSuccess INT;
 DECLARE vRotationPeriodExists INT;
 DECLARE vTimeNow DATETIME;
 DECLARE vRotationPeriodId INT;
+DECLARE vOverlapsExisting INT;
 
 SET vRotationPeriodExists = 0;
+SET vOverlapsExisting = 0;
 SET vRotationPeriodId = prm_RotationPeriodId;
 
 SELECT CONVERT_TZ(NOW(),'+00:00',o.TimeZoneOffset) INTO vTimeNow
@@ -2982,9 +3000,11 @@ INNER JOIN AAU.Organisation o ON o.OrganisationId = u.OrganisationId
 WHERE UserName = prm_Username LIMIT 1;
 
 -- SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
-SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotationPeriodGUID = prm_RotationPeriodGUID AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
+SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotationPeriodGUID = prm_RotationPeriodGUID;
 
-IF vRotationPeriodExists = 0 THEN
+SELECT COUNT(1) INTO vOverlapsExisting FROM AAU.RotationPeriod WHERE RotationPeriodGUID != prm_RotationPeriodGUID AND RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
+
+IF vRotationPeriodExists = 0 AND vOverlapsExisting = 0 THEN
 
 INSERT INTO AAU.RotationPeriod(
 	RotationPeriodGUID,
@@ -3007,7 +3027,7 @@ VALUES(
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationPeriodId,'RotationPeriod','Insert', NOW());
 
-ELSEIF vRotationPeriodExists = 1 THEN
+ELSEIF vRotationPeriodExists = 1 AND vOverlapsExisting = 0 THEN
 
 	UPDATE AAU.RotationPeriod SET
 		`Name`		= prm_Name,
@@ -3023,9 +3043,13 @@ ELSEIF vRotationPeriodExists = 1 THEN
 	INSERT INTO AAU.Logging (UserName, RecordId, ChangeTable, LoggedAction, DateTime)
 	VALUES (prm_Username,vRotationPeriodId,'RotationPeriod','Update', NOW());
     
+ELSEIF vOverlapsExisting <> 0 THEN
+
+SELECT 2 INTO vSuccess;
+
 ELSE
 
-SELECT 2 INTO vSuccess;    
+SELECT 3 INTO vSuccess;
 
 END IF;
     

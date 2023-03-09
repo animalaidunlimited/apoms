@@ -5,6 +5,7 @@ import { OutstandingAssignment } from '../models/outstanding-case';
 import { SearchResponse } from '../models/responses';
 import { AreaShift, RotationRole } from '../models/rota';
 import { HourRange } from 'src/app/core/models/vehicle';
+import moment from 'moment';
 
 export function getCurrentTimeString() : string {
     let currentTime = new Date();
@@ -184,5 +185,15 @@ export function addDaysToDate(inputDate: Date, days: number) : Date {
   returnDate.setDate( inputDate.getDate() + days );
 
   return returnDate;
+
+}
+
+export function checkMomentAndReturnDateString(inputValue: any) : string {
+
+  if(moment.isMoment(inputValue)){
+    return inputValue.format("YYYY-MM-DD");
+  }
+
+  return inputValue;
 
 }

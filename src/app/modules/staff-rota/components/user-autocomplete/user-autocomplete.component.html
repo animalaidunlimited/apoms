@@ -1,8 +1,9 @@
 <form [formGroup]="searchForm">
 
-  <mat-form-field *ngIf="formField" appearance="fill" style="min-width: 100px; width: 100%;">
+  <mat-form-field *ngIf="formField" appearance="fill" style="width: 100%;">
     <mat-label *ngIf="showLabel">Staff name</mat-label>
     <input matInput
+    style="min-width: 100px;"
     [errorStateMatcher]="errorMatcher"
     type="text"
     (focus)="setSelectedUsers()"
@@ -26,6 +27,7 @@
   <div *ngIf="!formField" appearance="fill">
     <mat-label *ngIf="showLabel">Staff name</mat-label>
     <input matInput
+    style="min-width: 100px;"
     class="non-form-field-input"
     [errorStateMatcher]="errorMatcher"
     type="text"

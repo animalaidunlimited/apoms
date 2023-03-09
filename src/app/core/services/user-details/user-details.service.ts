@@ -35,10 +35,14 @@ export class UserDetailsService extends APIService{
     }
 
     return this.getUsersByIdRange().then((userListData: UserDetails[]) => {
+
+      userListData.sort((a,b) => a.employeeNumber.localeCompare(b.employeeNumber,
+        undefined,
+        {numeric : true, sensitivity: 'base'}));
       
       this.userList.next(userListData);
 
-      const scheduleUsers = userListData.filter(user => !user.excludeFromScheduleUsers)
+      const scheduleUsers = userListData.filter(user => !user.excludeFromScheduleUsers);
 
       this.scheduleUserList.next(scheduleUsers)
 

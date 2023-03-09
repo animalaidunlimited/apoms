@@ -1142,7 +1142,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
   public getRotaDayAssignmentsByRotationPeriodId(rotationPeriodId: number) : void {
 
     this.get(`/GetRotaDayAssignmentsByRotationPeriodId?rotationPeriodId=${rotationPeriodId}`)
-                  .then(result => result as RotaDayAssignmentResponse)
+                  .then(result => result as RotaDayAssignmentResponse)                  
                   .then(rotaDays => this.rotaDays$.next(rotaDays));
 
   }
