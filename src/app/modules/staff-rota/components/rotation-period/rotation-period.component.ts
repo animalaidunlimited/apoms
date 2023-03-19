@@ -208,38 +208,40 @@ export class RotationPeriodComponent implements OnInit {
   }
 
   deleteRotationPeriod(period: AbstractControl) : void {
-    
-    this.confirm('Are you sure you want to remove this period?').subscribe(response => {
 
-      if(response === true){
-
-        if(!period.get("rotationPeriodId")?.value){
-          this.removeRotationPeriodFromArray(period);
-          return;
-        }
-
-        period.get("isDeleted")?.setValue(true);
-
-        this.rotaService.saveRotationPeriod(period.value).then((response: RotationPeriodSaveResponse) => {
-
-          if(response.success === 1){
+    console.log(this.rotaService.rotaForm);
     
-            this.period.markAsPristine();
-            this.changeDetector.detectChanges();
+    // this.confirm('Are you sure you want to remove this period?').subscribe(response => {
+
+    //   if(response === true){
+
+    //     if(!period.get("rotationPeriodId")?.value){
+    //       this.removeRotationPeriodFromArray(period);
+    //       return;
+    //     }
+
+    //     period.get("isDeleted")?.setValue(true);
+
+    //     this.rotaService.saveRotationPeriod(period.value).then((response: RotationPeriodSaveResponse) => {
+
+    //       if(response.success === 1){
     
-            this.snackbarService.successSnackBar("Rotation period deleted successfully", "OK");
-          }
-          else {
+    //         this.period.markAsPristine();
+    //         this.changeDetector.detectChanges();
     
-            this.snackbarService.errorSnackBar("ERR: RPC-166: Error deleting rotation period, please see administrator", "OK");
-          }
+    //         this.snackbarService.successSnackBar("Rotation period deleted successfully", "OK");
+    //       }
+    //       else {
     
-        });
+    //         this.snackbarService.errorSnackBar("ERR: RPC-166: Error deleting rotation period, please see administrator", "OK");
+    //       }
+    
+    //     });
         
-        this.removeRotationPeriodFromArray(period);
+    //     this.removeRotationPeriodFromArray(period);
 
-      }
-    });
+    //   }
+    // });
     
   }
 

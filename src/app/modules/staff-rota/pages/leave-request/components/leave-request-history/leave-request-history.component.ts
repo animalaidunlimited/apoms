@@ -80,8 +80,6 @@ export class LeaveRequestHistoryComponent implements OnInit, OnDestroy {
         return;
       }
 
-      console.log(requests);
-
       this.dataSource = new MatTableDataSource(requests);
       this.dataSource.sort = this.sort;
       this.request = requests[0];

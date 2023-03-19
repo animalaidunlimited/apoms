@@ -168,7 +168,11 @@ generateWeeklyDataSource(rotaDays : RotaDay[]) : FormArray{
   //So we need to turn the rota day list into just a list of the assignments with an ID to pull them out
   let rawDataSource = this.generateDataSource(areaPositions, days, rotaDays);
 
-  let rowSpanDataSource = this.reassignAreaRowSpans(rawDataSource.controls);
+  let sortedDataSource = rawDataSource.controls.sort(this.sortAssignments);
+
+  console.log(sortedDataSource);
+
+  let rowSpanDataSource = this.reassignAreaRowSpans(sortedDataSource);
 
   const returnArray: FormArray = new FormArray(rowSpanDataSource);
 
@@ -191,6 +195,8 @@ reassignWeeklyAreaRowSpans(rawDataSource: FormArray) : FormArray {
 generateDataSource(areaPositions: AreaPositionWeekly[], days: (string | Date)[], rotaDays: RotaDay[]) : FormArray {
 
 let dataSource: FormArray = new FormArray([] as any[]);
+
+console.log(areaPositions);
 
 areaPositions.forEach(position => {
 

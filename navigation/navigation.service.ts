@@ -130,4 +130,12 @@ export class NavigationService {
         }
         this.activePage = new Page(title, isChild, userHasPermission);
     }
+
+    public setActivePageTitle(title: string): void {
+
+        console.log(title);
+
+        this.activePage.title = title;
+
+    }
 }

@@ -84,7 +84,7 @@ SELECT
     IFNULL(ra.Colour, rr.Colour) AS `rotationAreaColour`,
     IF(((CONV(SUBSTRING(ra.Colour , 2, 2), 16, 10) * 299) + (CONV(SUBSTRING(ra.Colour , 4, 2), 16, 10) * 587) + (CONV(SUBSTRING(ra.Colour , 6, 2), 16, 10) * 114)) / 1000 > 155, '#000000', '#ffffff') AS `rotationAreaFontColour`,
 
-    rda.Sequence,
+    IF(rda.RotationAreaPositionId < 0, rda.RotationAreaPositionId, rda.Sequence) AS `Sequence`,
     rda.Notes
     FROM AAU.RotaDayAssignment rda
     LEFT JOIN 

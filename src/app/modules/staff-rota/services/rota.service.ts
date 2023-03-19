@@ -481,6 +481,9 @@ public async upsertRota() : Promise<UpsertRotaResponse> {
 
   let rota = this.getCurrentRota.value as CurrentRota;
 
+  console.log(rota);
+  console.log("rota");
+
   if(!rota.rotaId){
     rota.defaultRotaVersion = true;
   }
@@ -823,7 +826,10 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
   upsertMatrix(rotationPeriodGUID:string) : void{
 
-    const assignedStaff = this.getStaffAssignmentsForRotationPeriod(rotationPeriodGUID);    
+    const assignedStaff = this.getStaffAssignmentsForRotationPeriod(rotationPeriodGUID);
+
+    console.log(assignedStaff);
+    console.log(this.getMatrix);
 
     for(let staff of assignedStaff){
 
@@ -1000,6 +1006,8 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
   public filterStaffAssignments(filterValue: string, periodOrShift: number) : string[] {
 
     let staffAssignments = Object.keys(this.getMatrix.controls);
+
+    console.log(staffAssignments);
 
     if(!staffAssignments){
       return [];
