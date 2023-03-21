@@ -3054,7 +3054,6 @@ WHERE UserName = prm_Username LIMIT 1;
 -- SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
 SELECT COUNT(1) INTO vRotationPeriodExists FROM AAU.RotationPeriod WHERE RotationPeriodGUID = prm_RotationPeriodGUID;
 
-
 SELECT COUNT(1) INTO vOverlapsExisting FROM AAU.RotationPeriod WHERE RotationPeriodGUID != prm_RotationPeriodGUID AND RotaVersionId = prm_RotaVersionId AND StartDate <= prm_EndDate AND EndDate >= prm_StartDate ;
 
 IF vRotationPeriodExists = 0 AND vOverlapsExisting = 0 THEN

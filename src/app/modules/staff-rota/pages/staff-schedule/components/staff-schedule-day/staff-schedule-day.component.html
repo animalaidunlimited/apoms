@@ -110,6 +110,7 @@
 
               <div *ngIf="element.get('leaveUser')?.value && (element.get('leaveGranted')?.value === 'Granted' || element.get('leaveGranted')?.value === 'Fixed Off')"
               class="granted-leave-user">
+
                 {{element.get('leaveUser')?.value + ' (' + (element?.get('leaveGranted')?.value === 'Granted' ? 'L' : 'FO') + ')'}}
               </div>
               
