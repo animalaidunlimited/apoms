@@ -340,9 +340,9 @@ async loadMatrixForPeriods(periodGUIDs: string) {
     
     for(let assignment of staffAssignments) {
 
-      let user = this.userList.value.find(element => element.userId === assignment.assignedUserId);   
+      let user = this.userList.value.find(element => element.userId === assignment.userId);   
       
-      this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user);
+      this.addAssignedStaffControlToMatrix(assignment.areaShiftGUID, assignment.rotationPeriodGUID, user?.userId);
     }    
   
   });
@@ -480,9 +480,6 @@ public async upsertRota() : Promise<UpsertRotaResponse> {
   this.getCurrentRota.get('rotaVersionId')?.enable();
 
   let rota = this.getCurrentRota.value as CurrentRota;
-
-  console.log(rota);
-  console.log("rota");
 
   if(!rota.rotaId){
     rota.defaultRotaVersion = true;
@@ -828,9 +825,6 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     const assignedStaff = this.getStaffAssignmentsForRotationPeriod(rotationPeriodGUID);
 
-    console.log(assignedStaff);
-    console.log(this.getMatrix);
-
     for(let staff of assignedStaff){
 
       let assignedUser = {
@@ -858,7 +852,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
     .map(element => (
         {          
           staffTaskId: this.getMatrix.get(element)?.get("staffTaskId")?.value || "",
-          userId: this.getMatrix.get(element)?.get("assignedUser")?.value?.userId || -1
+          userId: this.getMatrix.get(element)?.get("userId")?.value || -1
         }
       ));
   }
@@ -885,7 +879,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
 
 
-  addAssignedStaffControlToMatrix(areaShiftGUID: string, rotationPeriodGUID: string, assignedUser?: UserDetails){
+  addAssignedStaffControlToMatrix(areaShiftGUID: string, rotationPeriodGUID: string, userId?: number){
 
     let staffTaskId = this.getCoords(areaShiftGUID, rotationPeriodGUID);
 
@@ -893,7 +887,7 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
     let leave = undefined;    
 
-      let foundLeaveRaw = this.leaves.find(leave =>  leave.userId === assignedUser?.userId &&
+      let foundLeaveRaw = this.leaves.find(leave =>  leave.userId === userId &&
                                             leave.startDate <= period?.get("endDate")?.value &&
                                             leave.endDate >= period?.get("startDate")?.value);                                            
 
@@ -910,26 +904,24 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
 
       const addedTaskDetails = this.fb.group({
         staffTaskId,
-        assignedUser,
+        userId,
         leave
       });
 
       this.getMatrix.addControl(staffTaskId, addedTaskDetails, {emitEvent: false});
     }
     else {
-      this.getMatrix.get(staffTaskId)?.get('assignedUser')?.setValue(assignedUser, {emitEvent: false});
+      this.getMatrix.get(staffTaskId)?.get('userId')?.setValue(userId, {emitEvent: false});
       this.getMatrix.get(staffTaskId)?.get('leave')?.setValue(leave, {emitEvent: false});
     }
 
   }
 
-  public async checkForLeave(rotationPeriodGUID: string, areaShiftGUID: string, userToCheck: AbstractControl) {
-
-    let user = userToCheck.value;
+  public async checkForLeave(rotationPeriodGUID: string, areaShiftGUID: string, assignedUserId: number) {
 
     let period = this.getRotationPeriodArray.controls.find(rotationPeriod => rotationPeriod.get('rotationPeriodGUID')?.value === rotationPeriodGUID);
 
-      const rawLeave = this.leaves.find(leave => leave.userId === user.userId &&
+      const rawLeave = this.leaves.find(leave => leave.userId === assignedUserId &&
                                           leave.endDate >= period?.get("startDate")?.value &&
                                           leave.startDate <= period?.get("endDate")?.value);
 
@@ -1006,8 +998,6 @@ public async saveRotaVersion(rotaVersion: RotaVersion) : Promise<UpsertRotaRespo
   public filterStaffAssignments(filterValue: string, periodOrShift: number) : string[] {
 
     let staffAssignments = Object.keys(this.getMatrix.controls);
-
-    console.log(staffAssignments);
 
     if(!staffAssignments){
       return [];

@@ -133,8 +133,6 @@ export class NavigationService {
 
     public setActivePageTitle(title: string): void {
 
-        console.log(title);
-
         this.activePage.title = title;
 
     }

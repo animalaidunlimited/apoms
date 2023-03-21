@@ -170,8 +170,6 @@ generateWeeklyDataSource(rotaDays : RotaDay[]) : FormArray{
 
   let sortedDataSource = rawDataSource.controls.sort(this.sortAssignments);
 
-  console.log(sortedDataSource);
-
   let rowSpanDataSource = this.reassignAreaRowSpans(sortedDataSource);
 
   const returnArray: FormArray = new FormArray(rowSpanDataSource);
@@ -180,23 +178,9 @@ generateWeeklyDataSource(rotaDays : RotaDay[]) : FormArray{
 
 }
 
-reassignWeeklyAreaRowSpans(rawDataSource: FormArray) : FormArray {
-    
-    rawDataSource.controls.forEach(element => {
-
-      console.log(element.value);
-
-    })
-    
-    return rawDataSource;
-
-}
-
 generateDataSource(areaPositions: AreaPositionWeekly[], days: (string | Date)[], rotaDays: RotaDay[]) : FormArray {
 
 let dataSource: FormArray = new FormArray([] as any[]);
-
-console.log(areaPositions);
 
 areaPositions.forEach(position => {
 

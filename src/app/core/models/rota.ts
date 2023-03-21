@@ -70,7 +70,7 @@ export interface CurrentRota {
 //Keep these here for the moment because we'll use them when we upgrade to Angular 14
 export interface StaffTask{
   staffTaskId: string;
-  assignedUserId: number;
+  userId: number;
   employeeNumber: string;
   firstName: string;
 }
@@ -78,7 +78,7 @@ export interface StaffTask{
 export interface AssignedStaffResponse{
   rotationPeriodGUID: string;
   areaShiftGUID: string;
-  assignedUserId: number;
+  userId: number;
 }
 
 export interface RotationPeriodResponse{

@@ -69,8 +69,6 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   writeValue(userId: number | string | null) {
 
-    console.log(userId);
-
     this.userId = userId;
       
     this.searchForm.get('userId')?.setValue(userId);
