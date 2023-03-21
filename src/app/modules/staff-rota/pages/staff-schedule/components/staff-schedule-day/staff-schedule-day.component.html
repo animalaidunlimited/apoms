@@ -112,10 +112,9 @@
               class="granted-leave-user">
 
                 {{element.get('leaveUser')?.value + ' (' + (element?.get('leaveGranted')?.value === 'Granted' ? 'L' : 'FO') + ')'}}
-
-              </div>           
-
-                <app-user-autocomplete
+              </div>
+              
+              <app-user-autocomplete
                   formControlName="userId"
                   [formField]="false"
                   [scheduleUsers]="true"

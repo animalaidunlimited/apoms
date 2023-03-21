@@ -2,7 +2,7 @@ DELIMITER !!
 
 DROP PROCEDURE IF EXISTS AAU.sp_InsertRotaDayAssignments !!
 
--- CALL AAU.sp_InsertRotaDayAssignments('Jim', 4);
+-- CALL AAU.sp_InsertRotaDayAssignments('Jim', 2);
 -- TRUNCATE TABLE AAU.RotaDayAssignment;
 
 DELIMITER $$
@@ -85,6 +85,8 @@ INNER JOIN AAU.User u ON LOCATE(WEEKDAY(DATE_ADD(rp.StartDate, INTERVAL t.Id DAY
 LEFT JOIN AAU.LeaveRequest lr ON lr.UserId = u.UserId AND DATE_ADD(rp.StartDate, INTERVAL t.Id DAY) BETWEEN lr.LeaveStartDate AND lr.LeaveEndDate
 WHERE rp.RotationPeriodId = prm_RotationPeriodId
 AND u.OrganisationId = vOrganisationId
+AND u.IsDeleted = 0
+AND u.ExcludeFromScheduleUsers = 0
 ) assignments;
 
 -- Now let's insert the leave requests.

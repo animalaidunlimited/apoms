@@ -378,9 +378,9 @@ export class StaffRotationPageComponent implements OnInit, OnDestroy {
     return user.employeeNumber + ' - ' + user.firstName;    
   }
 
-  userSelectedForShift(period: string, areaShiftGUID: string, user: AbstractControl) : void {
+  userSelectedForShift(period: string, areaShiftGUID: string, assignedUserId: number) : void {
     
-    this.rotaService.checkForLeave(period, areaShiftGUID, user);
+    this.rotaService.checkForLeave(period, areaShiftGUID, assignedUserId);
 
     this.rotaService.markPeriodAsDirty(period);
   } 

@@ -44,10 +44,7 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   userId : (number | string | null) = null;
 
-  userList: BehaviorSubject<UserDetails[]>;
-
-  kiran = false;
-  manoj = false;
+  userList!: BehaviorSubject<UserDetails[]>;
 
   get currentUser() : AbstractControl<string | number | null, string | number | null> | null {
     return this.searchForm.get('userId');
@@ -56,12 +53,12 @@ export class UserAutocompleteComponent implements OnInit, ControlValueAccessor {
   constructor(
     private userDetails: UserDetailsService,
     private fb: UntypedFormBuilder
-    ) {
+    ) { 
 
-    this.userList = this.scheduleUsers ? this.userDetails.getScheduleUserList() : this.userDetails.getUserList();    
+      this.userList = this.scheduleUsers ? this.userDetails.getScheduleUserList() : this.userDetails.getUserList();   
    }
 
-  ngOnInit() {
+  ngOnInit() {  
 
   }
 

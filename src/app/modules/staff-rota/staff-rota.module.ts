@@ -6,6 +6,7 @@ import { RotationPeriodComponent } from './components/rotation-period/rotation-p
 import { StaffRotationPageComponent } from './pages/staff-rotation/staff-rotation-page.component';
 import { StaffRotaRoutingModule } from './staff-rota-routing.module';
 import { AreaShiftComponent } from './components/area-shift/area-shift.component';
+import { UserAutoCompleteModule } from './components/user-autocomplete/user-autocomplete.module';
 
 @NgModule({
   declarations: [
@@ -14,9 +15,10 @@ import { AreaShiftComponent } from './components/area-shift/area-shift.component
     AreaShiftComponent
   ],
   imports: [  
-  CommonModule,
+    CommonModule,
     StaffRotaRoutingModule,
-    MaterialModule
+    MaterialModule,
+    UserAutoCompleteModule
   ]
 })
 export class StaffRotaModule { }

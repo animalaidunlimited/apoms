@@ -20,7 +20,7 @@ Purpose: Retrieve the matrix for a rota version
             JSON_OBJECT("areaShiftGUID", rm.AreaShiftGUID),
             JSON_OBJECT("rotationPeriodGUID", rm.RotationPeriodGUID),
             JSON_OBJECT("rotaVersionId", rm.RotaVersionId),
-            JSON_OBJECT("assignedUserId", rm.UserId)
+            JSON_OBJECT("userId", rm.UserId)
 			)) AS `RotaMatrix`
 	FROM AAU.RotaMatrixItem rm
     INNER JOIN AAU.RotationPeriod rp ON rp.RotationPeriodGUID = rm.RotationPeriodGUID AND rp.IsDeleted = 0

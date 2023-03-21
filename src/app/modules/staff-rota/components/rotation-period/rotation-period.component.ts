@@ -81,7 +81,7 @@ export class RotationPeriodComponent implements OnInit {
 
                                 return {
                                     areaShiftGUID: "" + staffAssignment?.get('staffTaskId')?.value.split('|')[0],
-                                    assignedUser: staffAssignment?.get('assignedUser')?.value
+                                    userId: staffAssignment?.get('userId')?.value
                                   };
 
                               
@@ -91,7 +91,7 @@ export class RotationPeriodComponent implements OnInit {
 
     if(cycle){
 
-      populatedAssignments = staffAssignmentAreaShifts.filter(element => !!element?.assignedUser?.userId);
+      populatedAssignments = staffAssignmentAreaShifts.filter(element => !!element?.userId);
 
       const popped = populatedAssignments.pop();
 
@@ -103,9 +103,9 @@ export class RotationPeriodComponent implements OnInit {
 
       let assignedUser = undefined;
       
-      if(!!staffAssignmentAreaShifts[i].assignedUser?.userId || !cycle){
+      if(!!staffAssignmentAreaShifts[i].userId || !cycle){
 
-        assignedUser = populatedAssignments[assigned]?.assignedUser;
+        assignedUser = populatedAssignments[assigned]?.userId;
         assigned++;
       }
 
@@ -191,19 +191,7 @@ export class RotationPeriodComponent implements OnInit {
 
   updateMatrix() : void {
 
-    this.rotaService.upsertMatrix(this.period.get('rotationPeriodGUID')?.value)
-    
-    /*.then((result:SuccessOnlyResponse) => {
-
-      if(result.success === 1){
-        this.snackbarService.successSnackBar("Staff matrix updated successfully", "OK");
-      }
-      else {
-        this.snackbarService.errorSnackBar("ERR: RPC-155: Error updating staff matrix, please see administrator", "OK");
-      }
-
-    })
-    */
+    this.rotaService.upsertMatrix(this.period.get('rotationPeriodGUID')?.value);    
 
   }
 

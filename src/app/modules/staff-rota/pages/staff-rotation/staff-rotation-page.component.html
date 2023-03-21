@@ -216,33 +216,28 @@
     
                       <div class="flex-center-center"
                       [formGroupName]="(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)"
-                      class="assigned-staff-wrapper">
-      
-                        <div *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('assignedUser');
+                      class="assigned-staff-wrapper"
+                      >
+
+                        <div *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('userId');
                         let assignedUser"
-                        class="flex-row gap-10">                                      
-      
-                          <input matInput
-                          type="text"
-                          class="user-input"
-                          formControlName="assignedUser"                            
-                          (focus)="setFilteredUsers(period, assignedUser)"                          
-                          [matAutocomplete]="auto">
+                        class="flex-row gap-10">
 
-                          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-                                  (optionSelected)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value, assignedUser)">
-                            <mat-option>N/A</mat-option>
-                            <mat-option *ngFor="let user of (filteredUsers | async)" [value]="user">
-                              {{ user.employeeNumber + ' - ' + user.firstName }}
-                            </mat-option>
-                          </mat-autocomplete>
-
-                            <mat-icon *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('leave')?.value; let leave;"
-                            matTooltipClass="leave-tooltip"
-                            [ngClass]="leave.fullOverlap === true ? 'leave-full-overlap' : leave.granted === 'Granted' ? 'leave-granted' : 'leave-pending'"
-                            [matTooltip]="(leave.startDate | date: 'EEE,dd/MMM') + ' to ' + (leave.endDate | date: 'EEE,dd/MMM')
-                            + ' (' + leave.granted + ')'"  matSuffix >event_busy</mat-icon>
-                          
+                          <app-user-autocomplete
+                            formControlName="userId"
+                            [formField]="false"
+                            [scheduleUsers]="true"
+                            [showLabel]="false"
+                            (selectionMade)="userSelectedForShift(period, element.get('areaShift')?.get('areaShiftGUID')?.value, assignedUser.userId)"
+                            class="select-field"
+                            style="min-width: 155px; position: relative;">
+                              <mat-icon *ngIf="element.get(element.get('areaShift')?.get('areaShiftGUID')?.value + '|' + period)?.get('leave')?.value; let leave;"
+                                          matTooltipClass="leave-tooltip"
+                                          [ngClass]="leave.fullOverlap === true ? 'leave-full-overlap' : leave.granted === 'Granted' ? 'leave-granted' : 'leave-pending'"
+                                          [matTooltip]="(leave.startDate | date: 'EEE,dd/MMM') + ' to ' + (leave.endDate | date: 'EEE,dd/MMM')
+                                          + ' (' + leave.granted + ')'"  matSuffix >event_busy
+                              </mat-icon>
+                          </app-user-autocomplete>  
 
                         </div>
       

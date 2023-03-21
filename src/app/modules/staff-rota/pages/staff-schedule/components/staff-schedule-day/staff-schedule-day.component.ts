@@ -403,8 +403,9 @@ addShift() : void {
 
   newAssignments.push(emptyAssignment);
 
-  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(newAssignments)
-                                                                  .sort(this.staffScheduleService.sortAssignments);;
+  newAssignments = newAssignments.sort(this.staffScheduleService.sortAssignments);
+
+  this.filteredRotaDayAssignments = this.staffScheduleService.reassignAreaRowSpans(newAssignments);
 
   this.rotaDayAssignments.push(emptyAssignment);
 

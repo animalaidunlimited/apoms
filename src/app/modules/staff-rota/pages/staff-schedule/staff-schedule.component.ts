@@ -13,6 +13,7 @@ import { StaffScheduleService } from '../../services/staff-schedule.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
 import { LeaveRequestService } from '../../services/leave-request.service';
+import { NavigationService } from 'navigation/navigation.service';
 
 
 @Component({
@@ -83,7 +84,8 @@ export class StaffScheduleComponent implements OnInit {
     private userOptionsService: UserOptionsService,
     private snackbar: SnackbarService,
     private printService: PrintTemplateService,
-    private rotaSettings: RotaSettingsService
+    private rotaSettings: RotaSettingsService,
+    private navigationService: NavigationService
   ) {
 
     this.rotaDayForm = this.fb.array([]);
@@ -98,6 +100,8 @@ export class StaffScheduleComponent implements OnInit {
     });
 
     this.rotas = this.rotaService.getRotas();
+
+    this.setPageTitle();
 
   }
 
@@ -178,8 +182,6 @@ export class StaffScheduleComponent implements OnInit {
   
   loadRotaDays() : void {
     
-    console.log('here');
-
     if(this.rotationPeriodId === -1){
       this.dataLoading = false;
       return;
@@ -287,7 +289,6 @@ export class StaffScheduleComponent implements OnInit {
     }
 
     this.dataLoading = false;
-    console.log('Now here');
 
   }
 
@@ -408,6 +409,15 @@ showLeaveRequestsForDay(leaveDate: string | Date) : void {
 
 toggleShowWeek() : void {
   this.showWeek = !this.showWeek;
+  this.setPageTitle();
+}
+
+setPageTitle() : void {
+
+  const pageTitle = 'Schedule - ' + (this.showWeek ? 'Weekly View' : 'Daily View');
+
+  this.navigationService.setActivePageTitle(pageTitle);
+
 }
 
 updateManagerAuthorisation(authorisation: ScheduleAuthorisation) : void {

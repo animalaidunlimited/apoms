@@ -49,7 +49,7 @@ JSON_OBJECT("departmentId",UserDetails.DepartmentId),
 JSON_OBJECT("excludeFromScheduleUsers",UserDetails.ExcludeFromScheduleUsers),
 JSON_OBJECT("isDeleted",UserDetails.IsDeleted)
 ))  AS userDetails
-FROM (SELECT u.UserId, u.EmployeeNumber, u.FirstName, u.Surname, u.PermissionArray, u.LocalName, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
+FROM (SELECT u.UserId, IFNULL(u.EmployeeNumber,'') AS `EmployeeNumber`, u.FirstName, u.Surname, u.PermissionArray, u.LocalName, u.Initials, IFNULL(u.Colour,'#ffffff') AS `Colour`, u.Telephone,
 			u.UserName, u.Password, r.RoleId , r.RoleName, jobTitle.JobTypeId, jobTitle.JobTitle, 
             IF(u.ExcludeFromScheduleUsers, CAST(TRUE AS JSON), CAST(FALSE AS JSON)) AS ExcludeFromScheduleUsers,
             u.FixedDayOff, u.DepartmentId,
