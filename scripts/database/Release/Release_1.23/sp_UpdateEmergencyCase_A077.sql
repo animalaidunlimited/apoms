@@ -85,6 +85,9 @@ IF vEmNoExists = 0 AND prm_UpdateTime >= vUpdateTime THEN
                         AmbulanceAssignmentTime = prm_AmbulanceAssignmentTime,
 						selfAdmission           = prm_SelfAdmission
 			WHERE EmergencyCaseId = prm_EmergencyCaseId;
+            
+	-- TEMP - In order to resolve broken cases
+    UPDATE AAU.BrokenCaseDetails SET Updated = 1 WHERE EmergencyCaseId = prm_EmergencyCaseId;
 
     SELECT 1 INTO vSuccess;
 

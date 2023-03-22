@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -10,13 +10,14 @@ import { HospitalManagerTabBarService } from '../services/hospital-manager-tab-b
     templateUrl: './hospital-manager-page.component.html',
     styleUrls: ['./hospital-manager-page.component.scss'],
 })
-export class HospitalManagerPageComponent implements OnInit {
+export class HospitalManagerPageComponent implements OnInit, OnDestroy {
 
 
     tagNumber = 0;
     private ngUnsubscribe = new Subject();
 
-    constructor(route: ActivatedRoute,
+    constructor(
+        route: ActivatedRoute,
         private router: Router,
         private caseService: CaseService,
         private tabBar: HospitalManagerTabBarService) {
@@ -30,8 +31,6 @@ export class HospitalManagerPageComponent implements OnInit {
                 this.tabBar.addTab(result);
             });
 
-            // router.navigate(['']);
-
             }
 
         });
@@ -40,4 +39,9 @@ export class HospitalManagerPageComponent implements OnInit {
     }
 
     ngOnInit() {}
+
+    ngOnDestroy(): void {
+        
+        this.ngUnsubscribe.next();
+    }
 }
