@@ -68,7 +68,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
 
     constructor(
         private cdr: ChangeDetectorRef,
-        private emergencytabBar: EmergencyRegisterTabBarService,
+        private emergencyTabBar: EmergencyRegisterTabBarService,
         private dialog: MatDialog,
         private navigationService:NavigationService,
         private caseService: CaseService,
@@ -103,7 +103,7 @@ export class TabBarComponent implements OnInit, OnDestroy {
             }
         );
 
-        const sharedMediaItem = this.emergencytabBar.getSharedMediaItem();
+        const sharedMediaItem = this.emergencyTabBar.getSharedMediaItem();
 
         sharedMediaItem.pipe(takeUntil(this.ngUnsubscribe))
                         .subscribe((mediaItem:File[])=>{
@@ -111,13 +111,22 @@ export class TabBarComponent implements OnInit, OnDestroy {
                         if(mediaItem.length > 0){
                                 this.openSearchMediaDialog(mediaItem);
                         }
-                        });
+                        });    
+        
+
+        // Watch for any new tabs being opened from other areas of the application.
+        this.emergencyTabBar.tabCreator.pipe(takeUntil(this.ngUnsubscribe)).subscribe(newTab => {
+
+            newTab.forEach(elem => this.addTab(elem.EmergencyCaseId, elem.EmergencyNumber));
+        });
     }
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
     }
+
+
 
     removeTab(index: number) {
         // TODO find out why the ngif in the mat-label causes and error and fix
