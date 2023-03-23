@@ -2,7 +2,7 @@
 
 <div class="flex-row flex-wrap gap-20 flex-start-end">
 
-    <mat-form-field class="outcomeWrapper">
+    <mat-form-field [ngClass]="sameAs ? 'call-outcome-wrapper same-as' : 'call-outcome-wrapper solo'">
         <mat-label>Call outcome</mat-label>
         <mat-select tabindex="17" #callOutcomeField formControlName="CallOutcome" [compareWith]="compareCallOutcome">
             <mat-option>N/A</mat-option>

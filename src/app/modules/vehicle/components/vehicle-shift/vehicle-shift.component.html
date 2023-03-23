@@ -57,9 +57,9 @@
         <div class="shift-wrapper flex-1-1">
 
             <div
-            class="flex-row flex-wrap flex-start-center gap-10"
+            class="vehicle-shift flex-row flex-wrap flex-start-center gap-10"
             *ngFor="let shift of ( shifts$ | async)"
-            [style.width.%]="shift.length || 20" [style.left.%]="shift.left" class="vehicle-shift">
+            [style.width.%]="shift.length || 20" [style.left.%]="shift.left" >
 
                 <div *ngFor="let staff of shift.vehicleStaff">
 

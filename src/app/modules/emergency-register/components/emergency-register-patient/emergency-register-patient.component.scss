@@ -12,6 +12,18 @@
     }
 }
 
+.case-outcome{
+    flex: 1;
+}
+
+.full-width{
+    max-width: 100%;
+}
+
+.multi{
+    max-width: 60%;
+}
+
 
 .elevatedFormsRepeaterFields{
     border-radius: .5rem;
@@ -58,14 +70,6 @@
         font-size:1rem;
         line-height: 1.5;
     }
-}
-
-
-
-.patient-outcome-wrapper {
-    flex: 1;
-    max-width: 50%;
-    min-width: 40%;
 }
 
 .admissionAreaDivWrapper {
