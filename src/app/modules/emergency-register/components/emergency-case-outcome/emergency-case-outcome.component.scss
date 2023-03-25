@@ -1,13 +1,22 @@
-.outcomeWrapper {
-    width: 100%;    
+.call-outcome-wrapper{
+    flex: 1;
+    min-width: 40%;
 }
 
-mat-form-field.mat-form-field.outcomeWrapper {
+.same-as{
+    max-width: 60%;
+}
+
+.solo{
+    max-width: 100%;
+}
+
+mat-form-field.mat-form-field.outcome-wrapper {
     max-width: 100% !important;
 }
 
 @media(max-width: 600px) {
-    .outcomeWrapper {
+    .outcome-wrapper {
         max-width: unset;
         min-width: 33%;
     }

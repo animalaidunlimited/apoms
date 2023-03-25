@@ -22,7 +22,6 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
   @Input() patientForm!: FormGroup | AbstractControl;
 
-
   @Output() public result = new EventEmitter<UpdateResponse>();
 
   @ViewChild('sameAsNumberField',{ read: ElementRef, static:false }) sameAsNumberField!: ElementRef;
@@ -74,7 +73,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();  
 
     this.callOutcomes$
-    // .pipe(take(1))
+    .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(callOutcome => {
 
       this.sameAsId = callOutcome.find(outcome => outcome.CallOutcome === 'Same as')?.CallOutcomeId;

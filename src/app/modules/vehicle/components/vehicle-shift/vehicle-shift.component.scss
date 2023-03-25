@@ -159,13 +159,13 @@
 }
 
 .shift-button{
-    position: absolute;
-
+    position: absolute;    
     right: -15px;
     height: 2rem;
     width: 2rem;
 
     .material-icons{
+        line-height: 1.5rem;
         font-size: 1rem;
     }
 }

@@ -75,11 +75,14 @@
   <!-- Call Outcome details-->
   <div *ngIf="outcome && !isDisplayOnly" class="flex-row flex-wrap gap-20-10 flex-start-center">
 
-    <emergency-case-outcome (keydown.Tab)="tabPressed($event,patientIndex)"class="patient-outcome-wrapper" [patientForm]="patientForm"></emergency-case-outcome>
+    <emergency-case-outcome
+    [ngClass]="patientForm.get('isAdmission')?.value ||
+    patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Same as' ? 'case-outcome full-width' : 'case-outcome multi'"
+    (keydown.Tab)="tabPressed($event,patientIndex)" [patientForm]="patientForm"></emergency-case-outcome>
 
     <mat-form-field style="width: 150px;" *ngIf="patientForm.get('isAdmission')?.value || 
-    patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 18 ||
-     patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId === 10">
+    patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Street treatment approved by ST manager' ||
+     patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcome === 'Died in ambulance'">
 
       <mat-label>Tag number</mat-label>
 
@@ -108,8 +111,8 @@
       </mat-form-field>
 
     </div>
+    
     <div class="patients_icons">
-      <!-- <mat-icon style="cursor:pointer;" (click)="openMediaDialog(patientForm)">add_photo_alternate</mat-icon> -->
       <mat-icon style="cursor:pointer; margin-bottom: 17px;" (click)="printEmergencyCard(patientForm)">print</mat-icon>
     </div>
   </div>
@@ -118,7 +121,7 @@
 
 <div *ngIf="isDisplayOnly" class="displayOnlyPatientWrapper">
 
-  <div class="flex-row gap-10 flex-start-center"style="min-height: 2em;">
+  <div class="flex-row gap-10 flex-start-center" style="min-height: 2em;">
     <div>
       {{animalType.value}}
     </div>
