@@ -48,7 +48,12 @@
 
                      <mat-form-field appearance="fill">
                         <mat-label>End date</mat-label>
-                        <input matInput type="date"  placeholder="End Date" formControlName="EndDate">
+
+                        <input matInput
+                        [matDatepicker]="endDatePicker"
+                        formControlName="EndDate"  />
+                        <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
                      </mat-form-field>
 
                      <div class="st_form flex-column">
@@ -66,7 +71,7 @@
         <div class="flex-row flex-wrap gap-20 flex-center-center form-sub-group">
 
             <button mat-raised-button color="primary"  [disabled]="recordForm.invalid" (click)="saveForm()">Save</button>
-            <button mat-raised-button color="primary" >Reset</button>
+            <button mat-raised-button color="primary">Reset</button>
         </div>
     </div>
     <div>

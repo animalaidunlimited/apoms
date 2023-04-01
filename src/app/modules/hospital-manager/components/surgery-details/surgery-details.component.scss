@@ -65,8 +65,16 @@ $standard-width: 175px;
     }
 }
 
-.Edit {
+.edit {
     cursor: pointer;
+}
+
+.edit-surgery{
+  width:25px;
+}
+
+.date-field {
+  width: 115px;
 }
 
 .mat-button {

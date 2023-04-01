@@ -15,7 +15,7 @@ Purpose: Used to return a Caller by Number.
 
 Modified By: Jim Mackenzie
 Modified On: 11/02/2023
-Purpose: Altering to bring bcak result by organisation.
+Purpose: Altering to bring back result by organisation.
 */
 
 DECLARE vOrganisationId INT;

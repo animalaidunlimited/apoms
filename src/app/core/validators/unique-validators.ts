@@ -40,7 +40,7 @@ export class UniqueValidators {
 						const currValue: string = tempValue ;
 						let newErrors: any;
 
-						if (mainValue === currValue) {
+						if (mainValue.toString() === currValue.toString()) {
 							if (isBlank(currControl.errors)) {
 								newErrors = uniqueObj;
 							} else {

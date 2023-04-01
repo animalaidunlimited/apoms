@@ -3,7 +3,7 @@ import { UntypedFormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { take, takeUntil, map } from 'rxjs/operators';
-import { getCurrentDateString } from 'src/app/core/helpers/utils';
+import { checkMomentAndReturnDateString, getCurrentDateString } from 'src/app/core/helpers/utils';
 import { TreatmentArea, TreatmentListPrintObject } from 'src/app/core/models/treatment-lists';
 import { DropdownService } from 'src/app/core/services/dropdown/dropdown.service';
 import { MessagingService } from '../../emergency-register/services/messaging.service';
@@ -23,9 +23,12 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
   currentArea:TreatmentArea = {areaId: 0, areaName: ''};
   hasWritePermission = false;
   isPrinting: BehaviorSubject<boolean>;
+  maxDate = getCurrentDateString();
   refreshing = false;
   selectedDate: string | Date = getCurrentDateString();
   treatmentAreas:Observable<TreatmentArea[]>;
+
+
 
 
   constructor(
@@ -82,7 +85,7 @@ export class TreatmentListPageComponent implements OnInit, OnDestroy {
 
     this.areas.get('date')?.valueChanges
     .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(value => this.selectedDate = value);
+    .subscribe(value => this.selectedDate = checkMomentAndReturnDateString(value));
 
 
 

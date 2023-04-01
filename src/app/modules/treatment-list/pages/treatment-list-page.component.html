@@ -3,7 +3,7 @@
 
     <div class="flex-row flex-wrap flex-center-center dropdown-wrapper">
 
-        <mat-form-field>
+        <mat-form-field appearance="fill">
         <mat-label>Treatment area</mat-label>
         <mat-select
         [compareWith]="compareAreas"
@@ -17,7 +17,13 @@
 
         <mat-form-field >
                 <mat-label>Treatment date</mat-label>
-                <input type="date" formControlName="date" matInput>
+
+                <input matInput
+                [matDatepicker]="visitPicker"
+                [max]="maxDate"
+                formControlName="date"  />
+                <mat-datepicker-toggle matIconSuffix [for]="visitPicker"></mat-datepicker-toggle>
+                <mat-datepicker #visitPicker></mat-datepicker>
 
         </mat-form-field>
 

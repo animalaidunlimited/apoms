@@ -70,7 +70,14 @@
             <div class="flex-row flex-center-center">
               <mat-form-field subscriptSizing="dynamic">
                 <mat-label>Period start</mat-label>
-              <input matInput type="date" [max]="period.get('endDate')?.value" formControlName="startDate" [errorStateMatcher]="errorMatcher"/>
+              <input matInput  [max]="period.get('endDate')?.value" formControlName="startDate"
+              [matDatepicker]="startDatePicker"
+              [errorStateMatcher]="errorMatcher"/>
+
+								<mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+								<mat-datepicker #startDatePicker></mat-datepicker>	
+
+
               <mat-error *ngIf="period.get('startDate')?.hasError('dateExistsInRange')">
                 Day exists in another range
               </mat-error>
@@ -78,7 +85,13 @@
 
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Period end</mat-label>
-              <input matInput type="date" [min]="period.get('startDate')?.value" formControlName="endDate" [errorStateMatcher]="errorMatcher"/>
+              <input matInput [min]="period.get('startDate')?.value" formControlName="endDate"
+              [matDatepicker]="endDatePicker"
+              [errorStateMatcher]="errorMatcher"/>
+
+              <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>	
+
               <mat-error *ngIf="period.get('endDate')?.hasError('dateExistsInRange')">
                 Day exists in another range
               </mat-error>

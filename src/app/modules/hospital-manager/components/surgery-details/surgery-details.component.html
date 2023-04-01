@@ -3,10 +3,11 @@
   <legend class="legend">Surgery details</legend>
 
   <div class="example-container mat-elevation-z8">
-    <mat-table matSort #table [dataSource]="surgeryRecords" class="surgery-table">
+
+    <mat-table mat-table matSort #table [dataSource]="surgeryRecords" class="mat-elevation-z8">
       <ng-container matColumnDef="Date">
-        <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-header-cell *matHeaderCellDef class="date-field"> Date </mat-header-cell>
+        <mat-cell *matCellDef="let row" class="date-field"> 
           <span class="mobile-label">Date:</span>
           {{row.date | date}}
         </mat-cell>
@@ -37,18 +38,18 @@
       </ng-container>
 
       <ng-container matColumnDef="Anesthesia Minutes">
-        <mat-header-cell *matHeaderCellDef> Anesthesia Minutes </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> Anesthesia minutes </mat-header-cell>
         <mat-cell *matCellDef="let row"> 
-          <span class="mobile-label">Anesthesia Minutes:</span>
+          <span class="mobile-label">Anesthesia minutes:</span>
           {{row.anesthesiaMinutes}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="Edit Surgery">
-        <mat-header-cell *matHeaderCellDef> Edit Surgery </mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
-          <span class="mobile-label">Edit Surgery:</span>
-          <mat-icon (click)="launchSurgeryDialog(row)"  class="Edit">edit</mat-icon>
+        <mat-header-cell *matHeaderCellDef class="edit-surgery"> Edit </mat-header-cell>
+        <mat-cell *matCellDef="let row"  class="edit-surgery"> 
+          <span class="mobile-label">Edit surgery:</span>
+          <mat-icon (click)="launchSurgeryDialog(row)" class="edit">edit</mat-icon>
         </mat-cell>
       </ng-container>
 

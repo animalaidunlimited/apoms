@@ -71,26 +71,29 @@
         </div>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update dates"
+
+            <button mat-icon-button color="primary" matTooltip="Patient status" aria-label="Update patient status"
             (click)="quickUpdate(record.PatientId, record.TagNumber)">
-                <mat-icon>event</mat-icon>
+                <mat-icon class="small-button-normal-icon">event</mat-icon>
             </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Quick update rescue details"
+
+            <button mat-icon-button color="primary" matTooltip="Rescue details" aria-label="Quick update rescue details"
             (click)="rescueUpdate(record.EmergencyCaseId, record.CallDateTime, record.CallOutcomeId, record.CallOutcome, record.sameAsNumber)">
-                <mat-icon>departure_board</mat-icon>
+                <mat-icon class="small-button-normal-icon">departure_board</mat-icon>
             </button>
 
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Update calls"
+            <button mat-icon-button color="primary" matTooltip="Calls" aria-label="Update calls"
             (click)="callUpdate(record.PatientId, record.TagNumber)">
-                <mat-icon>phone</mat-icon>
-            </button>
-            <button mat-icon-button color="primary" style="cursor:pointer;" aria-label="Add surgery" (click)="addSurgery(record.PatientId, record.TagNumber, record.EmergencyNumber, record.AnimalType)">
-                <mat-icon>local_hospital</mat-icon>
+                <mat-icon class="small-button-normal-icon">phone</mat-icon>
             </button>
 
-            <button *ngIf="record.CallOutcomeId===1" mat-icon-button color="primary" aria-label="Release details"
+            <button mat-icon-button color="primary" matTooltip="Add surgery" aria-label="Add surgery" (click)="addSurgery(record.PatientId, record.TagNumber, record.EmergencyNumber, record.AnimalType)">
+                <mat-icon class="small-button-normal-icon">local_hospital</mat-icon>
+            </button>
+
+            <button *ngIf="record.CallOutcomeId===1" mat-icon-button color="primary" matTooltip="Release details" aria-label="Release details"            
             (click)="openReleaseDialog(record.EmergencyCaseId, record.TagNumber, record.PatientId)">
-            <mat-icon>airport_shuttle</mat-icon>
+            <mat-icon class="small-button-normal-icon">airport_shuttle</mat-icon>
             </button>
 
 

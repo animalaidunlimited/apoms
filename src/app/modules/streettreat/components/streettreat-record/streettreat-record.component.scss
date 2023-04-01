@@ -35,7 +35,7 @@
         .add-visits-fab-btn{
             width:99.4% !important;
         }
-        .vistisWrapper{
+        .visits-wrapper{
             width: unset !important;
         }
         .visit_row_data {
@@ -61,23 +61,14 @@
 
 @media only screen and (min-width: 600px ){
     :host ::ng-deep {
-        .visit_row_data {
-            mat-form-field {
 
-                &:nth-child(3) {
-                    min-width: 16% !important;
-                    width: 16% !important;
-                }
-
-            }
-        }
         .add-visits-fab-btn {
             position: unset ;
             display: flex !important;
             flex-direction: row-reverse;
             width: 93%;
         }
-        .vistisWrapper > div {
+        .visits-wrapper > div {
             margin-right: 0px !important;
         }
     }

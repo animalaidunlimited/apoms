@@ -96,38 +96,32 @@
         .visit-header{
             margin:0;
         }
-        .visit_row_data{
-            > div:first-child {
-                position: relative;
-                display: grid;
-                grid-template-areas: "date status type"
-                                     "admin admin admin"
-                                     "notes notes notes";
-                grid-column-gap: 10px;
 
-                box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
+        .visit_row_data{            
 
-                border-radius: 25px;
-                padding: 15px 15px 45px 15px;
-                grid-template-columns: 1fr 2fr 1.74fr;
-                .mat-form-field{
-                    max-height: 65px;
-                    &.date {
-                        grid-area: date;
-                    }
-                    &.notes{
-                        grid-area: notes;
-                        margin-top: 40px;
-                    }
-                    &.admin{
-                        grid-area:admin;
-                    }
+            box-shadow: 6px 6px 16px 0 rgba(0, 0, 0, 0.2), -6px -6px 16px 0 rgb(255, 255, 255);
+
+            border-radius: 25px;
+            padding: 15px 15px 45px 15px;
+
+            .mat-form-field{
+                max-height: 65px;
+                &.date {
+                    grid-area: date;
+                }
+                &.notes{
+                    grid-area: notes;
+                    margin-top: 40px;
+                }
+                &.admin{
+                    grid-area:admin;
                 }
             }
+            
             .mat-fab-wrapper{
-                top: -1.2rem !important;
+                top: -2rem !important;
                 position: absolute;
-                right: 0.4rem !important;
+                right: -8px;
                 border-radius: 50%;
                 max-width: 1rem;
                 min-width: 1rem;
@@ -224,6 +218,7 @@
     max-width: 100% !important;
     width: 100% !important;
 }
+
 .visitsWrapper {
     .mat-form-field.full-width {
         max-width: 97% !important;

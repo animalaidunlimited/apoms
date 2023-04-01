@@ -5,7 +5,7 @@
  
     <ng-container matColumnDef="area">
       <th mat-header-cell *matHeaderCellDef> Area </th>
-      <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" (click)="print(element)"
+      <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i"
       [attr.rowspan]="element.get('areaRowSpan')?.value"
       [style.display]="element.get('areaRowSpan')?.value !== 0  ? '' : 'none'"
       class="area-header first-column"
@@ -21,7 +21,7 @@
 
       <ng-container [matColumnDef]="day">
         <th mat-header-cell *matHeaderCellDef> {{day | date : "ccc, d/MMM/YYYY"}} </th>
-        <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" style="min-width: 155px;" (click)="print(element)">
+        <td mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" style="min-width: 155px;">
           
           <div [formGroupName]="day">
             <!-- Here we need to name the form group above [formGroupName]="day", but also reference the day formgroup below because

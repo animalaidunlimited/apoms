@@ -37,7 +37,7 @@
 
     <button mat-mini-fab color="primary" *ngIf="!hideMap" [color]="showAmbulancePaths ? filterBtnColor : 'primary'"
     (click)="showAmbulancePaths = !showAmbulancePaths">
-      <img #toogleButton src="assets/icons/ambulance_round.svg" class="mat-icon notranslate material-icons mat-icon-no-color" alt="Ambulance filter">
+      <img #toggleButton src="assets/icons/ambulance_round.svg" class="mat-icon notranslate material-icons mat-icon-no-color" alt="Ambulance filter">
     </button>
 
     <button mat-mini-fab [color]="casesFiltered ? filterBtnColor : 'primary'" (click)="hideList = !hideList">
@@ -58,7 +58,7 @@
     (change)="autoRefreshToggled()" [checked]="autoRefresh">Auto-update</mat-slide-toggle>
 
   <!-- This is the card that shows the ambulance and lets you show their paths -->
-  <div #toogleButtonDiv  class="filterWrapper" [hidden]="!showAmbulancePaths" style="position: relative;">
+  <div #toggleButtonDiv  class="filterWrapper" [hidden]="!showAmbulancePaths" style="position: relative;">
 
     <div class="filter-card">
       <div class="filter-header">
@@ -113,9 +113,10 @@
 
 </div>
 
-<outstanding-case-map [hidden]="hideMap"></outstanding-case-map>
+<outstanding-case-map *ngIf="!hideMap"></outstanding-case-map>
 
-<div class="flex-row" [hidden]="!hideMap">
+
+<div class="flex-row" *ngIf="hideMap">
   <div class="swimlane">
     <h2  style="text-align: center;">Received</h2>
     <div *ngFor="let outstandingCase of receivedVehicleList$ | async">

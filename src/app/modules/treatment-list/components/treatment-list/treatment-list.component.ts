@@ -102,7 +102,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
   tagSorted = 1;
 
   treatmentListForm: FormGroup;
-  treatmentPriorities: Observable<Priority[]>;
+  treatmentPriorities!: Priority[];
 
   constructor (
     private dialog: MatDialog,
@@ -115,6 +115,8 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
     private fb: UntypedFormBuilder,
     private patientService: PatientService,
     private dropdown: DropdownService ) {
+
+    this.dropdown.getPriority().pipe(takeUntil(this.ngUnsubscribe)).subscribe(priorities => this.treatmentPriorities = priorities);
 
     this.refreshing = this.ts.refreshing;
 
@@ -147,7 +149,7 @@ export class TreatmentListComponent implements OnInit, OnChanges, OnDestroy {
                                 column.name !== 'Moved to' &&
                                 column.name !== 'Other')));
 
-    this.treatmentPriorities = this.dropdown.getPriority();
+    
 
     this.populateColumnList();
 
@@ -522,9 +524,9 @@ savingPatientDetails(saving:boolean, currentPatient:AbstractControl){
 
 getTreatmentPriority(element: number) : string {
 
-  const treatmentPriorities = ["No treat","Low","Medium","High","Urgent"];
+  const foundPriority = this.treatmentPriorities?.find(priority => priority.PriorityId === element);
 
-  return treatmentPriorities[element];
+  return foundPriority?.Priority || "Not found";
 
 }
 

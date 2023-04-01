@@ -58,17 +58,20 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     this.callOutcome = this.patientForm.get('callOutcome') as FormGroup;
 
-    if(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value){
+    console.log(this.patientForm);
 
-      this.caseService.getEmergencyCaseById(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result =>
+    // if(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value){
 
-        this.patientForm.patchValue(result)
+    //   this.caseService.getEmergencyCaseById(this.patientForm.get('emergencyDetails.emergencyCaseId')?.value)
+    //   .pipe(takeUntil(this.ngUnsubscribe))
+    //   .subscribe(result =>{
 
-      );
+    //     console.log(result);
+    //     this.patientForm.patchValue(result);
+      
+    //   });
 
-    }
+    // }
 
     this.callOutcomes$ = this.dropdowns.getCallOutcomes();  
 
@@ -102,6 +105,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
     const sameAsNumber = this.patientForm.get('callOutcome.sameAsNumber');
     const callOutcomeId = this.patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcomeId;
+    const callOutcome = this.patientForm.get('callOutcome.CallOutcome')?.value?.CallOutcome;
     const patientArray = (this.patientForm.parent as FormGroup).parent?.get('patients') as FormArray;
     // Check if we need to show the same as field.
     this.sameAs = this.sameAsId === callOutcomeId;
@@ -124,7 +128,7 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
      * At current index if patient outcome is admissions
      * change only outcome which is blank in outcome array to admission
      */
-    if(callOutcomeId === 1){
+    if(callOutcome === "Admission"){
       patientArray?.controls.forEach(patient => {
         /**
          * check for call outcome number
@@ -149,6 +153,12 @@ export class EmergencyCaseOutcomeComponent implements OnInit, OnDestroy {
 
       });
 
+
+    }
+    else if (callOutcome === "Street treatment approved by ST manager" && this.patientForm?.get('patientId')?.value) {
+
+      this.patientForm?.get('tagNumber')?.setValidators([Validators.required, Validators.pattern(/^[A-z0-9]*$/)]);
+      this.patientForm?.get('tagNumber')?.updateValueAndValidity({ emitEvent: false });
 
     }
     else {

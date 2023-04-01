@@ -312,6 +312,7 @@ export class CaseService extends APIService {
     }
 
     public openCase(caseToOpen: CaseToOpen) {
+
         this.caseToOpen$.next(caseToOpen);
     }
 

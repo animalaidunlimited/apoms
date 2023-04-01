@@ -287,6 +287,8 @@ export class EmergencyRegisterPatientComponent implements OnInit, AfterViewInit,
 
     const currentAnimalValue = this.animalTypeInput.nativeElement.value.toLowerCase();
 
+    console.log(currentAnimalValue)
+
     if(!currentAnimalValue) return;
 
     const matchAnimalType = this.animalFilter(currentAnimalValue)

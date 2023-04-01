@@ -12,13 +12,21 @@ import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { MediaService } from 'src/app/core/services/media/media.service';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { DATE_FORMATS } from 'src/app/core/date-formats/formats';
 
 
 
 @Component({
   selector: 'app-streettreat-record',
   templateUrl: './streettreat-record.component.html',
-  styleUrls: ['./streettreat-record.component.scss']
+  styleUrls: ['./streettreat-record.component.scss'],
+  providers: [
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }
+  ]
 })
 export class StreetTreatRecordComponent implements OnInit {
 
@@ -148,7 +156,7 @@ export class StreetTreatRecordComponent implements OnInit {
 
     if(this.hasWritePermission) {
 
-     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom).then(response => {
+     this.streetTreatService.saveStreetTreatForm(this.streetTreatFrom.streetTreatForm).then(response => {
 
        if(response.success === 1)
          {

@@ -9,6 +9,9 @@ import { DatePipe } from '@angular/common';
 import { ChartData, ChartResponse, ChartSelectObject, StreetTreatCases, StreetTreatCaseVisit, StreetTreatScoreCard, VehicleColour } from 'src/app/core/models/streettreat';
 import { UserOptionsService } from 'src/app/core/services/user-option/user-options.service';
 import { take, takeUntil } from 'rxjs/operators';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { DATE_FORMATS } from 'src/app/core/date-formats/formats';
 
 
 
@@ -30,7 +33,12 @@ interface StreetTreatTabResult {
 @Component({
   selector: 'app-vehicle-visit-assigner',
   templateUrl: './vehicle-visit-assigner.component.html',
-  styleUrls: ['./vehicle-visit-assigner.component.scss']
+  styleUrls: ['./vehicle-visit-assigner.component.scss'],
+  providers: [
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }
+  ]
 })
 export class VehicleVisitAssignerComponent implements OnInit, AfterViewInit {
 

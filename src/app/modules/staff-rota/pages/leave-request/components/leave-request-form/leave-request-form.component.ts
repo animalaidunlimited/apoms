@@ -15,20 +15,9 @@ import { UserDetailsService } from 'src/app/core/services/user-details/user-deta
 import { maxDateTodayValidator, maxDateValidator, minDateValidator } from 'src/app/core/validators/date-validators';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DATE_FORMATS } from 'src/app/core/date-formats/formats';
 
 
-
-  export const DATE_FORMATS = {
-    parse: {
-      dateInput: ["dd.MM.yyyy", "DD/MM/yyyy", "dd,MM,yyyy"], // to accept different input styles from user
-    },
-    display: {
-      dateInput: "DD/MM/yyyy", // display format in input field
-      monthYearLabel: 'yyyy MMMM',
-      dateA11yLabel: 'MMMM d, y',//'LL',
-      monthYearA11yLabel: 'MMMM yyyy'
-    },
-  };
 
 interface DialogData {
   leaveRequestId: number;
@@ -42,7 +31,7 @@ interface DialogData {
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
     { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }
-  ],
+  ]
 })
 export class LeaveRequestFormComponent implements OnInit, OnDestroy {
 

@@ -4,9 +4,11 @@
 		<mat-form-field appearance="fill">
 			<mat-label>Assigned date</mat-label>
 			<input formControlName="ambulanceAssignmentTime" type="datetime-local"
+			name="ambulanceAssignmentTime"
 			[min]="callDateTime"
 			[max]="currentTime"
-			name="ambulanceAssignmentTime"matInput [errorStateMatcher]="errorMatcher">
+			(focus)="setInitialDate($event)"
+			name="ambulanceAssignmentTime" matInput [errorStateMatcher]="errorMatcher">
 
 		</mat-form-field>
 
@@ -62,20 +64,31 @@
 			<h5 mat-dialog-title class="visit-header">Visits</h5>
 
 			<div class="visit-calendar-wrapper" *ngIf="visitDates.length > 0">
-				<button mat-raised-button (click)="loadCalendar($event)" class="calendar-toggle"><mat-icon>calendar_today</mat-icon></button>
+				<button mat-raised-button (click)="loadCalendar($event)" class="calendar-toggle">
+					<mat-icon>calendar_today</mat-icon></button>
 				<div class="visit_calendar" [hidden]="loadCalendarComponent" >
 					<mat-calendar [dateClass]="dateClass()" (selectedChange)="onSelect($event)" ></mat-calendar>
 				</div>
 			</div>
 		</div>
 
-		<div *ngFor="let item of visitsArray.controls; let visitIndex = index">
+		<div *ngFor="let item of visitsArray.controls; let visitIndex = index"
+		class="visit_row_data">
 
-			<div  class="flex-row flex-wrap flex-start-end visit_row_data gap-10"
-			[ngClass]=" isToday(item.get('visit_date')?.value) ? 'visit-today' : ''"
-			>
+			<div class="flex-column flex-start-end gap-10" [formGroupName]="visitIndex">
 
-				<div [formGroupName]="visitIndex" >
+				<div style="position: relative; z-index: 102;">
+					<div class="mat-fab-wrapper">
+						<button mat-mini-fab color="warn" aria-label="Delete this Visit"
+							(click)="deleteVisits(visitIndex,$event)" >
+							<mat-icon>delete</mat-icon>
+						</button>
+					</div>
+
+				</div>
+
+				<div [ngClass]=" isToday(item.get('visit_date')?.value) ? 'visit-today' : ''"
+				>
 
 					<mat-form-field appearance="fill" *ngIf="!showVisitDate" class="date" >
 						<mat-label>Day</mat-label>
@@ -88,8 +101,13 @@
 
 					<mat-form-field appearance="fill" *ngIf="showVisitDate" class="visit-date date">
 						<mat-label>Date</mat-label>
-						<input matInput  type="date" [min]="minVisitDate" [errorStateMatcher]="errorMatcher"
-							value="0" formControlName="visit_date"  />
+						<input matInput [min]="minVisitDate" [errorStateMatcher]="errorMatcher"
+						[matDatepicker]="assignedDatePicker"
+							value="0" formControlName="visit_date" />
+
+								<mat-datepicker-toggle matIconSuffix [for]="assignedDatePicker"></mat-datepicker-toggle>
+								<mat-datepicker #assignedDatePicker></mat-datepicker>	
+
 							<mat-error *ngIf="item.get('visit_date')?.hasError('uniqueBy')">
 								Date should be unique
 							</mat-error>
@@ -107,28 +125,27 @@
 
 						<mat-select formControlName="visit_type" [errorStateMatcher]="errorMatcher">
 							<mat-option  *ngFor="let visitTypes of (visitType$ | async)" [value]="visitTypes.VisitTypeId">{{ visitTypes.VisitType}}</mat-option>
-						</mat-select>
+						</mat-select>						
 
 					</mat-form-field>
-					<mat-form-field appearance="fill" class="admin" gdArea.lt-md="admin" ngClass.lt-md="full-width">
-						<mat-label>Admin notes</mat-label>
-						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize [errorStateMatcher]="errorMatcher"
-							cdkAutosizeMaxRows="5" formControlName="visit_comments"></textarea>
-					</mat-form-field>
-
-					<mat-form-field appearance="fill" class="notes" ngClass.lt-md="full-width">
-						<mat-label>Operator notes</mat-label>
-						<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize
-							cdkAutosizeMaxRows="5" formControlName="operator_notes"></textarea>
-					</mat-form-field>
-
-					<div class="mat-fab-wrapper">
-						<button mat-mini-fab color="warn" aria-label="Delete this Visit"
-							(click)="deleteVisits(visitIndex,$event)" >
-							<mat-icon>delete</mat-icon>
-						</button>
-					</div>
 				</div>
+
+					<div class="full-width">
+						<mat-form-field appearance="fill" class="admin full-width">
+							<mat-label>Admin notes</mat-label>
+							<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize [errorStateMatcher]="errorMatcher"
+								cdkAutosizeMaxRows="5" formControlName="visit_comments"></textarea>
+						</mat-form-field>
+					</div>
+
+					<div class="full-width">
+						<mat-form-field appearance="fill" class="notes full-width">
+							<mat-label>Operator notes</mat-label>
+							<textarea matInput cdkAutosizeMinRows="3" cdkTextareaAutosize
+								cdkAutosizeMaxRows="5" formControlName="operator_notes"></textarea>
+						</mat-form-field>
+					
+					</div>
 			</div>
 		</div>
 	</div>

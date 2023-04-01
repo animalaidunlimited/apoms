@@ -80,7 +80,6 @@ export class ReportingPageComponent implements OnInit {
                 this.emergencyCases.pipe(takeUntil(this.ngUnsubscribe)).subscribe(cases=> {
                     if(cases) {
 
-
                         const caseArray = new Set(cases.map(currentCase => currentCase.emergencyNumber));
 
                         this.emergencyCaseCount.next(caseArray.size || 0);
@@ -88,7 +87,6 @@ export class ReportingPageComponent implements OnInit {
                 });
             }
         });
-
 
         this.reportingDetails.get('surgeryDate')?.setValue(getCurrentDateString());
 

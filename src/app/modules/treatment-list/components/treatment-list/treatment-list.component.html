@@ -128,55 +128,31 @@
 
             <div *ngIf="column.type === 'select'" class="treatment-priority-select start">
 
-            <!--Le'ts only load the select if we need to.-->
-            <div *ngIf="isPrinting || !row.get('editing')?.value"              
-            class="treatment-priority-non-edit pointer"
-            (click)="row.get('editing').setValue(true);"
-           
-            class="flex-center-center">
-              <div>{{getTreatmentPriority(row.get(column.name).value)}}</div>
+            <!--Let's only load the select if we need to.-->
+            <div
+              class="flex-row flex-center-center treatment-priority-non-edit pointer"
+              (click)="row.get('editing').setValue(!row.get('editing')?.value);">
+
+                <div>{{getTreatmentPriority(row.get(column.name).value)}}</div>
+
             </div>
 
-            <!-- <mat-form-field *ngIf="!isPrinting && !!row.get('editing')?.value"
-            class="treatment-priority-select"> -->
-
             <div class="treatment-priority-wrapper"
-            *ngIf="!isPrinting && !!row.get('editing')?.value"
-            >
+            *ngIf="!isPrinting && !!row.get('editing')?.value">
 
-              <mat-button-toggle-group
-              
-              class="treatment-priority-select"
-              class="flex-column" 
-              (vertical)="true"                           
-              [formControlName]="column.name" aria-label="Font Style">
+              <mat-button-toggle-group              
+              class="treatment-priority-select flex-column"
+              vertical="true"                           
+              [formControlName]="column.name">
   
                     <mat-button-toggle (click)="updateTreatmentPriority(row)" >N/A</mat-button-toggle>
-                    <mat-button-toggle *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId"
+                    <mat-button-toggle *ngFor="let priority of treatmentPriorities" [value]="priority.PriorityId"
                     (click)="updateTreatmentPriority(row)" >
                       {{priority.Priority}}</mat-button-toggle>
   
               </mat-button-toggle-group>
 
             </div>
-
-
-
-              <!-- <mat-select
-              #mySelect
-              (selectionChange)="updateTreatmentPriority(row)"
-              [formControlName]="column.name">
-                  <mat-option>N/A</mat-option>
-                  <mat-option *ngFor="let priority of treatmentPriorities | async" [value]="priority.PriorityId">
-                    {{priority.Priority}}</mat-option>
-              </mat-select> -->
-            <!-- </mat-form-field>   -->
-
-
-
-
-            
-
 
             </div>
 
@@ -244,8 +220,8 @@
 
           <mat-spinner *ngIf="row.get('saving')?.value" class="saved-spinner" [diameter]="24"></mat-spinner>
           <mat-icon [@fadeSavedIcon]="row.get('saved')?.value" *ngIf="row.get('saved')?.value" class="saved-icon">check_circle</mat-icon>
-          <mat-icon *ngIf="expandedElement !== row && !isPrinting" (click)="expandedElement = expandedElement === row ? null : row" class="expand">expand_more</mat-icon>
-          <mat-icon *ngIf="expandedElement === row&& !isPrinting" (click)="expandedElement = expandedElement === row ? null : row" class="expand">expand_less</mat-icon>
+          <mat-icon *ngIf="expandedElement !== row && !isPrinting" (click)="expandedElement = expandedElement === row ? null : row" class="expand pointer">info</mat-icon>
+          <mat-icon *ngIf="expandedElement === row&& !isPrinting" (click)="expandedElement = expandedElement === row ? null : row" color="primary" class="expanded pointer">info</mat-icon>
 
         </div>
 
@@ -303,7 +279,7 @@
 <!-- Header row second group -->
 <ng-container matColumnDef="header-row-moved-in-group">
 <th mat-header-cell *matHeaderCellDef
-class="moved-out-group" [attr.colspan]="columnCountOther + 1"> Moved in from</th>
+class="moved-out-group" [attr.colspan]="columnCountOther"> Moved in from</th>
 </ng-container>
 
 <!-- Header row third group -->

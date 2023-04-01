@@ -69,9 +69,5 @@ export class StaffScheduleWeekComponent implements OnInit {
     })
 
   }
-  
-  print(element: any){
-    console.log(element);
-  }
 
 }

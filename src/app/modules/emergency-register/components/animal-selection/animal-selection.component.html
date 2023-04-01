@@ -6,9 +6,9 @@
     <legend class="legend" *ngIf="outcome">Outcome details</legend>
 
         <div formArrayName="patients"
-        class="patientsForm"
+        class="patients-form"
         *ngFor="let patient of patients?.controls; let patientIndex = index; let last = last;"
-        [ngClass]="{'lastPatientInArray': last}">
+        [ngClass]="{'patients-form last-patient-in-array': last}">
 
             <app-emergency-register-patient [outcome]="outcome"
                 [isDisplayOnly] = 'isDisplayOnly'

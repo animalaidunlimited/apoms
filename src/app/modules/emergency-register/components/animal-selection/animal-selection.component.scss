@@ -53,9 +53,11 @@ table {
     }
 }
 
-.patientsForm {
+.patients-form {
+    width: 100%;
+    margin-right: -20px;
     margin-bottom: 1rem;
-    &.lastPatientInArray {
+    &.last-patient-in-array {
         margin-bottom: 0;
     }
 }

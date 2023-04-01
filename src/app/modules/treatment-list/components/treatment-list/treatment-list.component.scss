@@ -11,12 +11,21 @@
   border-bottom: 1px solid lightgray;
 }
 
-::ng-deep .mat-mdc-select-arrow-wrapper{
-  display: none;
+.mat-mdc-select-arrow-wrapper {
+  border: none; 
 }
+
+// ::ng-deep .mat-mdc-select-arrow-wrapper{
+//   display: none;
+// }
 
 
   @media print {
+
+    ::ng-deep .mat-mdc-select-arrow-wrapper{
+      display: none;
+    }
+
     .isPrinting > * { display: none; }
     .mat-dialog-container { display: none !important; }
     .cdk_overlay_pane > * { display: none !important; }
@@ -37,9 +46,14 @@
       font-size: medium;
     }
 
-    legend {
+    .area-fieldset{
+      border: none;
+    }
+
+    .legend {
       color:black;
-      font-size: large;
+      font-size: 26px !important;
+      line-height: 2;
     }
 
   }
@@ -47,6 +61,10 @@
 .complete{
   color: green;
   line-height: 1.24;
+}
+
+.small-font{
+  font-size: small;
 }
 
 .is-hidden{
@@ -119,8 +137,9 @@
 }
 
 .treatment-priority-select{
-  width: 125px;
   text-align: center;
+  cursor: pointer;
+  z-index: 101;
 }
 
 :host ::ng-deep .mat-chip-list-wrapper{
@@ -225,19 +244,20 @@ tr.patient-element-row:not(.example-expanded-row):active {
   background: #efefef;
 }
 
-.expand {
-  color: darkGray;
-  cursor: pointer;
+.expand{
+  color: lightgray;
+  padding-left: 5px;
 }
 
+.expanded{
+  padding-left: 5px;
+}
 
 @media only screen and (max-width: 600px) {
 
   .mat-mdc-option{
     padding: 0 3px;
-    }
-
-
+  }
 
   .add-patient-fab{
     margin-left: 3%;
@@ -263,10 +283,6 @@ tr.patient-element-row:not(.example-expanded-row):active {
   .mdc-data-table__cell, .mdc-data-table__header-cell {
     padding: 0;
 }
-
-  .small-font{
-    font-size: 9px;
-  }
 
   .area-fieldset{
     margin: 2px;

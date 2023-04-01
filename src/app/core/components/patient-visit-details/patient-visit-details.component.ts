@@ -21,6 +21,11 @@ import { formatDateForMinMax, getCurrentTimeString } from '../../helpers/utils';
 import { Vehicle } from '../../models/vehicle';
 import { VehicleService } from 'src/app/modules/vehicle/services/vehicle.service';
 import { DatePipe } from '@angular/common';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { DATE_FORMATS } from '../../date-formats/formats';
+import { Moment } from 'moment';
+import moment from 'moment';
 
 interface VisitCalender {
 	status: number;
@@ -75,6 +80,11 @@ interface VisitCalender {
 				]), { optional: true }),
 			])
 		])
+	],
+	providers: [
+	  { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+	  { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+	  { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }
 	]
 })
 export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestroy {
@@ -97,6 +107,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	loadCalendarComponent = true;
 
+	minVisitDate!: string|Date;
+
 	prevVisits: string[] = [];
 	problems$!: Observable<StreetTreatMainProblem[]>;
 
@@ -106,14 +118,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 	treatmentPriority$!: Observable<Priority[]>;
 	visitDates: VisitCalender[] = [];
 	visitType$!: Observable<VisitType[]>;
-	vehicleList$!: Observable<Vehicle[]>;
-
-	minVisitDate!: string|Date;
+	vehicleList$!: Observable<Vehicle[]>;	
 
 	constructor(
 
 		private fb: UntypedFormBuilder,
-		private changeDetectorRef: ChangeDetectorRef,
+		private cd: ChangeDetectorRef,
 		private dropdown: DropdownService,
 		private streetTreatService: StreetTreatService,
 		private dialog: MatDialog,
@@ -162,14 +172,12 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		this.vehicleList$ = this.vehicleService.getVehicleListObservable().pipe(map(vehicles => vehicles.filter(vehicle => vehicle.streetTreatVehicle)));
 
 		setTimeout(() => {
-			if (!this.isStreetTreatTrue) {
-				this.clearValidators();
-			}
-			else {
+
+			if (this.isStreetTreatTrue) {
 				this.initStreetTreatForm();
 			}
-
 		}, 0);
+		
 	}
 
 	ngOnChanges() {
@@ -204,9 +212,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		.pipe(takeUntil(this.ngUnsubscribe))
 		.subscribe((response) => {
 
-			if (response?.streetTreatCaseId) {
+			if (!response?.streetTreatCaseId) return;
 
 				this.showVisitDate = (response.autoAdded || !!response.patientReleaseDate);
+
+				this.minVisitDate = response.autoAdded ?
+				this.datepipe.transform(response.callDateTime,'yyyy-MM-dd') || ''
+				:
+				this.datepipe.transform(response.patientReleaseDate,'yyyy-MM-dd') || '';
 
 				if (response.visits.length > 0) {
 					response.visits.forEach((visit: VisitResponse) => {
@@ -218,11 +231,6 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 						 */
 
 						if (visit.visit_date || this.showVisitDate) {
-
-							this.minVisitDate = response.autoAdded ?
-													this.datepipe.transform(response.callDateTime,'yyyy-MM-dd') || ''
-													:
-													this.datepipe.transform(response.patientReleaseDate,'yyyy-MM-dd') || '';
 
 							// Set Validators Visit Date Unique When Date are finalized
 							this.recordForm.get('streetTreatForm.visits')?.clearValidators();
@@ -263,11 +271,8 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 				this.visitsArray.controls.sort((a, b) => new Date(a.get('visit_date')?.value).valueOf() < new Date(b.get('visit_date')?.value).valueOf() ? -1 : 1);
 
-				this.changeDetectorRef.detectChanges();
-			}
-			else {
-				this.visitsArray.push(this.getVisitFormGroup());
-			}
+				this.cd.detectChanges();
+			
 		});
 	}
 
@@ -345,29 +350,46 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	addVisits($event?: Event) {
 
-		this.preventPropogation($event);
+		this.preventPropagation($event);
 		this.visitsArray.push(this.getVisitFormGroup());
 		this.updateValidityAndDetectChanges();
 	}
 
 	deleteVisits(index: number, $event: Event) {
 
-		this.preventPropogation($event);
+		this.preventPropagation($event);
 		this.visitsArray.removeAt(index);
 		this.updateValidityAndDetectChanges();
 	}
 
-	private preventPropogation($event: Event | undefined) {
+	private preventPropagation($event: Event | undefined) {
 		$event?.preventDefault();
 		$event?.stopPropagation();
 	}
 
 	private updateValidityAndDetectChanges() {
 		this.visitsArray.updateValueAndValidity();
-		this.changeDetectorRef.detectChanges();
+		this.cd.detectChanges();
 	}
 
+	setInitialDate(event: FocusEvent) {
 
+		console.log(this.recordForm);
+
+			let currentTime;
+
+			currentTime = this.recordForm.get('streetTreatForm')?.get((event.target as HTMLInputElement).name)?.value;
+		
+			if (!currentTime) {
+		
+				const target = this.recordForm.get('streetTreatForm')?.get((event.target as HTMLInputElement).name);
+		
+				if(target){
+					target.setValue(getCurrentTimeString());
+				}
+		
+			}
+	}	
 
 	deleteDialog() {
 		const message = `If you save this record, the StreetTreat case and its visits will be deleted,
@@ -405,7 +427,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 		this.clearAndUpdateValidity(true);
 
-		this.changeDetectorRef.detectChanges();
+		this.cd.detectChanges();
 
 	}
 
@@ -422,7 +444,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 		this.streetTreatForm.get('ambulanceAssignmentTime')?.updateValueAndValidity({ emitEvent: false });
 
-		this.changeDetectorRef.detectChanges();
+		this.cd.detectChanges();
 
 	}
 
@@ -442,10 +464,14 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 		}
 	}
 
-	onSelect(selectedDate: Date | null) {
+	onSelect(selectedDate: Date | Moment | null) {
 
 		if(!selectedDate) {
 			return;
+		}
+
+		if(moment.isMoment(selectedDate)){
+			selectedDate = selectedDate.toDate();
 		}
 
 		const date = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
@@ -461,7 +487,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 			this.addCalenderVisit(this.dateSelected);
 		}
 
-		this.changeDetectorRef.detectChanges();
+		this.cd.detectChanges();
 		this.calendar.updateTodaysDate();
 	}
 
@@ -516,7 +542,7 @@ export class PatientVisitDetailsComponent implements OnInit, OnChanges, OnDestro
 
 	}
 
-	//Take a date as input and comapre it with today's date. If they match return true,
+	//Take a date as input and compare it with today's date. If they match return true,
 	//if they don't match return false
 	isToday(visitDate: string | Date){
 		const today = new Date();

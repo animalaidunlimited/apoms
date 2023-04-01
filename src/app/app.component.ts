@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MAT_DATE_LOCALE} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
+import { DATE_FORMATS } from './core/date-formats/formats';
 import { EmergencyRegisterTabBarService } from './modules/emergency-register/services/emergency-register-tab-bar.service';
 import { MessagingService } from './modules/emergency-register/services/messaging.service';
 import { PrintTemplateService } from './modules/print-templates/services/print-template.service';
@@ -12,10 +14,15 @@ import { PrintTemplateService } from './modules/print-templates/services/print-t
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     providers: [
-        // TODO alter this to load from the user settings
-        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
-      ]
+      { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+      { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+      { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }
+    ]
 })
+
+
+
+
 export class AppComponent implements OnInit{
     private ngUnsubscribe = new Subject();
     isPrinting!:BehaviorSubject<boolean>;

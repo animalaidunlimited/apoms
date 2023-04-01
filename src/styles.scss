@@ -224,7 +224,7 @@ $standard-width: 180px;
 }
 
 @media print {
-  .isPrinting > * { display: none;}
+  .isPrinting > * { display: none; }
   .isPrinting print-wrapper { display: block; }
 }
 

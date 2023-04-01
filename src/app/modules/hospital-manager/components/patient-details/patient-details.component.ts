@@ -53,7 +53,7 @@ export class PatientDetailsComponent implements OnInit {
         // If empty it means we're loading from the treatment list
         if(this.recordForm.get('patientDetails') && !patientDetails?.get('animalTypeId')) {
 
-            patientDetails.addControl('animalTypeId',new FormControl(initialNumber, Validators.required));
+            patientDetails.addControl('animalTypeId',new FormControl({value: initialNumber, disabled: true}, Validators.required));
             patientDetails.addControl('mainProblems',new FormControl('', Validators.required));
             patientDetails.addControl('description',new FormControl('', Validators.required));
             patientDetails.addControl('sex',new FormControl(initialNumber, Validators.required));

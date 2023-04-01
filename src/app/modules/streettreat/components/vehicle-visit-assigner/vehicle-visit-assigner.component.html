@@ -1,5 +1,5 @@
 <div
-    class="info_tiles flex-row"
+    class="info-tiles gap-20"
     *ngIf="(scoreCards$ | async) as scoreCards">
     <div>
         <h4>Total Cases</h4>
@@ -24,13 +24,13 @@
     </div>
 </div>
 
-<mat-expansion-panel class="chart_bar_expansion" [expanded]="chartExpanded">
+<mat-expansion-panel class="chart-bar-expansion" [expanded]="chartExpanded">
     <mat-expansion-panel-header>
         <mat-panel-title>
             <mat-icon style="font-size: 1.9rem;"> bar_chart</mat-icon>
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="Chart_Bar" >
+    <div class="chart-bar" >
 
         <ngx-charts-bar-vertical-stacked
             [view]="view"
@@ -46,28 +46,28 @@
         </ngx-charts-bar-vertical-stacked>
     </div>
 </mat-expansion-panel>
-<div
-    class="StreetTreat_Container"
-    gdColumns.gt-md="repeat(2, 1fr)"
-    gdGap.gt-md="10">
+<div class="streettreat-container">
 
-    <div
-        class="StreetTreat_Container_visit_compression"
-        gdColumns.gt-md="repeat(3, 1fr)"
-        gdColumns.xs="repeat(2, 1fr)"
-        >
-        <div class="AssignedVehicle_Compare flex-row flex-wrap"
+    <div class="streettreat-container-visit-compression">
+        <div class="flex-row flex-wrap flex-space-around-center gap-10-0"
             [formGroup]="assignedVehicleGroup">
-            <div class="AssignedVehicle_Comapre_Visit_btn">
+
+            <div class="assigned-vehicle-compare-visit-button">
                 <button mat-flat-button color="primary" (click)="noVisits($event)">No Visits</button>
             </div>
-            <div class="AssignedVehicle_Compare_date">
-                <mat-form-field appearance="fill">
-                    <input matInput type="date" formControlName="date">
+
+            <div class="assigned-vehicle-compare-date">
+                <mat-form-field appearance="fill" class="unset-width">
+                    <input matInput
+                    [matDatepicker]="visitPicker"
+                    formControlName="date"  />
+                    <mat-datepicker-toggle matIconSuffix [for]="visitPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #visitPicker></mat-datepicker>
                 </mat-form-field>
             </div>
-            <div class="AssignedVehicle_Compare_list">
-                <mat-form-field appearance="fill">
+
+            <div class="assigned-vehicle-compare-list">
+                <mat-form-field appearance="fill" class="unset-width">
                     <mat-label>Assigned vehicle</mat-label>
                     <mat-select formControlName="vehicles" multiple>
                         <mat-option *ngFor="let vehicle of caseDropDown" [value]="vehicle.VehicleId">
@@ -76,17 +76,21 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+
             <!-- *ngIf="!autoRefresh" -->
             <button style="margin:7px 0 7px 10px" mat-mini-fab aria-label="Manual refresh" (click)="refreshRescues()">
                 <mat-icon>refresh</mat-icon>
             </button>
+
         </div>
         <ng-container *ngIf="filteredStreetTreatCases; else noResult" cdkDropListGroup>
-            <div class="drag-drop-container" [id]="streetTreatCase.VehicleId"
+
+            <div class="drag-drop-container" [id]="streetTreatCase.VehicleId"            
                 *ngFor="let streetTreatCase of filteredStreetTreatCases; trackBy:trackByVehicleId">
-                <div class="StreetTreat_Container_header">
-                    <h3 class="StreetTreat_Container_header_Title">{{streetTreatCase.VehicleNumber}}</h3>
-                    <div class="StreetTreat_Container_header_VehicleColour">
+
+                <div class="streettreat-container-header">
+                    <h3 class="streettreat-container-header-title">{{streetTreatCase.VehicleNumber}}</h3>
+                    <div class="streettreat-container-header-vehicle-colour">
                         <svg>
                             <path
                                 d="M 10.3 2.2 C 7.3 3.6 4.7 6.5 3.4 9.5 C 2.8 11 2.6 13 2.6 16.8 C 2.8 19.8 2.4 23.5 2.2 25.1 L 1.6 28.4 L 4.4 27.6 C 6 26.9 8.6 26.6 12.8 26.3 C 18.4 25.9 19.2 25.7 21.2 24.4 C 30.2 19.1 29.4 5.9 20 2.1 C 17.3 0.9 12.8 1 10.3 2.2 Z Z"
@@ -94,12 +98,13 @@
                         </svg>
                     </div>
                 </div>
+
                 <div cdkDropList cdkDropListOrientation="horizontal"
-                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits" class="example-list"
+                    [cdkDropListData]="streetTreatCase.StreetTreatCaseVisits" class="case-list"
                     (cdkDropListDropped)="drop($event)"
                     *ngFor="let streetTreatCaseDetails of streetTreatCase.StreetTreatCaseVisits; trackBy:trackByStreetTreatCaseId">
 
-                    <mat-expansion-panel class="streetTreatPanel" cdkDrag [cdkDragData]="streetTreatCaseDetails"
+                    <mat-expansion-panel class="streettreat-panel" cdkDrag [cdkDragData]="streetTreatCaseDetails"
                         [ngClass]="{'swimlane-hover':(streetTreatCaseDetails.StreetTreatCaseId === highlightStreetTreatCase)}"
                         hideToggle>
 
@@ -108,8 +113,8 @@
                                         'border-yellow' : streetTreatCaseDetails.StreetTreatCasePriorityId  == 3
                                         }">
 
-                            <div class="card_wrapper">
-                                <div class="streetreat_visit">
+                            <div class="card-wrapper">
+                                <div class="streettreat-visit">
                                     {{streetTreatCaseDetails.AnimalDetails.TagNumber}}
                                     ({{streetTreatCaseDetails.AnimalDetails.AnimalType}})
                                 </div>
@@ -150,7 +155,7 @@
         </ng-container>
         <ng-template #noResult> No Visits Today</ng-template>
     </div>
-    <div class="StreetTreat_Container_map flex-1" #googleMap>
+    <div class="streettreat-container-map" #googleMap>
         <google-map [zoom]="zoom" height="100%" width="100%" [center]="center">
             <map-marker *ngFor="let marker of markers ; trackBy:markersTrack" [options]="marker.options"
                 (mapClick)="markerClick(marker)" (mapMouseover)="markerClick(marker)" (mapMouseout)="markerClean()">

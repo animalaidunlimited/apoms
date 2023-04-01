@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, InjectionToken } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CaseToOpen } from 'src/app/core/models/emergency-record';
 import { EmergencyRegisterTabBarService } from '../../services/emergency-register-tab-bar.service';
@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 import { KeyboardShortcutsComponent } from 'src/app/core/components/keyboard-shortcuts/keyboard-shortcuts.component';
 import { generateUUID } from 'src/app/core/helpers/utils';
 import { PrintTemplateService } from 'src/app/modules/print-templates/services/print-template.service';
-import { MatTabsConfig, MAT_TABS_CONFIG } from '@angular/material/tabs';
+import { MAT_TABS_CONFIG } from '@angular/material/tabs';
 
 interface EmergencyCaseIdentifiers {
     emergencyNumber : number | string;
@@ -25,8 +25,6 @@ interface EmergencyTab {
         icon: string;
         GUID: BehaviorSubject<string>;
     }
-
-
 
 @Component({
 

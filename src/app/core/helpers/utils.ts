@@ -197,3 +197,13 @@ export function checkMomentAndReturnDateString(inputValue: any) : string {
   return inputValue;
 
 }
+
+export function checkMomentAndReturnDate(inputValue: any) : Date {
+
+  if(moment.isMoment(inputValue)){
+    return new Date(inputValue.format("YYYY-MM-DD"));
+  }
+
+  return inputValue;
+
+}

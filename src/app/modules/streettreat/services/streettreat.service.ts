@@ -2,9 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { checkMomentAndReturnDate } from 'src/app/core/helpers/utils';
 import { StreetTreatForm } from 'src/app/core/models/release';
 import { SearchStreetTreatResponse } from 'src/app/core/models/responses';
-import { ActiveCasesForVehicleByDateResponse, ChartResponse, StreetTreatCase, StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreat';
+import { ActiveCasesForVehicleByDateResponse, ChartResponse, StreetTreatCase,
+         StreetTreatCaseByVisitDateResponse, StreetTreatSearchVisitsResponse} from 'src/app/core/models/streettreat';
 import { APIService } from 'src/app/core/services/http/api.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
 
@@ -74,6 +76,10 @@ export class StreetTreatService extends APIService {
   }
 
   public async saveStreetTreatForm(streetTreatCaseForm: StreetTreatForm) {
+
+    for(let visit of streetTreatCaseForm.visits){
+      visit.visit_date = checkMomentAndReturnDate(visit.visit_date);
+    }
     
     return await this.post(streetTreatCaseForm)
     .then(data => {
@@ -138,3 +144,4 @@ export class StreetTreatService extends APIService {
 
 
 }
+

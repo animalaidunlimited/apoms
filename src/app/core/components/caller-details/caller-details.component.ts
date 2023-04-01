@@ -24,17 +24,8 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
 
     @Input() recordForm!: FormGroup;
     @Input() incomingCallerDetails : any;
+    @Input() disabled = false;
     @ViewChildren(CallerAutocompleteComponent) callerAutoComplete!: QueryList<CallerAutocompleteComponent>;
-
-    caller$!: Caller;
-    callerDetails!:FormGroup;
-    callerArray!: FormArray;
-    public callerAutoComplete$:any; // TODO: type this Observable<Callers>;
-
-    callerNumber!:AbstractControl|null;
-
-    errorMatcher = new CrossFieldErrorMatcher();
-    selection = new SelectionModel<any>(false, []);
 
     @HostListener('document:keydown.meta.shift.n', ['$event'])
     setMacFocusNumber(event: KeyboardEvent){
@@ -44,17 +35,33 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
+    @HostListener('document:keydown.alt.shift.n', ['$event'])
+    setFocusNumber(event: KeyboardEvent) {
+        event.preventDefault();
+        this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
+    }
+
+    caller$!: Caller;
+    public callerAutoComplete$:any; // TODO: type this Observable<Callers>;
+
+    callerNumber!:AbstractControl|null;
+
+    errorMatcher = new CrossFieldErrorMatcher();
+    selection = new SelectionModel<any>(false, []);
+
     constructor(
         private callerService: CallerDetailsService,
         private fb: UntypedFormBuilder,
         private snackbar: SnackbarService,
     ) {}
 
-    @HostListener('document:keydown.alt.shift.n', ['$event'])
-    setFocusNumber(event: KeyboardEvent) {
-        event.preventDefault();
-        this.callerAutoComplete.last.callerNumberRef.nativeElement.focus();
-    }
+    public get callerDetails() : FormGroup {
+		return this.recordForm.get('callerDetails') as FormGroup;
+	}
+
+    public get callerArray() : FormArray {
+		return this.callerDetails.get('callerArray') as FormArray;
+	}
 
     ngOnInit() {
 
@@ -65,10 +72,9 @@ export class CallerDetailsComponent implements OnInit, OnDestroy {
             })
         );
 
-        this.callerDetails = this.recordForm.get('callerDetails') as FormGroup;
-
-        this.callerArray = this.callerDetails.get('callerArray') as FormArray;
-
+        if(this.disabled){
+            this.callerDetails.disable();
+        }
 
         this.callerArray.valueChanges
             .pipe(takeUntil(this.ngUnsubscribe))
